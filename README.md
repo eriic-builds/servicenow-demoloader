@@ -2,7 +2,7 @@
 
 Create reviewed people, incidents and Knowledge content in **your own ServiceNow Personal Developer Instance (PDI)**, aligned with your Microsoft demo tenant. Windows only. Not for production use.
 
-**[Download the Windows installer](https://github.com/eriic-builds/servicenow-demoloader/releases/download/v0.12.1/SN-DemoLoader-Scout-0.12.1.zip)**. Extract the ZIP, open `PREREQUISITES.html`, then run `Install.cmd`.
+**[Open the illustrated setup guide](https://eriic-builds.github.io/servicenow-demoloader/)** | **[Download the Windows installer](https://github.com/eriic-builds/servicenow-demoloader/releases/latest/download/SN-DemoLoader-Scout.zip)**
 
 ## Start here: do this before installing
 
@@ -27,9 +27,9 @@ The four-role recipe reproduces the supported sandbox setup. These are powerful 
 
 ## Install: no developer tools needed
 
-1. Get the current **SN-DemoLoader-Scout** release ZIP from the trusted publisher, not the Source ZIP.
+1. Download **[SN-DemoLoader-Scout.zip](https://github.com/eriic-builds/servicenow-demoloader/releases/latest/download/SN-DemoLoader-Scout.zip)**. The source archives GitHub lists are for developers, not installation.
 2. In File Explorer, right-click the ZIP, choose **Extract All...**, then **Extract**.
-3. Open the extracted version folder. You should see **`Install.cmd`**, **`PREREQUISITES.html`** and **`START-HERE.txt`**.
+3. Open the extracted version folder. Start with **`PREREQUISITES.html`** and **`Install.cmd`**. Leave the other files in place; the installer uses them.
 4. Double-click **`Install.cmd`**. Do not run it inside the ZIP or choose Run as administrator.
 5. Read the prerequisite reminder. Type **`GUIDE`** to open the illustrated steps, or **`READY`** once your PDI, account, password and roles are prepared. Enter without READY cancels.
 6. Read the trust message. Type **`TRUST`** only if you trust the release source and requested local action. Otherwise cancel.
@@ -68,7 +68,7 @@ An existing Scout store junction is respected. No duplicate is installed under `
 ## Help, updates and removal
 
 - Reopen the guide: double-click **PREREQUISITES.html**, or run **`Install.cmd Prerequisites`**.
-- Read full operational/recovery instructions: **[INSTALL.txt](INSTALL.txt)** (named **START-HERE.txt** in the installer ZIP).
+- Read full operational/recovery instructions: **[INSTALL.txt](INSTALL.txt)** in the source repository.
 - Update: stop the owned idle Config Builder through the skill, then use the newer verified ZIP's **Install.cmd**.
 - Inspect installation: **`Install.cmd Verify`**.
 - Diagnose interrupted local state: **`Install.cmd Diagnose`**; only after inspection use **`Install.cmd Recover`**. Never delete PDI execution locks or source journals.
@@ -92,6 +92,8 @@ From PowerShell 7 in the cloned folder:
 ```
 
 Open the resulting installer ZIP, Extract All, and follow the regular install flow. The repository-local `skill\` directory supplies the skill instructions and launcher. Local fixtures cover clone/build/install/recovery while mocking source traffic; they do not prove another person's Windows policy, PDI schema or source access.
+
+For GitHub Releases, build with `-ReleaseAsset` and attach only `SN-DemoLoader-Scout.zip`. Its extracted folder still has the version in its name. GitHub generates source snapshots automatically; do not attach a second source ZIP.
 
 The installed guide can be opened through the skill's **Prerequisites** action. Advanced, already-trusted direct installs require **`-Confirm -PrerequisitesConfirmed`**; the second switch explicitly records acknowledgement, not remote verification. Download-marked payloads also require the documented explicit trust flow. Do not use switches to skip preparation or bypass signing policy.
 

@@ -39,7 +39,7 @@ test('README and both installer routes put prerequisites before installation wit
  for(const text of [readme,instructions,guide,messages])assert.doesNotMatch(text,/\b(?:SHA256|checksum|Get-FileHash)\b/i);
  assert.ok(readme.indexOf('do this before installing')<readme.indexOf('## Install:'));assert.ok(bootstrap.indexOf('Type GUIDE')<bootstrap.indexOf('Type TRUST'));assert.ok(bootstrap.includes('@@PREREQUISITES_SHA256@@'));assert.ok(bootstrap.includes("$action -eq 'Prerequisites'"));
  assert.ok(installer.includes('if(-not $PrerequisitesConfirmed)'));assert.ok(installer.includes("source='operator-acknowledgement-only';verified=$false"));assert.ok(!/Set-ExecutionPolicy|ExecutionPolicy\s+Bypass/i.test(bootstrap));
- const build=await fs.readFile(path.join(root,'scripts','build-release.ps1'),'utf8');for(const file of ['PREREQUISITES.html','README.md'])assert.ok(build.includes(file));
+ const build=await fs.readFile(path.join(root,'scripts','build-release.ps1'),'utf8');assert.ok(build.includes('PREREQUISITES.html'));
  const manifest=require('../package-files.json');assert.ok(manifest.runtime.includes('PREREQUISITES.html'));assert.ok(manifest.runtime.includes('prerequisites.json'));assert.ok(manifest.sourceOnly.includes('README.md'));
 });
 test('local server serves only the allowlisted offline guide with no-store and normal CSP',async t=>{

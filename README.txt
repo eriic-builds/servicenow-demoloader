@@ -43,7 +43,7 @@ its sibling development output; installed output is always a separate library.
 LAYOUT
 lib\             Runtime and deterministic provisioning controllers
 scripts\         Local CLI, protected helpers, installer and packaging
-schemas\         Persisted config/operation shapes
+schemas\         Developer references for config/operation shapes (source only)
 packs\           Canned chat-only HR content (no HTML form coupling)
 tests\           Built-in Node regression cases and Windows integration fixtures
 skill\           Skill instructions and portable front door

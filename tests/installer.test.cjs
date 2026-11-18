@@ -22,7 +22,7 @@ before(async()=>{
  await assert.rejects(fs.access(built.archive+'.sha256'),{code:'ENOENT'});
  await exec('pwsh.exe',['-NoProfile','-NonInteractive','-Command','Expand-Archive -LiteralPath $env:SN_TEST_ZIP -DestinationPath $env:SN_TEST_EXTRACT'],{env:{...process.env,SN_TEST_ZIP:built.archive,SN_TEST_EXTRACT:path.join(shared,'extracted')},windowsHide:true,timeout:30000});
  packageRoot=path.join(shared,'extracted',release.archivePrefix+'-Scout-'+release.version);
- const manifest=JSON.parse(await fs.readFile(path.join(packageRoot,'package-manifest.json'),'utf8'));assert.equal(manifest.files.length,31);
+ const manifest=JSON.parse(await fs.readFile(path.join(packageRoot,'package-manifest.json'),'utf8'));assert.equal(manifest.files.length,29);
 });
 after(async()=>{if(shared)await fs.rm(shared,{recursive:true,force:true});});
 async function fixture(t){
@@ -79,11 +79,12 @@ test('abandoned rename preparation can recover while its original legacy install
 });
 test('release payload is explicit and excludes personal data, state, tests and snapshots',async()=>{
  const manifest=JSON.parse(await fs.readFile(path.join(packageRoot,'package-manifest.json'),'utf8'));
- for(const entry of manifest.files){assert.ok(!/(?:^|\\)(?:configs|runs|credentials|state|snapshots|tests)(?:\\|$)/i.test(entry.path));const data=await fs.readFile(path.join(packageRoot,'skill',entry.path),'utf8');assert.ok(!/(?:dev(?!123456\.|12345\.|123\.)\d{6,}\.service-now\.com|(?:m365cpi|diax)\d{6,}\.onmicrosoft\.com|C:\\Users\\(?!Public\b|example\b)[A-Za-z0-9_.-]+\\)/i.test(data),entry.path);}
+ for(const entry of manifest.files){assert.ok(!/(?:^|\\)(?:configs|runs|credentials|state|snapshots|tests|schemas)(?:\\|$)/i.test(entry.path));const data=await fs.readFile(path.join(packageRoot,'skill',entry.path),'utf8');assert.ok(!/(?:dev(?!123456\.|12345\.|123\.)\d{6,}\.service-now\.com|(?:m365cpi|diax)\d{6,}\.onmicrosoft\.com|C:\\Users\\(?!Public\b|example\b)[A-Za-z0-9_.-]+\\)/i.test(data),entry.path);}
  assert.ok(manifest.files.some(x=>x.path==='app\\install-layout.json'));
  assert.ok(manifest.files.some(x=>x.path==='scripts\\launch.ps1'));
  const guide=await fs.readFile(path.join(packageRoot,'PREREQUISITES.html'),'utf8');assert.equal(guide,await fs.readFile(path.join(packageRoot,'skill','app','PREREQUISITES.html'),'utf8'));
- const readme=await fs.readFile(path.join(packageRoot,'README.md'),'utf8');assert.ok(readme.includes('[START-HERE.txt](START-HERE.txt)'));assert.ok(!readme.includes('](INSTALL.txt)'));await fs.access(path.join(packageRoot,'START-HERE.txt'));
+ assert.deepEqual((await fs.readdir(packageRoot)).sort(),['Install-SN-DemoLoader.ps1','Install.cmd','PREREQUISITES.html','package-manifest.json','skill']);
+ assert.ok(!guide.includes('START-HERE.txt'));
 });
 test('source and installed locations stay distinct, absolute and outside runtime',async t=>{
  const f=await fixture(t),source=locations({projectRoot:root,env:f.env});assert.equal(source.installed,false);assert.equal(source.outputRoot,path.join(path.dirname(root),'SN-DemoSeed-Output'));

@@ -5,11 +5,11 @@
     "lib\\execution.cjs", "lib\\onboarding.cjs", "lib\\manual-people.cjs", "lib\\people.cjs",
     "lib\\content.cjs", "lib\\knowledge.cjs", "lib\\knowledge-browser.cjs", "lib\\browser.cjs",
     "lib\\runtime-owner.cjs", "lib\\dependencies.cjs", "lib\\knowledge-pack.cjs", "packs\\hr-knowledge.json",
-    "scripts\\cli.cjs", "scripts\\manage.ps1", "scripts\\credential.ps1", "scripts\\knowledge-pack.ps1", "scripts\\azure-cli.ps1", "scripts\\install.ps1",
-    "schemas\\profile.schema.json", "schemas\\operation-plan.schema.json"
+    "scripts\\cli.cjs", "scripts\\manage.ps1", "scripts\\credential.ps1", "scripts\\knowledge-pack.ps1", "scripts\\azure-cli.ps1", "scripts\\install.ps1"
   ],
   "sourceOnly": [
     "package-files.json", "INSTALL.txt", "REPOSITORY.txt", "README.md",
+    "schemas\\profile.schema.json", "schemas\\operation-plan.schema.json",
     "scripts\\build-release.ps1", "scripts\\build-source.ps1", "scripts\\export-ui.ps1", "scripts\\install-launcher.cmd",
     "tests\\run-tests.ps1", "tests\\profiles.test.cjs", "tests\\platform.test.cjs", "tests\\azure-cli.test.cjs",
     "tests\\server.test.cjs", "tests\\onboarding.test.cjs", "tests\\browser.test.cjs", "tests\\people.test.cjs",

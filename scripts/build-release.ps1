@@ -3,7 +3,8 @@
 param(
  [string]$SkillSource,
  [Parameter(Mandatory)][string]$Destination,
- [switch]$Replace
+ [switch]$Replace,
+ [switch]$ReleaseAsset
 )
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
@@ -13,7 +14,8 @@ foreach($value in @($Destination,$SkillSource)){if(-not [IO.Path]::IsPathFullyQu
 $release=Get-Content -LiteralPath (Join-Path $root 'release.json') -Raw|ConvertFrom-Json
 if($release.version -notmatch '^\d+\.\d+\.\d+$'){throw 'Invalid release version.'}
 $name=$release.archivePrefix+'-Scout-'+$release.version
-$archive=Join-Path $Destination ($name+'.zip')
+$archiveName=if($ReleaseAsset){$release.archivePrefix+'-Scout.zip'}else{$name+'.zip'}
+$archive=Join-Path $Destination $archiveName
 if([IO.File]::Exists($archive) -and -not $Replace){throw 'This release archive already exists. Use -Replace only for an intentional rebuild.'}
 $staging=Join-Path ([IO.Path]::GetTempPath()) ('sn-release-'+[guid]::NewGuid().ToString('N'))
 try{
@@ -32,13 +34,10 @@ try{
  [IO.File]::WriteAllText((Join-Path $package 'package-manifest.json'),(@{schemaVersion=1;product=$release.product;displayName=$release.displayName;skillName=$release.skillName;version=$release.version;files=$manifestFiles}|ConvertTo-Json -Depth 6))
  [IO.File]::Copy((Join-Path $PSScriptRoot 'install.ps1'),(Join-Path $package 'Install-SN-DemoLoader.ps1'),$false)
  [IO.File]::Copy((Join-Path $root 'PREREQUISITES.html'),(Join-Path $package 'PREREQUISITES.html'),$false)
- $readme=[IO.File]::ReadAllText((Join-Path $root 'README.md')).Replace('[INSTALL.txt](INSTALL.txt)','[START-HERE.txt](START-HERE.txt)')
- [IO.File]::WriteAllText((Join-Path $package 'README.md'),$readme)
  $installerHash=(Get-FileHash -LiteralPath (Join-Path $package 'Install-SN-DemoLoader.ps1') -Algorithm SHA256).Hash.ToLowerInvariant()
  $guideHash=(Get-FileHash -LiteralPath (Join-Path $package 'PREREQUISITES.html') -Algorithm SHA256).Hash.ToLowerInvariant()
  $launcher=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'install-launcher.cmd')).Replace('@@INSTALLER_SHA256@@',$installerHash).Replace('@@PREREQUISITES_SHA256@@',$guideHash)
  [IO.File]::WriteAllText((Join-Path $package 'Install.cmd'),$launcher)
- [IO.File]::Copy((Join-Path $root 'INSTALL.txt'),(Join-Path $package 'START-HERE.txt'),$false)
  $null=[IO.Directory]::CreateDirectory($Destination)
  $temporaryArchive=Join-Path $staging ($name+'.zip')
  Add-Type -AssemblyName System.IO.Compression.FileSystem

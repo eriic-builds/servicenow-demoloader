@@ -29,7 +29,8 @@ test('a local Git clone with Windows checkout settings builds a valid installabl
  await git(['-C',source,'add','--','.']);
  await git(['-C',source,'-c','user.name=Fixture Builder','-c','user.email=fixture@example.invalid','-c','commit.gpgsign=false','-c','core.hooksPath=NUL','commit','--quiet','-m','Fixture source export\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>']);
  const clone=path.join(temp,'Colleague Clone [standalone]');await git(['-c','core.autocrlf=true','clone','--quiet','--no-hardlinks','--',source,clone]);
- const built=JSON.parse((await ps(path.join(clone,'scripts','build-release.ps1'),['-Destination',path.join(temp,'clone-release')])).stdout);
+ const built=JSON.parse((await ps(path.join(clone,'scripts','build-release.ps1'),['-Destination',path.join(temp,'clone-release'),'-ReleaseAsset'])).stdout);
+ assert.equal(path.basename(built.archive),'SN-DemoLoader-Scout.zip');
  const extracted=path.join(temp,'clone-installer');await extract(built.archive,extracted);const installer=path.join(extracted,release.archivePrefix+'-Scout-'+release.version,'Install-SN-DemoLoader.ps1');
  const home=path.join(temp,'clone-user');await fs.mkdir(home);const env={...process.env,HOME:home,USERPROFILE:home,LOCALAPPDATA:path.join(home,'Local')};
  assert.equal(JSON.parse((await ps(installer,['-Confirm','-PrerequisitesConfirmed'],env)).stdout).version,release.version);
