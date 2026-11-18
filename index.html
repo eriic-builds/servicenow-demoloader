@@ -248,7 +248,7 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <h2 id="install-title">8. Install, then connect in Scout</h2>
 <h3>Install the local skill</h3>
 <ol class="steps">
-<li><a href="https://github.com/eriic-builds/servicenow-demoloader/releases/latest" rel="noreferrer">Download the SN-DemoLoader-Scout ZIP</a> from this project&rsquo;s GitHub Releases.</li>
+<li><a href="https://github.com/eriic-builds/servicenow-demoloader/releases/latest/download/SN-DemoLoader-Scout.zip" rel="noreferrer">Download SN-DemoLoader-Scout.zip</a> from this project&rsquo;s GitHub Releases.</li>
 <li>Right-click the ZIP: <strong>Extract All... &gt; Extract</strong>.</li>
 <li>Open the extracted version folder. Double-click <strong>Install.cmd</strong>, not config HTML. Do not run as administrator.</li>
 <li>When prepared, type <code>READY</code>. Read the trust prompt; type <code>TRUST</code> only if approved. Enter cancels. <code>GUIDE</code> reopens these steps.</li>
@@ -274,7 +274,7 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <h2 id="help-title">Stuck? Open only what you need</h2>
 <details><summary>Users link, field, role or Edit is missing</summary><p>Sign in as Human admin. Fallback: <strong>All &gt; User Administration &gt; Users</strong>. If sign-in returns home, click the Users link again. Release layouts vary; ask your PDI administrator. Do not invent fields/roles or change ACLs.</p></details>
 <details><summary>401, 403, interactiveRequired or a sign-in page</summary><p>Check: PDI awake, correct URL/login/password, Active, Machine, Web service access only, roles, no lockout/reset. These errors do not establish the cause. Stop rather than bypass authentication, MFA or add more roles.</p></details>
-<details><summary>Blocked installer, update or recovery</summary><p>Use the trusted ZIP's <code>Install.cmd</code>. Signed-only devices need IT-approved delivery; never bypass policy. Restart Scout if the skill is missing. For interrupted installs, use <code>Install.cmd Diagnose</code> and <code>START-HERE.txt</code>. Never delete PDI locks/journals.</p></details>
+<details><summary>Blocked installer, update or recovery</summary><p>Use the trusted ZIP's <code>Install.cmd</code>. Signed-only devices need IT-approved delivery; never bypass policy. Restart Scout if the skill is missing. For interrupted installs, use <code>Install.cmd Diagnose</code> and see <a href="https://github.com/eriic-builds/servicenow-demoloader/blob/main/INSTALL.txt" rel="noreferrer">recovery instructions</a>. Never delete PDI locks/journals.</p></details>
 <details><summary>Old login or private data</summary><p>An existing <code>demo_seeder</code> login is different: do not rename or duplicate it blindly. Never upload passwords, configs or run history to GitHub.</p></details>
 </section>
 <footer>Sandbox recipe, not least privilege. Admin may include other roles. Guide checks are self-reported, not source/access/connector verification. No telemetry or automatic account changes.</footer>
