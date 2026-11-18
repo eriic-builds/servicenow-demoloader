@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en" data-type="software">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
+  <title>SN DemoLoader · Config builder</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+    document.documentElement.setAttribute("data-theme", "light");
+  </script>
+  <style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+    html[data-theme="light"] {
+      /* Retain the source palette, but adapt its surface colors for this interface. */
+      --cp-template-paper: #f6f9f0;
+      --cp-template-cyan: #d8f5fc;
+      --cp-template-blue: #b9ecfe;
+      --cp-template-ink: #1a1a1a;
+      --cp-template-secondary: #242424;
+      --cp-template-neutral: #3f3f3f;
+      --cp-template-muted: #8c8c8c;
+      --cp-border-strong: var(--cp-template-muted);
+      --cp-text: var(--cp-template-ink);
+      --cp-text-muted: var(--cp-template-neutral);
+      --cp-text-soft: var(--cp-template-neutral);
+      --cp-accent: var(--cp-template-ink);
+      --cp-accent-hover: var(--cp-template-neutral);
+      --cp-accent-soft: var(--cp-surface-soft);
+      --cp-accent-fg: var(--cp-surface);
+      --cp-highlight: var(--cp-surface-soft);
+      --cp-link: var(--cp-template-secondary);
+      --cp-brand: #24566a;
+      --cp-brand-soft: var(--cp-surface);
+      --cp-brand-border: var(--cp-border);
+      --cp-input-pending: #f2f7fa;
+      --cp-input-pending-border: #708c9a;
+      --cp-success-ink: #237246;
+      --cp-danger-ink: #b02a25;
+      --cp-ms-red: #f35325;
+      --cp-ms-green: #81bc06;
+      --cp-ms-blue: #05a6f0;
+      --cp-ms-yellow: #ffba08;
+    }
+    ::selection { background: var(--cp-accent-soft); color: var(--cp-text); }
+    * { box-sizing: border-box; }
+    :root { --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --control-radius: 0.625rem; }
+    body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 15px/1.6 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    button, input, select { font: inherit; }
+    button, input, select, summary, a { -webkit-tap-highlight-color: var(--cp-highlight); }
+    button { min-height: 44px; padding: 10px 16px; border: 1px solid var(--cp-border); border-radius: var(--control-radius); background: var(--cp-surface); color: var(--cp-text); font-weight: 600; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
+    button:hover:not(:disabled) { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+    button:active:not(:disabled) { background: var(--cp-accent-soft); }
+    button.primary { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
+    button.primary:hover:not(:disabled) { background: var(--cp-accent-hover); border-color: var(--cp-accent-hover); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    :focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 4px; }
+    input, select { width: 100%; min-height: 44px; padding: 9px 14px; border: 1px solid var(--cp-border); border-radius: var(--control-radius); color: var(--cp-text); background: var(--cp-surface); transition: border-color 160ms; }
+    input:hover:not(:disabled), select:hover:not(:disabled) { border-color: var(--cp-border-strong); }
+    input::placeholder { color: var(--cp-text-soft); }
+    input:disabled, select:disabled { background: var(--cp-surface-soft); }
+    input.needs-input:not(:disabled):not([readonly]) { background: var(--cp-input-pending); border-color: var(--cp-input-pending-border); }
+    input.needs-input:focus:not(:disabled):not([readonly]) { border-color: var(--cp-brand); }
+    #manual-person-fields input[required]:placeholder-shown:not(:disabled) { background: var(--cp-input-pending); border-color: var(--cp-input-pending-border); }
+    label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    input[type="checkbox"] { width: 18px; height: 18px; min-height: 18px; margin: 3px 0 0; accent-color: var(--cp-accent); flex: 0 0 auto; }
+    a { color: var(--cp-link); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 1.875rem; font-weight: 600; letter-spacing: -.035em; line-height: 1.25; }
+    h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.4; }
+    h3 { font-size: 1rem; font-weight: 600; line-height: 1.4; }
+    code, pre { font-family: Consolas, "Courier New", Courier, monospace; }
+    code { font-size: .9em; overflow-wrap: anywhere; }
+    [hidden] { display: none !important; }
+    .shell { max-width: 1280px; margin: auto; padding: 0 40px 32px; }
+    .masthead { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--cp-border); }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark { width: 24px; height: 24px; flex: 0 0 auto; color: var(--cp-text); }
+    .brand-mark rect { fill: var(--cp-brand-soft); }
+    .brand-title { font-size: 16px; font-weight: 650; letter-spacing: -.3px; }
+    .brand-caption { padding-left: 12px; border-left: 1px solid var(--cp-border); font-size: 13px; color: var(--cp-text-muted); }
+    .masthead-meta { display: flex; gap: 24px; align-items: center; font-size: 13px; }
+    .masthead-meta a { color: var(--cp-text-muted); text-decoration: none; }
+    .masthead-meta a:hover { color: var(--cp-text); text-decoration: underline; }
+    .eyebrow { font-size: 13px; font-weight: 500; color: var(--cp-text-muted); }
+    .badge { display: inline-flex; gap: 6px; align-items: center; padding: 0; border: 0; background: none; color: var(--cp-text-muted); font-size: 13px; line-height: 1.5; font-weight: 500; white-space: nowrap; }
+    .badge.accent { color: var(--cp-brand); }
+    .badge.success { color: var(--cp-success-ink); }
+    .badge.warning { color: var(--cp-text); }
+    .badge.danger { color: var(--cp-danger-ink); }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(400px, 560px); gap: 32px; align-items: center; padding: 16px 0; }
+    .hero p { margin-top: 8px; color: var(--cp-text-muted); max-width: 62ch; font-size: 15px; }
+    .hero-intro { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .hero-intro > div { min-width: 0; }
+    .template-artwork { display: block; width: 48px; height: 48px; flex: 0 0 auto; object-fit: contain; }
+    .pairing-visual { min-width: 0; }
+    .pairing-visual-heading { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 8px; font-size: 13px; color: var(--cp-text-muted); }
+    .pairing-nodes { display: grid; grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1.2fr); align-items: center; }
+    .pairing-node { align-self: stretch; padding: 8px 12px; border: 1px solid var(--cp-brand-border); border-radius: var(--control-radius); background: var(--cp-brand-soft); min-width: 0; }
+    .pairing-node-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .pairing-logo { display: inline-flex; flex: 0 0 18px; }
+    .pairing-logo svg, .pairing-logo img { display: block; width: 18px; height: 18px; object-fit: contain; }
+    .pairing-node-value { display: block; font-size: 13px; color: var(--cp-text-muted); overflow-wrap: anywhere; }
+    .pairing-link { display: flex; align-items: center; justify-content: center; color: var(--cp-text-muted); }
+    .pairing-link svg { width: 28px; height: 16px; }
+    .pairing-caption { font-size: 13px !important; margin-top: 4px !important; }
+    .credential-note { display: flex; align-items: flex-start; gap: 10px; }
+    .credential-note svg { width: 18px; height: 18px; flex: 0 0 auto; color: var(--cp-text-muted); margin-top: 2px; }
+    .local-tag { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cp-text-muted); white-space: nowrap; }
+    .local-tag::before { content: ''; height: 6px; width: 6px; border-radius: 50%; background: var(--cp-border-strong); }
+    .local-tag[data-connected="true"]::before { background: var(--cp-success); }
+    .notice { padding: 16px 20px; border: 1px solid var(--cp-border); border-left-color: var(--cp-warning); background: var(--cp-surface); border-radius: var(--control-radius); margin-bottom: 24px; }
+    .notice.error { border-left-color: var(--cp-danger); }
+    .notice.success { border-left-color: var(--cp-success); }
+    .notice p { margin-top: 4px; color: var(--cp-text-muted); white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; }
+    .notice .actions { margin-top: 12px; }
+    .notice-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .dismiss-notice { min-height: 32px; padding: 4px 8px; font-size: 13px; border-color: transparent; color: var(--cp-text-muted); }
+    .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .sidebar { min-width: 0; padding: 8px 24px 24px 0; position: sticky; top: 24px; border-right: 1px solid var(--cp-border); }
+    .sidebar-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 0 12px; }
+    .sidebar-heading h2 { font-size: 14px; letter-spacing: 0; }
+    .count { color: var(--cp-text-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+    .wide { width: 100%; }
+    .profile-actions { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px; margin: 16px 0 24px; }
+    .profile-actions button { min-width: 0; padding: 10px 8px; font-size: 13px; white-space: nowrap; }
+    #add-config { background: var(--cp-bg-elevated); }
+    .credential-form { display: grid; gap: 8px; width: 100%; }
+    .credential-form label { margin: 0; }
+    .connection-card .credential-actions { min-width: 220px; max-width: 272px; }
+    @media (max-width: 600px) { .connection-card .credential-actions { max-width: none; } }
+    .profile-list { display: grid; gap: 8px; max-height: 460px; overflow-y: auto; padding: 2px; }
+    .profile-item { text-align: left; width: 100%; padding: 12px; border-color: transparent; background: none; font-weight: 400; }
+    .profile-item.is-viewed { background: var(--cp-brand-soft); border-color: var(--cp-brand-border); border-left-color: var(--cp-brand); }
+    .profile-item.is-viewed:hover:not(:disabled) { background: var(--cp-brand-soft); border-color: var(--cp-brand-border); border-left-color: var(--cp-brand); }
+    .profile-item strong { display: block; overflow-wrap: anywhere; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .profile-system { display: grid; grid-template-columns: 18px minmax(0, 1fr); align-items: center; gap: 8px; margin-top: 6px; color: var(--cp-text-muted); font-size: 12px; line-height: 1.5; }
+    .profile-system svg { width: 16px; height: 16px; }
+    .profile-system img { width: 18px; height: 18px; object-fit: contain; }
+    .manual-people-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; padding: 0; border: 0; min-width: 0; }
+    .manual-people-fields .field { margin: 0; }
+    .people-policy { margin-top: 16px; padding: 12px 0; border-top: 1px solid var(--cp-border); font-size: 13px; color: var(--cp-text-muted); }
+    @media (max-width: 600px) { .manual-people-fields { grid-template-columns: 1fr; } }
+    .profile-system-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--cp-text); }
+    .profile-item .badge { margin-top: 8px; }
+    .sidebar-foot { border-top: 1px solid var(--cp-border); padding: 20px 12px 0; margin-top: 24px; font-size: 13px; color: var(--cp-text-muted); }
+    .sidebar-note { padding: 0 12px; margin-top: 16px; }
+    .active-summary { margin-top: 4px; color: var(--cp-text); font-weight: 600; overflow-wrap: anywhere; }
+    .empty { padding: 32px 0; color: var(--cp-text-muted); }
+    .empty strong { display: block; color: var(--cp-text); font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .empty p { font-size: 14px; max-width: 52ch; }
+    .sidebar .empty { padding: 8px 12px 24px; }
+    .main { min-width: 0; background: var(--cp-surface); border-radius: 16px; }
+    .setup-navigation { position: sticky; top: 0; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 24px; border-bottom: 1px solid var(--cp-border); background: var(--cp-surface); }
+    .setup-tab { display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 64px; padding: 12px 8px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; text-align: left; font-weight: 500; }
+    .setup-tab[aria-selected="true"] { border-bottom-color: var(--cp-brand); background: var(--cp-brand-soft); }
+    .setup-tab[aria-selected="true"] .setup-tab-label { color: var(--cp-brand); }
+    .setup-tab:hover:not(:disabled) { background: var(--cp-bg-elevated); }
+    .setup-tab[aria-selected="true"]:hover:not(:disabled) { border-bottom-color: var(--cp-brand); background: var(--cp-brand-soft); }
+    .setup-tab-label { display: block; font-size: 14px; font-weight: 600; }
+    .setup-tab .badge { display: block; margin-top: 2px; font-size: 12px; white-space: normal; }
+    .setup-tab .section-number { margin: 0; flex: 0 0 auto; }
+    .setup-tab[aria-selected="true"] .section-number { border-color: var(--cp-brand); background: var(--cp-brand); color: var(--cp-surface); }
+    .section { padding: 24px; min-width: 0; }
+    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; margin-right: 12px; border: 1px solid var(--cp-border); border-radius: 50%; color: var(--cp-text-muted); background: var(--cp-bg-elevated); font-size: 13px; font-weight: 500; vertical-align: middle; letter-spacing: 0; }
+    .section-heading { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .section-heading p { color: var(--cp-text-muted); font-size: 14px; margin-top: 8px; max-width: 62ch; }
+    .section-heading .guidance { color: var(--cp-text); }
+    .quiet-action { border-color: transparent; color: var(--cp-text-muted); font-weight: 500; }
+    .delete-config-action { margin-top: 16px; color: var(--cp-danger-ink); }
+    .delete-dialog { width: min(520px, calc(100% - 32px)); padding: 24px; border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); color: var(--cp-text); }
+    .delete-dialog::backdrop { background: var(--cp-overlay); }
+    .delete-dialog p { margin-top: 12px; font-size: 14px; }
+    .delete-dialog dl { margin: 16px 0; }
+    .delete-dialog .actions { justify-content: flex-end; margin-top: 24px; }
+    .delete-confirm { color: var(--cp-danger-ink); border-color: var(--cp-danger-ink); }
+    .field { margin-bottom: 16px; min-width: 0; }
+    .config-name-field { max-width: 440px; margin-bottom: 12px; }
+    .hint { display: block; color: var(--cp-text-muted); font-size: 13px; margin-top: 8px; }
+    .pair-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
+    .pair-side { min-width: 0; }
+    .pair-side + .pair-side { padding-left: 32px; border-left: 1px solid var(--cp-border); }
+    .pair-title { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .pair-title .eyebrow { font-size: 13px; }
+    .pair-title .account-mode { flex: 1; width: auto; min-width: 0; min-height: 36px; padding: 6px 8px; margin-left: auto; max-width: 208px; font-size: 13px; }
+    .pair-side .field:last-child { margin-bottom: 0; }
+    .identity-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .identity-fields .field { margin: 0; }
+    .field-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .field-label-row label { margin: 0; }
+    .info-toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; min-height: 32px; width: 32px; padding: 6px; border-color: transparent; color: var(--cp-text-muted); }
+    .info-toggle svg { width: 18px; height: 18px; }
+    .info-toggle[aria-expanded="true"] { background: var(--cp-bg); border-color: var(--cp-border); color: var(--cp-text); }
+    .field-info { padding: 16px; margin-top: 12px; border: 1px solid var(--cp-border); border-radius: var(--control-radius); background: var(--cp-bg-elevated); font-size: 14px; }
+    .field-info strong { display: block; margin-bottom: 8px; font-weight: 600; }
+    .field-info p + p { margin-top: 12px; }
+    .pair-context { padding: 16px 0; margin-top: 16px; border-top: 1px solid var(--cp-border); }
+    .pair-context strong { font-size: 14px; font-weight: 600; }
+    .attestation { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; margin: 0; font-weight: 400; font-size: 14px; border-top: 1px solid var(--cp-border); }
+    .attestation strong { font-weight: 600; }
+    .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .save-foot { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding-top: 8px; }
+    .save-foot p { font-size: 13px; color: var(--cp-text-muted); max-width: 220px; }
+    .guard { background: var(--cp-bg-elevated); margin: 24px 0 0; }
+    .profile-detail { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--cp-border); }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; margin: 16px 0 0; }
+    .detail-grid dt { color: var(--cp-text-muted); font-size: 13px; }
+    .detail-grid dd { margin: 4px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+    .detail-badges { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+    .connections { display: block; }
+    .connection-card { padding: 24px 0; border-top: 1px solid var(--cp-border); min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; }
+    .connection-card .card-heading { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .connection-card p { color: var(--cp-text-muted); font-size: 14px; max-width: 54ch; }
+    .connection-card .identity { color: var(--cp-text); font-family: Consolas, "Courier New", Courier, monospace; font-size: 14px; margin-bottom: 12px; overflow-wrap: anywhere; }
+    .connection-card .actions { flex-direction: column; justify-content: center; align-items: stretch; min-width: 164px; }
+    .connection-card.is-next { border-left: 2px solid var(--cp-text); padding-left: 16px; }
+    .connection-next { display: none; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .connection-card.is-next .connection-next { display: block; }
+    .check-details { margin-top: 8px; }
+    .check-details summary { font-size: 13px; color: var(--cp-text-muted); }
+    .check-details[open] summary { margin-bottom: 8px; }
+    #people-open-access { margin-bottom: 16px; }
+    .check-meta { font-size: 13px !important; margin-top: 8px; }
+    .microsoft-card { align-items: center; }
+    .microsoft-card .badge { margin-left: 12px; }
+    .connection-help { margin-top: 8px; padding: 16px 0; border-top: 1px solid var(--cp-border); color: var(--cp-text-muted); font-size: 13px; }
+    .job-panel { border-left-color: var(--cp-accent); }
+    .job-top { display: flex; align-items: center; gap: 12px; }
+    .spinner { width: 18px; height: 18px; border: 2px solid var(--cp-border); border-top-color: var(--cp-accent); border-radius: 50%; animation: spin 1s linear infinite; flex: 0 0 auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .device-panel { margin-top: 16px; padding: 20px; border-radius: var(--control-radius); background: var(--cp-bg-elevated); }
+    .device-panel code { display: block; font-size: 24px; letter-spacing: 3px; margin: 12px 0; color: var(--cp-accent); user-select: all; overflow-wrap: anywhere; }
+    .device-panel p { font-size: 14px; }
+    .directory-lock { padding: 16px 0; border-top: 1px solid var(--cp-border); border-bottom: 1px solid var(--cp-border); font-size: 14px; color: var(--cp-text-muted); margin-bottom: 24px; }
+    .search-row { display: grid; grid-template-columns: minmax(120px, 1fr) auto auto; gap: 8px; align-items: end; margin-bottom: 24px; }
+    .search-row label { margin-bottom: 8px; font-size: 14px; }
+    .search-row button { min-height: 48px; }
+    .table-wrap { overflow-x: auto; border-top: 1px solid var(--cp-border); border-bottom: 1px solid var(--cp-border); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { color: var(--cp-text-muted); font-size: 13px; font-weight: 500; padding: 12px; white-space: nowrap; }
+    td { padding: 16px 12px; border-top: 1px solid var(--cp-border); vertical-align: middle; font-size: 14px; }
+    td strong { display: block; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+    td small { display: block; font-size: 13px; color: var(--cp-text-muted); overflow-wrap: anywhere; }
+    .directory-table { min-width: 600px; }
+    .directory-table select, .directory-table button { min-height: 44px; font-size: 13px; padding: 8px 12px; }
+    .directory-table td:first-child { width: 40%; }
+    .table-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; color: var(--cp-text-muted); font-size: 13px; }
+    .planned-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin: 32px 0 16px; }
+    .planned-table { min-width: 420px; }
+    .planned-table .badge { white-space: normal; }
+    .planning-note { color: var(--cp-text-muted); font-size: 13px; margin-top: 16px; }
+    .chat-handoff { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cp-border); }
+    .chat-handoff p { color: var(--cp-text-muted); font-size: 14px; margin-top: 8px; }
+    .chat-handoff code { display: block; margin-top: 12px; padding: 12px 16px; background: var(--cp-bg-elevated); border: 1px solid var(--cp-border); border-radius: var(--control-radius); font-size: 13px; }
+    .export-section { padding: 20px 24px; background: var(--cp-bg-elevated); border-top: 1px solid var(--cp-border); }
+    .export-section summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .export-section summary::after { content: '+'; font-size: 20px; color: var(--cp-text-muted); }
+    .export-section details[open] summary::after { content: '−'; }
+    details summary { cursor: pointer; font-size: 14px; font-weight: 500; }
+    details[open] > summary { margin-bottom: 20px; }
+    pre { margin: 16px 0 0; background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: var(--control-radius); padding: 20px; font-size: 13px; line-height: 1.6; color: var(--cp-text); max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .export-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 16px; }
+    .export-heading h2 { font-size: 17px; }
+    .export-heading p { font-size: 13px; color: var(--cp-text-muted); margin-top: 8px; }
+    .footer { padding: 24px 0 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; color: var(--cp-text-muted); font-size: 13px; }
+    .build-note { max-width: 720px; }
+    .build-note summary { font-size: 13px; color: var(--cp-text-muted); }
+    .build-note p { margin-top: 12px; font-size: 13px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .sr-only:focus { position: fixed; top: 8px; left: 8px; width: auto; height: auto; padding: 12px; clip-path: none; background: var(--cp-surface); z-index: 5; }
+    @media (max-width: 1100px) { .shell { padding: 0 24px 24px; } .section { padding: 24px; } .pair-grid { gap: 24px; } .pair-side + .pair-side { padding-left: 24px; } .identity-fields { grid-template-columns: 1fr; } .save-foot { align-items: flex-start; flex-direction: column; } .connection-card { gap: 16px; } }
+    @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } .sidebar { position: static; padding: 0; border-right: 0; } .sidebar-heading { padding: 0; } .profile-actions { grid-template-columns: max-content max-content; } .profile-list { display: flex; overflow-x: auto; padding: 2px; } .profile-item { min-width: 280px; max-width: 320px; } .sidebar .empty { padding: 4px 0 12px; } .sidebar-foot, .sidebar-note { display: none; } .pair-grid { gap: 32px; } .identity-fields { grid-template-columns: 1fr 1fr; } .hero { padding: 24px 0; } }
+    @media (max-width: 600px) { .shell { padding: 0 16px 24px; } .masthead { min-height: 64px; gap: 12px; } .brand-caption { display: none; } .masthead-meta { gap: 16px; } .masthead-meta a { display: none; } .hero { display: block; } .hero .local-tag { margin-top: 16px; } .pair-grid { grid-template-columns: 1fr; gap: 24px; } .pair-side + .pair-side { padding-left: 0; padding-top: 24px; border-left: 0; border-top: 1px solid var(--cp-border); } .pair-title { margin-bottom: 16px; } .pair-context { padding-bottom: 0; } .identity-fields { grid-template-columns: 1fr; } .section { padding: 24px 20px; } .section-heading { margin-bottom: 24px; } .section-heading h2 { font-size: 20px; } .connection-card { grid-template-columns: 1fr; } .connection-card .actions { flex-direction: row; min-width: 0; } .connection-card .actions button { flex: 1; } .connection-card .card-heading { justify-content: space-between; } .microsoft-card button { justify-self: start; } .search-row { grid-template-columns: 1fr 1fr; } .search-field { grid-column: 1 / -1; } .export-section { padding: 20px; } .export-heading { align-items: flex-start; flex-direction: column; } .footer { flex-direction: column; gap: 16px; } .save-foot .actions { width: 100%; } .save-foot .actions button { flex: 1; } .detail-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 880px) { .hero { grid-template-columns: 1fr; gap: 20px; } .pairing-visual { width: 100%; max-width: 640px; } }
+    @media (max-width: 600px) { .pairing-visual { margin-top: 24px; } }
+    @media (max-width: 480px) { .pairing-nodes { grid-template-columns: minmax(0, 1fr); } .pairing-link { height: 28px; } .pairing-link svg { transform: rotate(90deg); } }
+    @media (max-width: 600px) { .hero-intro { align-items: flex-start; gap: 12px; } .template-artwork { width: 40px; height: 40px; } }
+    @media (max-width: 600px) { .setup-navigation { margin: 0 20px; } .setup-tab { min-height: 68px; padding: 12px 4px; } .setup-tab .section-number { display: none; } .setup-tab-label { font-size: 13px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to config builder</a>
+  <template id="servicenow-logo"><img width="18" height="18" alt="ServiceNow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFoUlEQVR42r2X249UxxHGf9Wnzzk7wwy7YGKDsQ0YsMmaBccOBtnCV8XCWJYsRZGiSEl48h+VJ79EihLJiizlalmKHMsRYDnBtjBILPgGy8Ysu+u9zczp7spDn7kcZnaBPHCkkWam+3R9VfXVV9UiUy/+XjA/E1BAuDePKogq74iZelnvldUhFID9fzwXGfGGRrfu6hxQezfGxURDzgFOI/TyJBLBpuWp4c4x2DuBKQLBgW8rWJi4z9DcmpCNRdudFnw/H1i4EaAAkwkm6Sd7o8feLtRBwbeU+oThhz9O2TVp2bY9obnFRI8BV8DSfODmrOfLC44vzhas3FRMLhjZGIQkUy/resa9A2Nh6tmUZ17J2brdkFjBO8W7Mu/l3sTSW1v4LvDx+23+/UFB8JCk66dlNAADvoB6Q3j1FzmTz2QEV+a+pKwwwJ4uHco1ayOgi58U/PW3LZYXFJuNBmFHel5AY1x4860auw5Y2qt9LgxSthtauQWQczEtjz+dUt8s/PE3ayzdVBI7nA4zVJsB0gxO/ipn14GU1kpkv0h1D3TDPvDfICADrRV4eL/l9V+PkdcghOGaM7eWmS+Uoycy9h/Oaa9qj809+TKQ1+Pv5cXA8mJEk9dBkqqHJoHWKjx6MOPYiZxQaMWRSgrEgGspD+xOeOqFnKJT3awaI7O0EDh/puDri46lhWitOSE8/JjliaMpzQlD0elHzAgUbeXJ4xkXPim4fsVjc+lF0Q4qmQhMHk1pTBjaqxqFp1yzKVy97Hjvdy1mLocyHNHK7BXl0jnPF2cLfvLzMXbutfhOGV+B4GHTuGHqWMrsl74apa7YBA+1ceGxH6W4Tt+4KiSpMD/r+dPbLWYuBdIc7JhgM+KnJqQ5XL8c+PPbLeZnPUkqfZIacB1l3+GUTROG4PpcMF3yBg/bdhgam2WEcChn3+8w940nLcmkZRBU4/cQIK3B3DXP6fc6KDrU/uqbhfsfMqjvc9H0motTtj9iSTOJbC1Dn9hItunPHJIJYQNVCwEkFaY/K1heDLFCtL+WZhEAvs+vShU0twomkUq7NEaYmwmsLmuvGd1OvtdW4MY1jzHS366QGKExYYbLUOkqmERkWj2wtaoEf2dtU0o+ra0Ml1zXBgMmehxAodPWofwHhU2bzUgVW+9JEmiOJ8PpKm0MqnglAgvfBbzrV0Bsw8q2HYbmlli7Irf3vrFF2PagIbh+FMSA98riXIgzQ6UMy9no+leeon2LAHmoNYTJIynaVTJZf25Qp0weSak3BfXV9aKtzH7t+3NYLwIKxsD8f+NQYcxAuEuvnnopZ8+hlGIltj5T9geR+B2FYlnZfdBy5JWc4PtAu+cvzik3Zqrnm4puLynnz3RIUoHQB+A9jNWFk6dqHHw+jd6sKG5NcS2NoIAnjqecPFUjrwt+AAAhKun5sx1aS1T6S6Udm0S48LHjyeOOiR9YXBny7nDSGBde+2WNQ896rl3xzM1GlPc9YHhwT8LOvRaTxL0y4L3NhbkZx/nTRcV4BYAqmAwWZgP/+kubk6eSfgcsDwse0syw77Bhx56EpflQNiPDpnGDK2KeK0ICGKOc/nubhesBW5fKYGJvnQWSMeHcPwvuf6jDsRM5rdV4SpYLa6uBz093uHTO8f3NwFoZ+lpdaG417D9sOfB0Sq1hIhCJqTvztzb/+aAgqcnQVDQ0kkk5VhsLL/0059BzOSaBry46Pny3xdXpEEdyI9ANpy8Fwwo79xqee2OM3QcswcOnH7X5xx/aOE+V3BvNhN16Bti5LyHN4NtpT2cFbF6dBQfLDAXXhqwe33MduDrtY9Uko4Vs3am4e6Bvl2WXy0gPRoIPEMoUJLn0zlrvXjD6ala+YGvSI+OdSHF3bLN1GZoVR223urG63s01667viQpiVHlHhzN6L67nqPLu/wAvZJmDmiU2LwAAAABJRU5ErkJggg=="></template>
+  <template id="microsoft-logo"><svg viewBox="0 0 23 23" role="img" aria-label="Microsoft"><path fill="var(--cp-ms-red)" d="M1 1h10v10H1z"/><path fill="var(--cp-ms-green)" d="M12 1h10v10H12z"/><path fill="var(--cp-ms-blue)" d="M1 12h10v10H1z"/><path fill="var(--cp-ms-yellow)" d="M12 12h10v10H12z"/></svg></template>
+  <div class="shell">
+    <header class="masthead">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="3" y="4" width="8" height="8" rx="1.5"/><rect x="17" y="16" width="8" height="8" rx="1.5"/><path d="M11 8h6v12"/></svg>
+        <div class="brand-title">SN DemoLoader</div><div class="brand-caption">Environment setup</div>
+      </div>
+      <div class="masthead-meta"><div class="local-tag" id="server-status" role="status">Checking local connection…</div><a href="./PREREQUISITES.html">Setup guide</a></div>
+    </header>
+    <div class="hero">
+      <div class="hero-intro"><svg class="template-artwork" id="template-artwork" data-original-illustration="true" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="3" width="42" height="42" rx="12" fill="#edf2e8"/><path d="M15 17h18M15 31h18M24 17v14" fill="none" stroke="#3f4b39" stroke-width="2"/><circle cx="15" cy="17" r="4" fill="#ffffff" stroke="#3f4b39" stroke-width="2"/><circle cx="33" cy="17" r="4" fill="#ffffff" stroke="#3f4b39" stroke-width="2"/><circle cx="24" cy="31" r="4" fill="#ffffff" stroke="#3f4b39" stroke-width="2"/></svg><div><h1>Environment configuration</h1><p><span id="viewed-config-name">New configuration</span> · <span id="viewed-config-state">Not saved</span></p></div></div>
+      <div class="pairing-visual" role="group" aria-label="Configuration pairing preview, not connectivity status">
+        <div class="pairing-visual-heading"><span>Pairing preview</span><span id="pairing-preview-state">Not saved</span></div>
+        <div class="pairing-nodes">
+          <div class="pairing-node"><div class="pairing-node-label"><span class="pairing-logo" id="pairing-servicenow-logo" aria-hidden="true"></span>ServiceNow PDI</div><span class="pairing-node-value" id="pairing-preview-pdi">Choose a PDI</span></div>
+          <div class="pairing-link" aria-hidden="true"><svg viewBox="0 0 32 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 8h32" stroke-dasharray="3 3"/><path d="m24 4 4 4-4 4"/></svg></div>
+          <div class="pairing-node"><div class="pairing-node-label"><span class="pairing-logo" id="pairing-microsoft-logo" aria-hidden="true"></span>Microsoft CDX</div><span class="pairing-node-value" id="pairing-preview-tenant">Choose a tenant</span></div>
+        </div>
+        <p class="pairing-caption">Configuration only. Verify connections under Access.</p>
+      </div>
+    </div>
+    <noscript><div class="notice error"><strong>JavaScript is required for local onboarding.</strong><p>Open this page using the SN DemoLoader loopback launcher, with JavaScript enabled. Nothing has been saved.</p></div></noscript>
+    <section class="notice" id="connection-notice" role="status" hidden>
+      <strong id="connection-title">Open through the local launcher</strong><p id="connection-message"></p>
+      <div class="actions"><button type="button" id="retry-state" hidden>Retry local connection</button></div>
+    </section>
+    <section class="notice" id="feedback" role="status" aria-live="polite" hidden><div class="notice-heading"><strong id="feedback-title"></strong><button type="button" class="dismiss-notice" id="dismiss-feedback" aria-label="Dismiss status message">Dismiss</button></div><p id="feedback-message"></p><p id="feedback-code" hidden></p></section>
+    <section class="notice job-panel" id="job-panel" aria-live="polite" hidden>
+      <div class="job-top"><span class="spinner" id="job-spinner" aria-hidden="true"></span><strong id="job-title"></strong><span class="badge" id="job-state"></span></div>
+      <p id="job-message"></p>
+      <div class="actions"><button type="button" id="cancel-job" hidden>Cancel action</button></div>
+      <div class="device-panel" id="device-panel" hidden><strong>Sign in to this config’s demo tenant</strong><p>Use the official device-login page when you choose. No sign-in browser is opened automatically.</p><p><a id="device-url" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">https://microsoft.com/devicelogin</a></p><code id="device-code"></code><p id="device-tenant"></p><p>This is tenant-specific Azure CLI authentication, not your corporate Scout session. Directory permissions may be required.</p></div>
+    </section>
+    <div class="layout">
+      <aside class="sidebar" aria-label="Saved configurations">
+        <div class="sidebar-heading"><h2>Saved configurations</h2><span class="count" id="profile-count">0</span></div>
+        <div class="profile-actions"><button type="button" id="load-config" disabled>Load config</button><button type="button" id="add-config" disabled>New Configuration</button></div><input id="config-file" type="file" accept=".json,application/json" hidden>
+        <div class="profile-list" id="profile-list"></div>
+        <div class="empty" id="profiles-empty"><strong>No configurations yet</strong><p>Save or load a configuration to keep it here.</p></div>
+        <p class="hint" id="profile-limit" hidden></p>
+        <div class="sidebar-foot"><div><span class="eyebrow">Active pairing</span><div class="active-summary" id="active-summary">None selected</div></div></div>
+        <p class="hint sidebar-note">One active Microsoft tenant per PDI. Switching to another pairing requires an explicit transition.</p>
+      </aside>
+      <main class="main" id="main">
+        <div class="setup-navigation" id="setup-navigation" role="tablist" aria-label="Environment setup sections">
+          <button type="button" class="setup-tab" id="tab-pairing" role="tab" aria-selected="true" aria-controls="panel-pairing" tabindex="0"><span class="section-number" aria-hidden="true">1</span><span><span class="setup-tab-label">Environment</span><span class="badge" id="section-pairing-status">Not saved</span></span></button>
+          <button type="button" class="setup-tab" id="tab-connections" role="tab" aria-selected="false" aria-controls="panel-connections" tabindex="-1"><span class="section-number" aria-hidden="true">2</span><span><span class="setup-tab-label">Access</span><span class="badge" id="section-connections-status">Save first</span></span></button>
+          <button type="button" class="setup-tab" id="tab-people" role="tab" aria-selected="false" aria-controls="panel-people" tabindex="-1"><span class="section-number" aria-hidden="true">3</span><span><span class="setup-tab-label">People</span><span class="badge" id="section-people-status">Save first</span></span></button>
+        </div>
+        <section class="section" id="panel-pairing" role="tabpanel" aria-labelledby="tab-pairing" tabindex="0">
+          <div class="section-heading"><div><h2 id="pair-heading">Name and pair your environments</h2><p class="guidance" id="pairing-guidance">Add both addresses, confirm your authorization, then save.</p></div><span class="badge" id="draft-status">New · not saved</span></div>
+          <form id="config-form" autocomplete="off">
+            <fieldset id="config-fields" disabled style="border:0;padding:0;margin:0;min-width:0">
+              <div class="field config-name-field"><label for="config-name">Config name</label><input id="config-name" name="name" type="text" maxlength="100" required placeholder="e.g. Finance demo" aria-describedby="name-hint"><span class="hint" id="name-hint">The name you’ll use in chat to select this pairing.</span></div>
+              <div class="pair-grid">
+                <div class="pair-side"><div class="pair-title"><h3>ServiceNow</h3><select class="account-mode" id="integration-mode" name="integrationMode" aria-label="Machine account setup"><option value="create">Create during setup</option><option value="existing">Use existing account</option></select></div>
+                  <div class="field"><label for="pdi-url">PDI URL</label><input id="pdi-url" name="pdiUrl" type="url" placeholder="https://dev123456.service-now.com" required maxlength="240" spellcheck="false" aria-describedby="pdi-hint"><span class="hint" id="pdi-hint">HTTPS instance address only. No paths or credentials.</span></div>
+                  <div class="identity-fields"><div class="field"><label for="admin-user">Admin user ID</label><input id="admin-user" name="adminUser" type="text" value="admin" required maxlength="160" spellcheck="false"></div>
+                  <div class="field"><div class="field-label-row"><label for="integration-user" id="integration-user-label">New Machine user ID</label><button class="info-toggle" id="machine-account-info" type="button" aria-label="What is a Machine user ID?" aria-expanded="false" aria-controls="machine-account-help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1" stroke-linecap="round"/></svg></button></div><input id="integration-user" name="integrationUser" type="text" value="demo.seeder" required maxlength="160" spellcheck="false" aria-describedby="machine-hint"><div class="field-info" id="machine-account-help" hidden><strong>A separate account for automation</strong><p>SN DemoLoader uses this ServiceNow account for routine API work, such as creating and updating demo tickets and Knowledge articles. It is not a demo person like Avery and is separate from your admin login.</p><p>The user ID is its login name; <code>demo.seeder</code> is a suggested name, not a password. A ServiceNow Machine account is for API access, not normal browser sign-in.</p><p id="machine-account-mode-help">With Create during setup, choose a name for the new account. Admin-led onboarding must preview and obtain your approval for creation and role grants. Saving this config does not create it; automatic provisioning is still being built.</p><p>Passwords are entered under Access, not in this user ID field, and saved encrypted locally outside the config JSON. Admin credentials are kept separately for approved setup and Knowledge publishing actions.</p></div></div></div><span class="hint" id="machine-hint">Planned account. Admin setup and approval required.</span>
+                </div>
+                <div class="pair-side"><div class="pair-title"><h3>Microsoft</h3><span class="eyebrow">CDX tenant</span></div>
+                  <div class="field"><label for="tenant-input">CDX tenant or demo email</label><input id="tenant-input" name="tenantInput" type="text" placeholder="person@demo.onmicrosoft.com" required maxlength="254" spellcheck="false" aria-describedby="tenant-hint"><span class="hint" id="tenant-hint" aria-live="polite">Paste a demo email, onmicrosoft.com domain, or tenant GUID.</span></div>
+                  <details class="pair-context"><summary>Why a separate demo tenant?</summary><p class="hint">This identifies the Microsoft demo tenant your people belong to. It is declared by you; the setup page does not sign in to Microsoft, verify tenant membership or deploy a connector.</p></details>
+                </div>
+              </div>
+              <div class="field"><label for="bootstrap-mode">Provisioning identity</label><select id="bootstrap-mode" aria-describedby="bootstrap-hint"><option value="machine">Existing Machine account (recommended)</option><option value="admin">Separate admin API account (advanced)</option></select><span class="hint" id="bootstrap-hint">Before onboarding, create an active API-enabled Machine account in your demo PDI and grant its required provisioning access there. Save its password under Access. The skill verifies its identity and existing admin role; it never grants that role automatically.</span></div>
+              <label class="attestation" for="attested-demo"><input id="attested-demo" name="attestedDemo" type="checkbox" required><span><strong>I’m authorized to use both demo environments.</strong><br>Neither is production. Saving a config does not change users or grant access.</span></label>
+            </fieldset>
+            <div class="save-foot"><div class="actions"><button type="submit" class="primary" id="save-config" disabled>Save config</button><button type="button" class="primary" id="pairing-open-access" hidden>Open Access</button><button type="button" class="quiet-action" id="use-config" disabled>Use this config</button><button type="button" class="quiet-action" id="discard-draft" hidden>Discard edits</button></div><p>No tenant records change when you save or select a config.</p></div>
+          </form>
+          <div class="notice guard" id="switch-guard" hidden><strong>Unsaved changes</strong><p id="switch-message"></p><div class="actions"><button type="button" id="switch-discard">Discard changes &amp; switch</button><button type="button" id="switch-keep">Keep editing</button></div></div>
+          <details class="profile-detail" id="profile-detail" hidden><summary>Saved pairing details</summary><dl class="detail-grid"><div><dt>PDI</dt><dd id="detail-pdi"></dd></div><div><dt>Tenant</dt><dd id="detail-tenant"></dd></div><div><dt>Saved revision</dt><dd id="detail-revision"></dd></div><div><dt>Updated locally</dt><dd id="detail-updated"></dd></div></dl><div class="detail-badges" id="detail-badges"></div></details>
+          <button type="button" class="quiet-action delete-config-action" id="delete-config" hidden disabled>Delete saved config</button>
+        </section>
+        <section class="section" id="panel-connections" role="tabpanel" aria-labelledby="tab-connections" tabindex="0" hidden>
+          <div class="section-heading"><div><h2 id="connection-heading">Check access, one account at a time</h2><p class="guidance" id="connection-prerequisite">Save a config under Environment before setting credentials or checking access.</p></div><span class="badge">Review before changes</span></div>
+          <div class="connections">
+            <article class="connection-card" id="admin-connection"><div><span class="connection-next">Do this next</span><div class="card-heading"><h3>ServiceNow admin</h3><span class="badge" id="admin-status">Not set</span></div><p class="identity" id="admin-identity">admin</p><details class="check-details" id="admin-check-details"><summary>Check details</summary><p id="admin-check">Not checked. A stored credential is not proof of access.</p><p class="check-meta" id="admin-check-meta"></p></details></div><div class="actions credential-actions"><form class="credential-form" id="credential-form-admin" autocomplete="off"><label for="password-admin">Admin password</label><input id="password-admin" type="password" autocomplete="new-password" maxlength="4096" required placeholder="Enter password to save" aria-describedby="password-storage-hint" disabled><button type="submit" id="set-admin" disabled>Save password</button></form></div></article>
+            <article class="connection-card" id="integration-connection"><div><span class="connection-next">Do this next</span><div class="card-heading"><h3>ServiceNow Machine account</h3><span class="badge" id="integration-status">Not set</span></div><p class="identity" id="integration-identity">demo.seeder</p><div class="planning-note" id="machine-setup-note" hidden><strong>Machine account creation is not available yet</strong><p>Save the admin password and plan your demo people now. No Microsoft sign-in is required. This config records the proposed Machine account only; no account or role grants are created.</p></div><details class="check-details" id="integration-check-details"><summary>Check details</summary><p id="integration-check">Not checked. No account or role grants are created.</p><p class="check-meta" id="integration-check-meta"></p></details></div><div class="actions credential-actions" id="integration-actions"><form class="credential-form" id="credential-form-integration" autocomplete="off"><label for="password-integration">Machine account password</label><input id="password-integration" type="password" autocomplete="new-password" maxlength="4096" required placeholder="Enter password to save" aria-describedby="password-storage-hint" disabled><button type="submit" id="set-integration" disabled>Save password</button><button type="button" id="test-integration" disabled>Test read access</button></form></div></article>
+          </div>
+          <div class="connection-help credential-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg><p id="password-storage-hint">Enter passwords here and choose Save password. They are encrypted for this Windows user on this PC and reused with the matching config identity. Passwords are never included in config JSON or exports and are not displayed again after saving. Read checks do not establish write permissions.</p></div>
+          <details class="planning-note" id="onboarding-panel"><summary>Provisioning identity preflight</summary>
+            <p id="onboarding-guidance">Save and select this config. Discovery reads ServiceNow only; Microsoft sign-in is not required.</p>
+            <label for="onboarding-roles">Roles to inspect (optional, comma-separated)</label><input id="onboarding-roles" type="text" maxlength="100" placeholder="itil, knowledge" spellcheck="false" disabled>
+            <p class="hint">No default grants. Supported selections: itil, knowledge, knowledge_admin, itil_admin. Existing accounts are reused unchanged. A missing Machine requires exact approval for creation, an independent encrypted password and selected roles; never automatic admin.</p>
+            <div class="actions"><button type="button" id="onboarding-discover" disabled>Discover &amp; preview</button><button type="button" id="onboarding-status" disabled>Restore latest status</button></div>
+            <p class="check-meta" id="onboarding-state" aria-live="polite">No onboarding preview loaded.</p>
+            <pre id="onboarding-preview" hidden style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:480px;overflow:auto"></pre>
+            <label class="attestation" for="onboarding-confirm"><input id="onboarding-confirm" type="checkbox" disabled><span id="onboarding-confirm-text">I reviewed this exact reuse preview and approve read-only Machine verification. No account, password or role changes.</span></label>
+            <div class="actions"><button type="button" id="onboarding-approve" disabled>Approve exact reuse preview</button><button type="button" id="onboarding-apply" disabled>Verify approved reuse</button><button type="button" id="onboarding-reconcile" disabled>Reconcile read status</button></div>
+            <p id="onboarding-access-path">Source discovery uses the running backend’s available admin access path. Protected credentials are never entered here. Account/password/role writers and generated-secret recovery are not implemented.</p>
+          </details>
+        </section>
+        <section class="section" id="panel-people" role="tabpanel" aria-labelledby="tab-people" tabindex="0" hidden>
+          <div class="section-heading"><div><h2 id="directory-heading">Add your Microsoft demo people</h2><p class="guidance" id="people-guidance">Enter a person and choose whether their ServiceNow account already exists.</p></div><span class="badge">Plan only</span></div>
+          <form id="manual-person-form" autocomplete="off">
+            <fieldset class="manual-people-fields" id="manual-person-fields" disabled>
+              <div class="field"><label for="person-name">Display name</label><input id="person-name" type="text" maxlength="160" required placeholder="e.g. Alex Taylor"></div>
+              <div class="field"><label for="person-email">Microsoft / ServiceNow email</label><input id="person-email" type="email" maxlength="254" required placeholder="alex@demo.onmicrosoft.com" spellcheck="false" aria-describedby="person-email-hint"><span class="hint" id="person-email-hint">Use the same email in both systems. An existing ServiceNow account must match it; a different login ID is fine.</span></div>
+              <div class="field"><label for="person-intent">ServiceNow account</label><select id="person-intent"><option value="existing">Already exists in ServiceNow</option><option value="create-if-missing">Create if missing</option></select></div>
+              <div class="field"><label for="person-sn-user">ServiceNow user ID</label><input id="person-sn-user" type="text" maxlength="120" required placeholder="firstname.lastname" spellcheck="false" aria-describedby="person-login-hint"><span class="hint" id="person-login-hint">Suggested from the display name. Use the exact existing login if different; the shared email stays separate.</span></div>
+              <div class="field"><label for="person-role">Planned role</label><select id="person-role" aria-describedby="person-role-hint"><option value="requester">Requester</option><option value="support">Support</option><option value="knowledge-author">Knowledge author</option><option value="knowledge-manager">Knowledge manager</option><option value="admin" id="person-admin-role" disabled>Admin</option></select><span class="hint" id="person-role-hint">Planning only. Admin means full instance access; granting it requires separate approval.</span></div>
+            </fieldset>
+            <div class="actions"><button type="submit" class="primary" id="save-person" disabled>Add user to config</button><button type="button" id="cancel-person-edit" hidden>Cancel edit</button></div>
+          </form>
+          <div class="planned-heading"><h3>Saved user plans</h3><div class="actions"><span class="badge" id="people-count">0 planned</span><button type="button" id="add-another-person" aria-controls="manual-person-form" hidden disabled>Add another user</button></div></div>
+          <div class="table-wrap" id="planned-table-wrap" hidden><table class="planned-table"><caption class="sr-only">Microsoft people and intended ServiceNow account handling, not verified or provisioned accounts</caption><thead><tr><th scope="col">Person</th><th scope="col">Planned role</th><th scope="col">ServiceNow plan</th><th scope="col">Actions</th></tr></thead><tbody id="planned-body"></tbody></table></div>
+          <div class="empty" id="planned-empty"><strong>No people planned</strong><p>Add their Microsoft email and ServiceNow account choice above.</p></div>
+          <p class="planning-note" id="people-limit" hidden></p>
+          <p class="people-policy"><strong>Same email. No duplicate accounts.</strong> Each person's Microsoft email must equal their ServiceNow email, even when the login ID differs. Check both email and login before reuse or creation. An existing account with a different email stops setup for correction; never silently change it or create a duplicate. Create if missing requires a confirmed absence and separate approval. Conflicting, inactive, hidden or ambiguous matches must stop setup.</p>
+          <p class="planning-note">Microsoft identity and ServiceNow existence are declared by you. Saving records intent only: it does not create accounts, copy passwords or grant roles. In Scout, request a people preview using the verified Machine account, review exact source fields and roles, then approve separately.</p>
+          <div class="chat-handoff"><h3>Continue in Scout</h3><p id="chat-handoff-summary">Save the pairing under Environment, check connections under Access, then choose your demo people. After setup, select this config by name in chat; you do not need to load its JSON file again.</p><code id="chat-config-command" hidden></code><p>Chat can prepare and execute exactly approved Machine, Human, incident and new Knowledge article plans (Draft or Published). Existing users are reused unchanged. Existing Knowledge Drafts can also use the normal guarded Publish action. Checkout/revision, content updates and bulk re-seeding are not enabled yet.</p></div>
+        </section>
+        <section class="export-section" aria-labelledby="export-heading">
+          <details><summary>Saved configuration &amp; export</summary><div class="export-heading"><div><h2 id="export-heading">Configuration JSON</h2><p>Pairing details and planned people only. No passwords or tokens.</p></div><button type="button" id="export-config" disabled>Export JSON</button></div><pre id="config-preview">Save a config to preview its nonsecret details.</pre></details>
+        </section>
+      </main>
+    </div>
+    <dialog class="delete-dialog" id="delete-dialog" aria-labelledby="delete-heading" aria-describedby="delete-explanation">
+      <h2 id="delete-heading">Delete this saved config?</h2>
+      <p id="delete-explanation">This removes the config and its planned people from the saved config library and deletes the JSON file shown below.</p>
+      <dl class="detail-grid"><div><dt>Config</dt><dd id="delete-name"></dd></div><div><dt>Saved revision</dt><dd id="delete-revision"></dd></div><div><dt>PDI</dt><dd id="delete-pdi"></dd></div><div><dt>CDX tenant</dt><dd id="delete-tenant"></dd></div></dl>
+      <p><code id="delete-file"></code></p>
+      <p>ServiceNow records, users, credentials, sign-in caches and run history are kept. Any local selection of this config is cleared; the PDI pairing safety binding remains. Deleting is not a tenant switch or source cleanup.</p>
+      <div class="actions"><button type="button" id="cancel-delete" autofocus>Keep config</button><button type="button" class="delete-confirm" id="confirm-delete">Delete config file</button></div>
+    </dialog>
+    <dialog class="delete-dialog" id="load-dialog" aria-labelledby="load-heading" aria-describedby="load-explanation">
+      <h2 id="load-heading">Load this config?</h2><p id="load-explanation">Review the pairing before adding it to your saved library. Existing configs are opened, not overwritten. Passwords and sign-in are not imported.</p>
+      <dl class="detail-grid"><div><dt>Config</dt><dd id="load-name"></dd></div><div><dt>PDI</dt><dd id="load-pdi"></dd></div><div><dt>CDX tenant</dt><dd id="load-tenant"></dd></div><div><dt>Planned people</dt><dd id="load-people"></dd></div></dl>
+      <label class="attestation" for="load-attested"><input id="load-attested" type="checkbox"><span>I am authorized to use these demo environments. Loading does not verify access or activate this pairing.</span></label>
+      <div class="actions"><button type="button" id="cancel-load">Cancel</button><button type="button" class="primary" id="confirm-load" disabled>Load config</button></div>
+    </dialog>
+    <footer class="footer"><details class="build-note"><summary>About this prototype &amp; storage</summary><p>Use a pre-created API-enabled Machine account for recommended onboarding. Chat supports reviewed account setup and incident/Knowledge article creation (Draft or Published) with exact source read-back and recovery. The config form itself never provisions anyone. Knowledge checkout/revision, content updates, bulk re-seeding and cleanup are not yet enabled.</p><p>Installed resources stay inside the skill. Configs and history use the separate output library: <code id="output-storage-location">Loading from local service</code>. Credentials and live execution authority stay protected in Windows local application data, never in the output library.</p></details><span>Local Windows prototype · <span id="app-version">v0.1.0</span></span></footer>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      ['servicenow', 'microsoft'].forEach(kind => $('pairing-' + kind + '-logo').append($(kind + '-logo').content.cloneNode(true)));
+      const token = new URLSearchParams(location.hash.slice(1)).get('session');
+      const loopback = ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname.toLowerCase());
+      const launchContext = ['http:', 'https:'].includes(location.protocol) && loopback && Boolean(token);
+      const state = { profiles: [], selectedProfileId: null, capabilities: {}, version: '0.1.0', configDirectory: null };
+      const fields = ['config-name', 'pdi-url', 'tenant-input', 'admin-user', 'integration-user', 'integration-mode', 'bootstrap-mode', 'attested-demo'];
+      const useConfigLabel = $('use-config').textContent;
+      const roleLabels = { requester: 'Requester', support: 'Support', 'knowledge-author': 'Knowledge author', 'knowledge-manager': 'Knowledge manager', admin: 'Admin' };
+      function closeMachineInfo() {
+        $('machine-account-help').hidden = true;
+        $('machine-account-info').setAttribute('aria-expanded', 'false');
+      }
+      $('machine-account-info').addEventListener('click', () => {
+        const open = $('machine-account-help').hidden;
+        $('machine-account-help').hidden = !open;
+        $('machine-account-info').setAttribute('aria-expanded', String(open));
+      });
+      $('machine-account-info').closest('.field').addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !$('machine-account-help').hidden) {
+          event.preventDefault();
+          closeMachineInfo();
+          $('machine-account-info').focus();
+        }
+      });
+      let available = false;
+      let busy = false;
+      let viewedId = null;
+      let baseline = '';
+      let pendingSwitch = undefined;
+      let pendingDelete = null;
+      let pendingImport = null;
+      let currentJobId = null;
+      let editingPersonId = null;
+      let personLoginEdited = false;
+      let onboarding = null;
+      const sections = ['pairing', 'connections', 'people'];
+
+      function showSection(name, focus = false) {
+        if (!sections.includes(name)) throw new Error('Unknown configuration section.');
+        if (name !== 'connections') clearPasswords();
+        sections.forEach(section => {
+          const selected = section === name;
+          $('panel-' + section).hidden = !selected;
+          $('tab-' + section).setAttribute('aria-selected', String(selected));
+          $('tab-' + section).tabIndex = selected ? 0 : -1;
+        });
+        if (focus) $('tab-' + name).focus({ preventScroll: true });
+      }
+      sections.forEach((section, index) => {
+        const tab = $('tab-' + section);
+        tab.addEventListener('click', () => {
+          showSection(section);
+          tab.focus({ preventScroll: true });
+          $('setup-navigation').scrollIntoView({ block: 'nearest' });
+        });
+        tab.addEventListener('keydown', event => {
+          let next;
+          if (event.key === 'ArrowRight') next = (index + 1) % sections.length;
+          else if (event.key === 'ArrowLeft') next = (index + sections.length - 1) % sections.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = sections.length - 1;
+          else return;
+          event.preventDefault();
+          showSection(sections[next], true);
+        });
+      });
+
+      function node(tag, text, className) {
+        const element = document.createElement(tag);
+        if (text !== undefined) element.textContent = String(text);
+        if (className) element.className = className;
+        return element;
+      }
+      function badge(text, tone = '') { return node('span', text, 'badge' + (tone ? ' ' + tone : '')); }
+      function profile() { return state.profiles.find(item => item.id === viewedId) || null; }
+      function machineEstablished(saved) {
+        if (!saved || onboarding?.plan.context.profileId !== saved.id || onboarding.plan.context.profileRevision !== saved.revision || onboarding.plan.payload.blockers.length) return false;
+        if (onboarding.plan.payload.mode === 'create') return onboarding.status === 'confirmed' && onboarding.readiness?.identity === 'verified';
+        return ['preview','approved','confirmed'].includes(onboarding.status) && (onboarding.status === 'confirmed' || Date.parse(onboarding.plan.expiresAt) > Date.now());
+      }
+      function parsedTenant() {
+        const raw = $('tenant-input').value.trim();
+        let value = raw.toLowerCase();
+        const fromEmail = value.includes('@');
+        if (!value || raw.length > 254 || /[\u0000-\u001f\u007f]/.test(raw)) return { value: null, fromEmail, error: 'Enter a demo email, onmicrosoft.com domain, or tenant GUID.' };
+        if (fromEmail) {
+          const parts = value.split('@');
+          const local = parts[0];
+          if (parts.length !== 2 || !local || local.length > 64 || !/^[a-z0-9._%+-]+$/.test(local) || local.startsWith('.') || local.endsWith('.') || local.includes('..')) return { value: null, fromEmail, error: 'Enter one valid demo-user email, without a display name or spaces.' };
+          value = parts[1];
+        }
+        const guid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+        const domain = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.onmicrosoft\.com$/;
+        if ((!guid.test(value) && !domain.test(value)) || (fromEmail && !domain.test(value))) return { value: null, fromEmail, error: 'Use an email ending in your onmicrosoft.com demo domain. For a custom-domain email, enter the tenant GUID or onmicrosoft.com domain instead.' };
+        if (value === '72f988bf-86f1-41af-91ab-2d7cd011db47') return { value: null, fromEmail, error: 'The Microsoft corporate directory is not a CDX demo tenant.' };
+        return { value, fromEmail, error: null };
+      }
+      function draft() {
+        return {
+          name: $('config-name').value.trim(), pdiUrl: $('pdi-url').value.trim(),
+          tenantInput: parsedTenant().value || $('tenant-input').value.trim(), adminUser: $('admin-user').value.trim(),
+          integrationUser: $('integration-user').value.trim(), integrationMode: $('integration-mode').value, bootstrapMode:$('bootstrap-mode').value, attestedDemo: $('attested-demo').checked
+        };
+      }
+      function dirty() { return JSON.stringify(draft()) !== baseline; }
+      function dateLabel(value) {
+        if (!value) return 'Not checked';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? 'Timestamp unavailable' : date.toLocaleString();
+      }
+      function safeText(value) {
+        let text = String(value ?? '');
+        if (token) text = text.split(token).join('[session redacted]');
+        return text.slice(0, 4000);
+      }
+      function feedback(title, message, tone = '', code = '') {
+        $('feedback').className = 'notice' + (tone ? ' ' + tone : '');
+        $('feedback-title').textContent = safeText(title);
+        $('feedback-message').textContent = safeText(message);
+        $('feedback-code').hidden = !code;
+        $('feedback-code').textContent = code ? 'Code: ' + safeText(code) : '';
+        $('feedback').hidden = false;
+      }
+      function clearFeedback() { $('feedback').hidden = true; }
+      function connectionNotice(title, message, canRetry) {
+        $('connection-title').textContent = title;
+        $('connection-message').textContent = message;
+        $('retry-state').hidden = !canRetry;
+        $('connection-notice').hidden = false;
+      }
+      async function api(path, body, deadline = null) {
+        if (!launchContext) throw new Error('This page needs the SN DemoLoader loopback launcher and its session link. No local server session is available.');
+        const url = new URL(path, location.origin);
+        if (url.origin !== location.origin || !url.pathname.startsWith('/api/')) throw new Error('Only same-origin SN DemoLoader API requests are allowed.');
+        const controller = new AbortController();
+        const remaining = deadline === null ? 20000 : Math.min(20000, deadline - Date.now());
+        if (remaining <= 0) throw new Error('The ten-minute job polling limit has been reached.');
+        const timer = setTimeout(() => controller.abort(), remaining);
+        try {
+          const headers = { 'X-DemoSeeder-Token': token, Accept: 'application/json' };
+          const options = { method: body === undefined ? 'GET' : 'POST', headers, signal: controller.signal, cache: 'no-store', redirect: 'error', credentials: 'omit' };
+          if (body !== undefined) { headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body); }
+          const response = await fetch(url.href, options);
+          let payload;
+          try { payload = await response.json(); }
+          catch { throw new Error('The local service did not return JSON. Reopen the session from the SN DemoLoader launcher.'); }
+          if (!response.ok || !payload || payload.ok !== true) {
+            const error = new Error(safeText(payload?.error || 'Local request failed (HTTP ' + response.status + ').'));
+            error.code = typeof payload?.code === 'string' ? payload.code : '';
+            throw error;
+          }
+          return payload;
+        } catch (error) {
+          if (error.name === 'AbortError') throw new Error(deadline !== null && Date.now() >= deadline ? 'The ten-minute job polling limit has been reached.' : 'The local service took too long to respond. Check the launcher before retrying; an earlier action may still be running.');
+          if (error instanceof TypeError) throw new Error('Cannot reach the local SN DemoLoader service. Keep its launcher running and reopen its session link if needed. No mock data or browser storage is used.');
+          throw error;
+        } finally { clearTimeout(timer); }
+      }
+      function resetDirectory() {
+        editingPersonId = null;
+        personLoginEdited = false;
+        $('manual-person-form').reset();
+        $('save-person').textContent = 'Add user to config';
+        $('cancel-person-edit').hidden = true;
+      }
+      function loadDraft(saved) {
+        clearPasswords();
+        closeDelete();
+        viewedId = saved?.id || null;
+        closeMachineInfo();
+        $('config-name').value = saved?.name || '';
+        $('pdi-url').value = saved?.pdiUrl || '';
+        $('tenant-input').value = saved?.tenantInput || '';
+        $('admin-user').value = saved?.adminUser || 'admin';
+        $('integration-user').value = saved?.integrationUser || 'demo.seeder';
+        $('integration-mode').value = saved ? (saved.integrationMode || 'existing') : 'existing';
+        $('bootstrap-mode').value = saved ? (saved.bootstrapMode || 'admin') : 'machine';
+        $('attested-demo').checked = saved?.attestedDemo === true;
+        baseline = JSON.stringify(draft());
+        fields.forEach(id => $(id).setCustomValidity(''));
+        pendingSwitch = undefined;
+        $('switch-guard').hidden = true;
+      }
+      function chooseConfig(id) {
+        if (busy || !available) return;
+        if (id === viewedId) return;
+        if (dirty()) {
+          pendingSwitch = id;
+          $('switch-message').textContent = id === null ? 'Save this draft first, or discard it to start a new config.' : 'Save this draft first, or discard it to view the other saved config.';
+          $('switch-guard').hidden = false;
+          showSection('pairing');
+          $('switch-keep').focus();
+          return;
+        }
+        switchNow(id);
+      }
+      function switchNow(id) {
+        loadDraft(state.profiles.find(item => item.id === id) || null);
+        resetDirectory();
+        clearFeedback();
+        if (!busy) $('job-panel').hidden = true;
+        render();
+        showSection('pairing');
+        $('config-name').focus();
+      }
+      function acceptProfile(saved) {
+        if (!saved || typeof saved.id !== 'string') throw new Error('The service returned an invalid profile. Retry the local connection.');
+        const index = state.profiles.findIndex(item => item.id === saved.id);
+        if (index < 0) state.profiles.push(saved); else state.profiles[index] = saved;
+        if (viewedId === saved.id && !dirty()) loadDraft(saved);
+      }
+      async function refreshState() {
+        const data = await api('/api/state');
+        if (!Array.isArray(data.profiles)) throw new Error('The local service returned an invalid profile list.');
+        const wasDirty = dirty();
+        const previous = profile();
+        state.profiles = data.profiles;
+        state.selectedProfileId = data.selectedProfileId ?? null;
+        state.capabilities = data.capabilities || {};
+        state.version = data.version || '0.1.0';
+        state.configDirectory = typeof data.storage?.configs === 'string' ? data.storage.configs : null;
+        available = true;
+        $('connection-notice').hidden = true;
+        $('server-status').textContent = 'Local service connected';
+        $('server-status').dataset.connected = 'true';
+        $('app-version').textContent = 'v' + safeText(state.version);
+        $('output-storage-location').textContent = data.storage?.outputRoot || 'Storage location unavailable from this backend';
+        if (viewedId && !profile()) { loadDraft(null); resetDirectory(); }
+        else if (!wasDirty && viewedId) loadDraft(profile());
+        if (previous && profile() && previous.tenantInput !== profile().tenantInput) resetDirectory();
+        render();
+      }
+      function controls() {
+        const saved = profile();
+        const changed = dirty();
+        const profileEnabled = available && state.capabilities.profiles === true;
+        const ready = profileEnabled && !busy;
+        const savedReady = ready && Boolean(saved) && !changed;
+        const legacyFile = Boolean(saved && saved.configFileName === saved.id + '.json');
+        const plannedAccount = (saved?.integrationMode || 'existing') === 'create' && !machineEstablished(saved);
+        const creating = $('integration-mode').value === 'create';
+        $('integration-user-label').textContent = creating ? 'New Machine user ID' : 'Machine user ID';
+        $('machine-hint').textContent = creating ? 'Planned account. Admin setup and approval required.' : 'Existing account. Set its protected credential under Access.';
+        $('machine-account-mode-help').textContent = creating
+          ? 'With Create during setup, discovery first checks this exact login. A valid existing Machine is reused unchanged. Creating a missing Machine requires a different, working admin API identity; a Machine cannot bootstrap itself. The recommended path is a pre-created Machine.'
+          : 'With Use existing account, enter the exact user ID of an account already set to Machine in this PDI. Set its protected credential and run a read-only check under Access. This path does not create an account or grant roles.';
+        $('machine-setup-note').hidden = !saved || !plannedAccount;
+        $('config-fields').disabled = !ready;
+        $('bootstrap-mode').disabled = !ready || state.capabilities.bootstrapActorChoice !== true;
+        $('admin-connection').querySelector('h3').textContent = saved?.bootstrapMode === 'machine' ? 'Human admin (optional fallback)' : 'ServiceNow admin';
+        fields.forEach(id => {
+          const input = $(id);
+          input.classList.toggle('needs-input', input.tagName === 'INPUT' && input.type !== 'checkbox' && input.required && !input.value.trim());
+        });
+        $('add-config').disabled = !ready;
+        $('load-config').disabled = !ready || changed || state.capabilities.profileImport !== true;
+        $('load-config').title = changed ? 'Save or discard edits before loading another config.' : '';
+        $('save-config').disabled = !ready || (!changed && Boolean(saved) && !legacyFile);
+        $('save-config').hidden = Boolean(saved) && !changed && !legacyFile;
+        $('pairing-open-access').hidden = !saved || changed;
+        $('pairing-open-access').disabled = !savedReady;
+        $('use-config').disabled = !savedReady || state.selectedProfileId === saved?.id;
+        $('use-config').hidden = !saved || changed || state.selectedProfileId === saved.id;
+        $('use-config').textContent = saved && state.selectedProfileId === saved.id ? 'Active config' : useConfigLabel;
+        $('discard-draft').hidden = !changed;
+        $('discard-draft').disabled = !ready;
+        $('switch-discard').disabled = !ready;
+        $('switch-keep').disabled = busy;
+        $('retry-state').disabled = busy;
+        $('set-admin').disabled = !savedReady || state.capabilities.inlineCredentials !== true;
+        $('set-integration').disabled = !savedReady || plannedAccount || state.capabilities.inlineCredentials !== true;
+        ['admin','integration'].forEach(purpose => { $('password-' + purpose).disabled = $('set-' + purpose).disabled; });
+        $('integration-actions').hidden = Boolean(saved) && plannedAccount;
+        $('test-integration').disabled = !savedReady || plannedAccount || state.capabilities.pdiReadCheck !== true || saved?.credentials?.integration !== true;
+        $('manual-person-fields').disabled = !savedReady || state.capabilities.manualPeople !== true;
+        $('person-admin-role').disabled = state.capabilities.manualAdminRole !== true;
+        $('person-admin-role').title = state.capabilities.manualAdminRole === true ? '' : 'Requires the updated local configuration service.';
+        $('save-person').disabled = $('manual-person-fields').disabled;
+        $('add-another-person').hidden = Boolean(editingPersonId) || !((saved?.manualPeople?.length || 0) + (saved?.people?.length || 0));
+        $('add-another-person').disabled = $('manual-person-fields').disabled;
+        $('cancel-person-edit').disabled = busy;
+        $('export-config').disabled = !savedReady;
+        $('delete-config').hidden = !saved;
+        $('delete-config').disabled = !savedReady || state.capabilities.profileDeletion !== true;
+        $('delete-config').title = changed ? 'Save or discard edits before deleting.' : state.capabilities.profileDeletion !== true ? 'Config deletion is unavailable in this local service.' : '';
+        $('confirm-delete').disabled = !savedReady || !pendingDelete || saved?.id !== pendingDelete.id || saved?.revision !== pendingDelete.revision;
+        $('draft-status').textContent = changed ? 'Unsaved changes' : saved ? 'Saved · rev ' + saved.revision : 'New · not saved';
+        $('name-hint').textContent = legacyFile ? 'Save config to give this older file its readable name.' : saved && !changed ? 'Saved as ' + saved.configFileName + '. Use this config name in chat.' : 'Chat name and filename, e.g. com-to-com-config.json.';
+        $('draft-status').className = 'badge' + (changed ? ' warning' : '');
+        const accessActions = ['set-admin', 'set-integration', 'test-integration'];
+        const nextAccess = !savedReady ? null
+          : saved.bootstrapMode !== 'machine' && !saved.credentials?.admin ? 'set-admin'
+          : !plannedAccount && !saved.credentials?.integration ? 'set-integration'
+          : !plannedAccount && saved.pdiChecks?.integration?.status !== 'authenticated' ? 'test-integration' : null;
+        accessActions.forEach(id => {
+          $(id).classList.toggle('primary', id === nextAccess && !$(id).disabled);
+          $(id).classList.toggle('quiet-action', id !== nextAccess);
+          $(id).closest('.connection-card').classList.remove('is-next');
+        });
+        if (nextAccess && !$(nextAccess).disabled) $(nextAccess).closest('.connection-card').classList.add('is-next');
+        ['admin', 'integration'].forEach(purpose => {
+          $('set-' + purpose).textContent = saved?.credentials?.[purpose] ? 'Update password' : 'Save password';
+          $('password-' + purpose).placeholder = saved?.credentials?.[purpose] ? 'Saved locally; enter only to replace' : 'Enter password to save';
+        });
+        $('test-integration').hidden = !saved?.credentials?.integration;
+        renderGuidance(nextAccess);
+        renderSectionStatuses();
+        renderOnboarding();
+      }
+      function renderGuidance(nextAccess) {
+        const saved = profile();
+        const changed = dirty();
+        $('pairing-guidance').textContent = !available ? 'Open through the local launcher to save this setup.'
+          : busy ? 'An action is running. Your pairing stays locked until it finishes.'
+          : !saved ? 'Add both addresses, confirm your authorization, then save.'
+          : changed ? 'Save your edits before checking access or choosing people.'
+          : 'Saved. Open Access to set credentials and check connections.';
+        const instructions = {
+          'set-admin': 'Start here: enter the admin password and save it encrypted on this PC.',
+          'set-integration': 'Next: enter and save the existing Machine account password.',
+          'test-integration': 'Next: test the Machine account read access.'
+        };
+        const check = nextAccess === 'test-integration' ? saved?.pdiChecks?.integration : null;
+        $('connection-prerequisite').textContent = !available ? 'Reconnect the local launcher before checking access.'
+          : busy ? 'An action is running. Its progress is shown above; no other check will start.'
+          : !saved ? 'Save your pairing under Environment first.'
+          : changed ? 'Save or discard edits under Environment first. Checks describe the last saved identity.'
+          : check?.status === 'blocked' ? 'Read access is blocked. Review the open check details before changing credentials or retrying.'
+          : check?.status === 'unknown' ? 'Read access is unknown. Review the open check details before retrying.'
+          : nextAccess && $(nextAccess).disabled ? 'This setup action is unavailable in the current local service. Review its capability status.'
+          : nextAccess ? instructions[nextAccess]
+          : saved.integrationMode === 'create' && !machineEstablished(saved) ? 'Open Admin-led Machine onboarding below to discover/reuse the account or review missing-account creation. No source changes run from saving a config.'
+          : 'Machine read check is recorded. Add Microsoft demo people manually under People; no Microsoft sign-in is needed.';
+        renderPeopleGuidance();
+      }
+      function renderPeopleGuidance() {
+        const saved = profile();
+        const changed = dirty();
+        const count = (saved?.manualPeople?.length || 0) + (saved?.people?.length || 0);
+        $('people-guidance').textContent = !available ? 'Reconnect the local launcher to save your people plan.'
+          : busy ? 'An action is running. Your selections are preserved while it finishes.'
+          : !saved ? 'Save your pairing under Environment first.'
+          : changed ? 'Save or discard your Environment edits before changing people.'
+          : state.capabilities.manualPeople !== true ? 'Manual people are unavailable in this running backend. Reload the updated service.'
+          : editingPersonId ? 'Edit the saved person plan, then choose Save person.'
+          : count ? count + (count === 1 ? ' user' : ' users') + ' planned. Choose Add another user to keep building your list, or return to Scout for review.'
+          : 'Enter the email shared by Microsoft and ServiceNow, then choose Already exists or Create if missing. You can add multiple users.';
+      }
+      function renderSectionStatuses() {
+        const saved = profile();
+        const changed = dirty();
+        const setStatus = (section, label, tone = '') => {
+          $('section-' + section + '-status').textContent = label;
+          $('section-' + section + '-status').className = 'badge' + (tone ? ' ' + tone : '');
+        };
+        $('viewed-config-name').textContent = saved ? safeText(saved.name) : 'New configuration';
+        $('viewed-config-state').textContent = changed ? 'Unsaved changes' : !saved ? 'Not saved' : saved.id === state.selectedProfileId ? 'Active pairing' : 'Saved · not selected';
+        setStatus('pairing', changed ? 'Unsaved edits' : saved ? 'Saved' : 'Not saved', changed ? 'warning' : '');
+        const checks = [saved?.pdiChecks?.integration];
+        if (!available) setStatus('connections', 'Not connected');
+        else if (!saved) setStatus('connections', 'Save first');
+        else if (changed) setStatus('connections', 'Save edits first', 'warning');
+        else if (checks.some(check => check?.status === 'blocked')) setStatus('connections', 'Check blocked', 'danger');
+        else if (checks.some(check => check?.status === 'unknown')) setStatus('connections', 'Access unknown', 'warning');
+        else if (saved.integrationMode === 'create' && !machineEstablished(saved)) setStatus('connections', 'Discover Machine');
+        else setStatus('connections', saved.pdiChecks?.integration?.status === 'authenticated' ? 'Machine checked' : 'Machine not checked', saved.pdiChecks?.integration?.status === 'authenticated' ? 'success' : '');
+        const count = (saved?.manualPeople?.length || 0) + (saved?.people?.length || 0);
+        setStatus('people', !saved ? 'Save first' : changed ? 'Save edits first' : count ? count + ' planned' : 'Add people');
+      }
+      function renderProfiles() {
+        $('profile-list').replaceChildren();
+        $('profile-count').textContent = String(state.profiles.length);
+        $('profiles-empty').hidden = state.profiles.length > 0;
+        const fragment = document.createDocumentFragment();
+        state.profiles.slice(0, 100).forEach(saved => {
+          const button = node('button', undefined, 'profile-item' + (saved.id === viewedId ? ' is-viewed' : ''));
+          button.type = 'button';
+          button.disabled = busy || !available;
+          button.setAttribute('aria-pressed', String(saved.id === viewedId));
+          const pdiShort = new URL(saved.pdiUrl).hostname.replace(/\.service-now\.com$/i, '');
+          const tenantShort = saved.tenantInput.replace(/\.onmicrosoft\.com$/i, '');
+          const systemRow = (label, value, full, kind) => {
+            const row = node('span', undefined, 'profile-system');
+            const logo = $(kind + '-logo').content.cloneNode(true);
+            const text = node('span', value, 'profile-system-value');
+            text.title = full;
+            text.setAttribute('aria-label', full);
+            row.append(logo, text);
+            return row;
+          };
+          button.append(node('strong', saved.name), systemRow('ServiceNow', pdiShort, saved.pdiUrl, 'servicenow'), systemRow('Microsoft', tenantShort, saved.tenantInput, 'microsoft'));
+          if (saved.id === state.selectedProfileId) button.append(badge('Active pairing', 'accent'));
+          else if (saved.id === viewedId) button.append(badge('Viewing'));
+          button.addEventListener('click', () => chooseConfig(saved.id));
+          fragment.append(button);
+        });
+        $('profile-list').append(fragment);
+        $('profile-limit').hidden = state.profiles.length <= 100;
+        $('profile-limit').textContent = 'Showing the first 100 saved configs.';
+        const selected = state.profiles.find(saved => saved.id === state.selectedProfileId);
+        $('active-summary').textContent = selected?.name || 'None selected';
+      }
+      function renderCheck(purpose, saved) {
+        const stored = saved?.credentials?.[purpose] === true;
+        const check = purpose === 'admin' ? null : saved?.pdiChecks?.[purpose];
+        const plannedAccount = purpose === 'integration' && saved?.integrationMode === 'create' && !machineEstablished(saved);
+        let label = stored ? (purpose === 'admin' ? 'Password saved' : 'Saved · not tested') : 'Not set';
+        let tone = '';
+        if (plannedAccount) { label = 'Discover first'; }
+        else if (check?.status === 'authenticated') { label = 'Authenticated'; tone = 'success'; }
+        else if (check?.status === 'blocked') { label = 'Blocked'; tone = 'danger'; }
+        else if (check?.status === 'unknown') { label = 'Access unknown'; tone = 'warning'; }
+        $(purpose + '-status').textContent = label;
+        $(purpose + '-status').className = 'badge' + (tone ? ' ' + tone : '');
+        $(purpose + '-identity').textContent = saved ? (purpose === 'admin' ? saved.adminUser : saved.integrationUser) : (purpose === 'admin' ? 'admin' : 'demo.seeder');
+        const defaultMessage = purpose === 'admin' ? 'Used for approved setup. Admin sign-in is verified when an action needs it; no separate read test is required.' : 'Not checked. No account or role grants are created.';
+        $(purpose + '-check').textContent = plannedAccount ? 'No existing Machine account is required to save this config. Admin-led provisioning is the next onboarding step.' : check?.message ? safeText(check.message) : defaultMessage;
+        const sampleCount = Number.isInteger(check?.visibleSampleCount) && check.visibleSampleCount >= 0 ? ' · Visible sample: ' + check.visibleSampleCount : '';
+        $(purpose + '-check-meta').textContent = plannedAccount ? 'Existence not yet established by this onboarding preview' : check ? dateLabel(check.checkedAt) + sampleCount + ' · Machine write access not tested' : stored ? 'Credential stored locally · Machine write access not tested' : '';
+        const details = $(purpose + '-check-details');
+        details.hidden = plannedAccount || (!stored && !check);
+        const status = plannedAccount ? 'planned' : check?.status || 'unchecked';
+        if (details.dataset.status !== status) {
+          details.open = status === 'blocked' || status === 'unknown';
+          details.dataset.status = status;
+        }
+      }
+      function personId(person) { return person.userId || person.id || person.user?.id || ''; }
+      function personName(person) { return person.displayName || person.user?.displayName || person.userPrincipalName || person.user?.userPrincipalName || 'Directory person'; }
+      function personEmail(person) { return person.userPrincipalName || person.mail || person.user?.userPrincipalName || person.user?.mail || ''; }
+      function renderPeople() {
+        const saved = profile();
+        const people = [...(saved?.manualPeople || []), ...(saved?.people || []).map(person => ({...person, legacy: true, email: personEmail(person), displayName: personName(person)}))];
+        $('people-count').textContent = people.length + ' planned';
+        $('planned-empty').hidden = people.length > 0;
+        $('planned-table-wrap').hidden = people.length === 0;
+        $('planned-body').replaceChildren();
+        const fragment = document.createDocumentFragment();
+        people.slice(0, 100).forEach(person => {
+          const row = node('tr');
+          const who = node('td');
+          who.append(node('strong', person.displayName), node('small', person.email));
+          if (person.serviceNowUserName) who.append(node('small', 'ServiceNow: ' + person.serviceNowUserName));
+          const roles = Array.isArray(person.roleProfiles) ? person.roleProfiles : [];
+          const planned = node('td');
+          planned.append(badge('Planned: ' + (roles.length ? roles.map(role => roleLabels[role] || role).join(' + ') : 'Unspecified')));
+          const intent = person.legacy ? 'Legacy directory selection; review in Scout' : person.accountIntent === 'existing' ? 'Declared existing · check before reuse' : 'Create if missing · not created';
+          const actions = node('td');
+          if (!person.legacy) {
+            const edit = node('button', 'Edit'), remove = node('button', 'Remove');
+            edit.type = remove.type = 'button';
+            edit.disabled = remove.disabled = !available || busy || dirty();
+            edit.setAttribute('aria-label', 'Edit plan for ' + person.displayName);
+            remove.setAttribute('aria-label', 'Remove plan for ' + person.displayName);
+            edit.addEventListener('click', () => editPerson(person));
+            remove.addEventListener('click', () => removePerson(person.id));
+            const group = node('div', undefined, 'actions');group.append(edit, remove);actions.append(group);
+          }
+          row.append(who, planned, node('td', intent), actions);
+          fragment.append(row);
+        });
+        $('planned-body').append(fragment);
+        $('people-limit').hidden = people.length <= 100;
+        $('people-limit').textContent = 'Showing the first 100 planned selections. The nonsecret export retains all selections.';
+      }
+      function nonsecretProfile(saved) {
+        return {
+          version: state.version, id: saved.id, name: saved.name, revision: saved.revision,
+          pdiUrl: saved.pdiUrl, tenantInput: saved.tenantInput, tenantId: saved.tenantId ?? null,
+          tenantDisplayName: saved.tenantDisplayName ?? null, adminUser: saved.adminUser,
+          integrationUser: saved.integrationUser, integrationMode: saved.integrationMode || 'existing', attestedDemo: saved.attestedDemo === true,
+          bootstrapMode: saved.bootstrapMode || 'admin',
+          microsoftVerified: saved.microsoftVerified === true,
+          manualPeople: saved.manualPeople || [],
+          people: (Array.isArray(saved.people) ? saved.people : []).map(person => ({
+            userId: personId(person), displayName: personName(person), userPrincipalName: personEmail(person),
+            roleProfiles: Array.isArray(person.roleProfiles) ? person.roleProfiles : []
+          })), createdAt: saved.createdAt, updatedAt: saved.updatedAt
+        };
+      }
+      function sanitizedExport(value, depth = 0) {
+        if (depth > 24) throw new Error('The export is too deeply nested to display safely.');
+        if (typeof value === 'string') return token ? value.split(token).join('[session redacted]') : value;
+        if (Array.isArray(value)) return value.map(item => sanitizedExport(item, depth + 1));
+        if (value && typeof value === 'object') {
+          const cleaned = Object.create(null);
+          Object.entries(value).forEach(([key, item]) => {
+            if (!/password|passwd|secret|token|credential|authorization|headers|session|devicecode|verificationurl/i.test(key)) cleaned[key] = sanitizedExport(item, depth + 1);
+          });
+          return cleaned;
+        }
+        return value;
+      }
+      function renderPairingPreview() {
+        let pdi = 'Choose a PDI';
+        try {
+          const url = new URL($('pdi-url').value.trim());
+          if (url.protocol === 'https:' && /^dev[a-z0-9]+\.service-now\.com$/.test(url.hostname) && !url.username && !url.password && !url.port && !url.search && !url.hash && url.pathname === '/') pdi = url.hostname;
+        } catch { /* An incomplete address stays a neutral placeholder. */ }
+        const tenant = parsedTenant();
+        $('pairing-preview-pdi').textContent = pdi;
+        $('pairing-preview-tenant').textContent = tenant.value || 'Choose a tenant';
+        $('tenant-hint').textContent = !$('tenant-input').value.trim() ? 'Paste a demo email, onmicrosoft.com domain, or tenant GUID.' : tenant.error || (tenant.fromEmail ? 'Tenant extracted: ' + tenant.value + '. Declared pairing only; no Microsoft sign-in.' : 'Declared tenant identifier. Microsoft sign-in is not required for setup.');
+        $('pairing-preview-state').textContent = profile() ? (dirty() ? 'Unsaved edits' : 'Saved config') : 'Not saved';
+      }
+      function render() {
+        controls();
+        renderPairingPreview();
+        renderProfiles();
+        const saved = profile();
+        $('profile-detail').hidden = !saved;
+        if (saved) {
+          $('detail-pdi').textContent = saved.pdiUrl;
+          $('detail-tenant').textContent = (saved.tenantDisplayName ? saved.tenantDisplayName + ' · ' : '') + (saved.tenantId || saved.tenantInput);
+          $('detail-revision').textContent = String(saved.revision);
+          $('detail-updated').textContent = dateLabel(saved.updatedAt);
+        $('detail-badges').replaceChildren(badge(saved.id === state.selectedProfileId ? 'Selected pairing' : 'Not selected', saved.id === state.selectedProfileId ? 'accent' : ''), badge('Microsoft tenant: declared, no sign-in'));
+          $('config-preview').textContent = JSON.stringify(sanitizedExport(nonsecretProfile(saved)), null, 2);
+        } else $('config-preview').textContent = 'Save a config to preview its nonsecret details.';
+        renderCheck('admin', saved);
+        renderCheck('integration', saved);
+        renderPeople();
+        renderChatHandoff();
+      }
+      function renderChatHandoff() {
+        const saved = profile();
+        $('chat-config-command').hidden = !saved;
+        $('chat-config-command').textContent = saved ? '/sn-demoloader use ' + JSON.stringify(saved.name) : '';
+        $('chat-handoff-summary').textContent = !saved
+          ? 'Save the pairing under Environment, check connections under Access, then choose your demo people. After setup, select this config by name in chat; you do not need to load its JSON file again.'
+          : dirty()
+            ? 'Save or discard your edits before continuing. The command below refers to the last saved config, not your changes.'
+             : 'Your config is saved. Review Access and your planned people, then use this command in Scout to select it without reopening the setup page. Saving is not proof that either tenant is ready for writes.';
+      }
+      function renderDirectory() {
+        renderPeopleGuidance();
+      }
+      async function runAction(buttonId, label, operation) {
+        if (busy) return;
+        const button = buttonId ? $(buttonId) : null;
+        const previousLabel = button?.textContent;
+        busy = true;
+        clearFeedback();
+        render();
+        if (button) button.textContent = label;
+        try { await operation(); }
+        catch (error) {
+          feedback('Action not completed', error.message || 'The local action failed.', 'error', error.code || '');
+          if (error.code === 'transition_required') {
+            $('feedback-message').append(node('span', '\nThis app will not silently repair or switch the existing tenant pairing.'));
+          }
+        } finally {
+          busy = false;
+          if (button) button.textContent = previousLabel;
+          render();
+        }
+      }
+      async function refreshAfterAction() {
+        try { await refreshState(); return true; }
+        catch (error) {
+          available = false;
+          $('server-status').textContent = 'Local service unavailable';
+          $('server-status').dataset.connected = 'false';
+          connectionNotice('Action sent; status refresh unavailable', 'The action may have completed, but current state could not be retrieved. ' + safeText(error.message) + ' Retry the connection to see the authoritative result.', true);
+          return false;
+        }
+      }
+      function validateDraft() {
+        fields.forEach(id => $(id).setCustomValidity(''));
+        const data = draft();
+        if (!data.name) $('config-name').setCustomValidity('Enter a config name, not just spaces.');
+        if (!data.adminUser) $('admin-user').setCustomValidity('Enter the existing admin User ID.');
+        if (!data.integrationUser) $('integration-user').setCustomValidity('Enter the existing Machine/API User ID.');
+        try {
+          const url = new URL(data.pdiUrl);
+          if (url.protocol !== 'https:' || !url.hostname.toLowerCase().endsWith('.service-now.com') || url.username || url.password || url.port || url.search || url.hash || (url.pathname !== '/' && url.pathname !== '')) throw new Error('Invalid instance address');
+        } catch { $('pdi-url').setCustomValidity('Use the HTTPS ServiceNow PDI instance address, without a path, port, query, or embedded credential.'); }
+        const tenant = parsedTenant();
+        if (tenant.error) $('tenant-input').setCustomValidity(tenant.error);
+        showSection('pairing');
+        return $('config-form').reportValidity();
+      }
+      function saveConfig(event) {
+        event.preventDefault();
+        if (!available || busy || !validateDraft()) return;
+        const saved = profile();
+        const data = draft();
+        if (saved) { data.id = saved.id; data.expectedRevision = saved.revision; }
+        if (state.capabilities.bootstrapActorChoice !== true) delete data.bootstrapMode;
+        runAction('save-config', 'Saving…', async () => {
+          const result = await api('/api/profiles', data);
+          acceptProfile(result.profile);
+          loadDraft(result.profile);
+          resetDirectory();
+          const refreshed = await refreshAfterAction();
+          feedback('Config saved locally', 'Saved “' + result.profile.name + '”. No pairing was activated and no tenant records were written.' + (refreshed ? '' : ' Refresh status before continuing.'), 'success');
+        });
+      }
+      function useConfig() {
+        const saved = profile();
+        if (!saved || dirty() || !available || busy) return;
+        runAction('use-config', 'Selecting…', async () => {
+          const result = await api('/api/select', { profileId: saved.id });
+          state.selectedProfileId = result.selectedProfileId;
+          if (result.profile) acceptProfile(result.profile);
+          await refreshAfterAction();
+          feedback('Active config selected', '“' + saved.name + '” is selected for later chat use. Selection does not seed data or provision users.', 'success');
+        });
+      }
+      function closeDelete() {
+        pendingDelete = null;
+        if ($('delete-dialog').open) $('delete-dialog').close();
+      }
+      function requestDelete() {
+        const saved = profile();
+        if (!saved || dirty() || busy || !available || state.capabilities.profileDeletion !== true) return;
+        pendingDelete = { id: saved.id, revision: saved.revision };
+        $('delete-name').textContent = saved.name;
+        $('delete-revision').textContent = String(saved.revision);
+        $('delete-pdi').textContent = saved.pdiUrl;
+        $('delete-tenant').textContent = saved.tenantId || saved.tenantInput;
+        $('delete-file').textContent = (state.configDirectory ? state.configDirectory.replace(/[\\/]+$/, '') + '\\' : 'configs\\') + saved.configFileName;
+        controls();
+        $('delete-dialog').showModal();
+      }
+      function confirmDelete() {
+        const saved = profile();
+        if (!pendingDelete || busy || !available) return;
+        const target = pendingDelete;
+        closeDelete();
+        if (!saved || dirty() || saved.id !== target.id || saved.revision !== target.revision) {
+          feedback('Deletion needs a new confirmation', 'The saved config changed. Reload it and confirm the exact revision again.', 'error');
+          return;
+        }
+        runAction(null, '', async () => {
+          const result = await api('/api/delete-profile', { profileId: target.id, expectedRevision: target.revision, confirmed: true });
+          if (result.deletedProfileId !== target.id) throw new Error('The service did not confirm deletion of this exact config. Refresh local state before trying again.');
+          state.profiles = state.profiles.filter(item => item.id !== target.id);
+          state.selectedProfileId = result.selectedProfileId;
+          loadDraft(null);
+          resetDirectory();
+          showSection('pairing');
+          const refreshed = await refreshAfterAction();
+          feedback('Config deleted', 'Removed “' + saved.name + '” and its JSON file from the config library. Credentials, run history and all ServiceNow data were kept. PDI pairing safety remains.' + (refreshed ? '' : ' Refresh local status before continuing.'), 'success');
+          $('add-config').focus();
+        });
+      }
+      function officialDeviceUrl(raw) {
+        const url = new URL(raw);
+        if (url.protocol !== 'https:' || !['microsoft.com', 'www.microsoft.com'].includes(url.hostname.toLowerCase()) || !/^\/devicelogin\/?$/i.test(url.pathname) || url.username || url.password || url.port || url.search || url.hash) throw new Error('The service returned an unexpected device-login URL. No sign-in link was opened.');
+        return 'https://microsoft.com/devicelogin';
+      }
+      async function pollJob(jobId, saved, title, microsoft, onboardingAction = false) {
+        currentJobId = jobId;
+        $('cancel-job').hidden = false;
+        $('cancel-job').disabled = false;
+        const deadline = Date.now() + 10 * 60 * 1000;
+        $('job-panel').hidden = false;
+        $('job-title').textContent = title + ' · ' + saved.name;
+        $('job-state').textContent = 'Starting';
+        $('job-message').textContent = microsoft ? 'Waiting for the demo-tenant device-login instructions…' : 'Running the requested local action. You can cancel if it stalls.';
+        $('job-spinner').hidden = false;
+        $('device-panel').hidden = true;
+        $('device-code').textContent = '';
+        $('device-url').removeAttribute('href');
+        $('job-panel').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        try {
+          if (typeof jobId !== 'string' || !jobId) throw new Error('The service did not return a job ID. Retry the connection before trying the action again.');
+          while (Date.now() < deadline) {
+            const payload = await api('/api/jobs/' + encodeURIComponent(jobId), undefined, deadline);
+            const job = payload.job;
+            if (!job || !['running', 'waiting', 'complete', 'failed', 'cancelled'].includes(job.status)) throw new Error('The local service returned an unknown job status.');
+            $('job-state').textContent = job.status;
+            $('job-message').textContent = safeText(job.message || 'Waiting for the local action…');
+            if (microsoft && job.status === 'waiting' && job.deviceCode && job.verificationUrl) {
+              $('device-url').href = officialDeviceUrl(job.verificationUrl);
+              $('device-code').textContent = safeText(job.deviceCode);
+              $('device-tenant').textContent = 'Target demo tenant: ' + (saved.tenantId || saved.tenantInput);
+              $('device-panel').hidden = false;
+            } else if (job.status !== 'waiting') $('device-panel').hidden = true;
+            if (['complete', 'failed', 'cancelled'].includes(job.status)) {
+              $('job-spinner').hidden = true;
+              $('job-panel').hidden = true;
+              $('device-panel').hidden = true;
+              $('device-code').textContent = '';
+              if (job.result?.onboarding) acceptOnboarding(job.result.onboarding);
+              else if (onboardingAction && ['failed','cancelled'].includes(job.status)) {
+                acceptOnboarding(null);
+                const restored = await api('/api/onboarding/status?' + new URLSearchParams({ profileId: saved.id }));
+                acceptOnboarding(restored.onboarding);
+              }
+              await refreshAfterAction();
+              if (job.status === 'complete') {
+                const check = job.result?.onboarding?.status || (!microsoft && job.result?.status);
+                const blocked = ['blocked','partial','uncertain','failed'].includes(check);
+                feedback(blocked ? 'Onboarding/read check: ' + check : check === 'unknown' ? 'Read-only check: unknown' : 'Local action completed', job.message || 'The authoritative profile status is shown below. No write access was tested.', blocked ? 'error' : check === 'unknown' ? '' : 'success');
+              } else feedback(job.status === 'cancelled' ? 'Local action cancelled' : 'Local action failed', job.message || 'No successful authentication result was confirmed.', job.status === 'failed' ? 'error' : '');
+              currentJobId = null;
+              $('cancel-job').hidden = true;
+              return;
+            }
+            await new Promise(resolve => setTimeout(resolve, Math.min(1000, Math.max(0, deadline - Date.now()))));
+          }
+          throw new Error('The ten-minute job polling limit has been reached.');
+        } catch (error) {
+          $('job-spinner').hidden = true;
+          $('job-state').textContent = Date.now() >= deadline ? 'Timed out' : 'Status unavailable';
+          $('job-message').textContent = safeText(error.message) + ' Polling stopped; the backend action is not cancelled. Reopen or retry the local connection to check current status before starting another action.';
+          $('device-panel').hidden = true;
+          $('device-code').textContent = '';
+          await refreshAfterAction();
+          throw error;
+        } finally { currentJobId = null; $('cancel-job').hidden = true; }
+      }
+      function clearPasswords() {
+        ['admin','integration'].forEach(purpose => { $('password-' + purpose).value = ''; });
+      }
+      function savePassword(purpose) {
+        const saved = profile(), input = $('password-' + purpose);
+        if (!saved || dirty() || busy || !available || $('set-' + purpose).disabled) return;
+        input.setCustomValidity('');
+        if (!input.value || input.value.length > 4096 || input.value.includes('\0')) input.setCustomValidity('Enter a password of 1 to 4096 characters without NUL.');
+        if (!input.reportValidity()) return;
+        let password = input.value;
+        clearPasswords();
+        const exact = { profileId: saved.id, expectedRevision: saved.revision, purpose, password };
+        password = null;
+        runAction('set-' + purpose, 'Saving…', async () => {
+          let result;
+          try { result = await api('/api/save-credential', exact); } finally { exact.password = null; }
+          await pollJob(result.jobId, saved, 'Encrypted password save', false);
+        });
+      }
+      function closeImport() {
+        pendingImport = null;
+        $('config-file').value = '';
+        if ($('load-dialog').open) $('load-dialog').close();
+      }
+      async function readImport() {
+        if (busy || dirty() || !available) return;
+        const file = $('config-file').files?.[0];
+        if (!file) return;
+        try {
+          if (file.size > 60000) throw new Error('Choose a config JSON smaller than 60 KB.');
+          let data;
+          try { data = JSON.parse((await file.text()).replace(/^\uFEFF/, '')); } catch { throw new Error('The selected file is not valid config JSON.'); }
+          const allowed = ['version','schemaVersion','id','name','revision','pdiUrl','tenantInput','tenantId','tenantDisplayName','authCacheKey','adminUser','integrationUser','integrationMode','bootstrapMode','attestedDemo','microsoftVerified','people','manualPeople','createdAt','updatedAt'];
+          if (!data || typeof data !== 'object' || Array.isArray(data) || Object.keys(data).some(key => !allowed.includes(key)) || typeof data.name !== 'string' || typeof data.pdiUrl !== 'string' || typeof data.tenantInput !== 'string' || !Array.isArray(data.people)) throw new Error('This is not a supported nonsecret SN DemoLoader config. Password-bearing or unrelated files are not loaded.');
+          pendingImport = data;
+          $('load-name').textContent = safeText(data.name);
+          $('load-pdi').textContent = safeText(data.pdiUrl);
+          $('load-tenant').textContent = safeText(data.tenantInput);
+          $('load-people').textContent = String(data.people.length + (Array.isArray(data.manualPeople) ? data.manualPeople.length : 0)) + ' planned, not provisioned';
+          $('load-attested').checked = false;
+          $('confirm-load').disabled = true;
+          $('load-dialog').showModal();
+        } catch (error) { closeImport(); feedback('Config not loaded', error.message, 'error'); }
+      }
+      function confirmImport() {
+        if (!pendingImport || !$('load-attested').checked || busy || dirty() || !available) return;
+        const data = pendingImport;
+        closeImport();
+        runAction('load-config', 'Loading…', async () => {
+          const result = await api('/api/load-profile', {config: data, confirmed: true});
+          acceptProfile(result.profile); loadDraft(result.profile); resetDirectory();
+          showSection('pairing'); await refreshAfterAction();
+          feedback('Config loaded', (result.loadedExisting ? 'Opened the existing saved config without overwriting it. ' : 'Added the config to your saved library. ') + 'Passwords stay encrypted on this PC and are not imported. Select Use this config to activate the pairing.', 'success');
+        });
+      }
+      function startJob(path, purpose, buttonId, title) {
+        const saved = profile();
+        if (!saved || dirty() || !available || busy) return;
+        runAction(buttonId, 'Working…', async () => {
+          const body = { profileId: saved.id };
+          if (purpose) body.purpose = purpose;
+          const result = await api(path, body);
+          await pollJob(result.jobId, saved, title, false);
+        });
+      }
+      function renderOnboarding() {
+        const saved = profile();
+        const ready = available && !busy && !dirty() && saved && saved.id === state.selectedProfileId && state.capabilities.onboardingDiscovery === true;
+        const belongs = Boolean(onboarding && saved && onboarding.plan.context.profileId === saved.id);
+        const current = belongs && onboarding.plan.context.profileRevision === saved.revision && onboarding.plan.context.pdiUrl === saved.pdiUrl && onboarding.plan.context.tenantId === saved.tenantId;
+        const creation = current && onboarding.plan.payload.mode === 'create';
+        const supported = current && onboarding.plan.payload.blockers.length === 0 && (creation ? state.capabilities.onboardingCreate === true : state.capabilities.onboardingReuse === true);
+        const resumable = creation && onboarding.status === 'partial' && !onboarding.steps.some(step => ['attempting','uncertain'].includes(step.status));
+        $('onboarding-access-path').textContent = saved?.bootstrapMode === 'machine' ? 'Provisioning uses the existing configured Machine credential, not the Human admin login. Its exact active Machine identity, installed admin role and metadata access must be verified before an exact source-change approval. A missing Machine must be created outside this bootstrap path first.' : 'Advanced path: discovery uses the separate saved admin credential. Isolated browser fallback is read-only. Missing-Machine creation requires direct verified admin API access, source uniqueness, writable schema and exact approval.';
+        $('onboarding-roles').disabled = !ready;
+        $('onboarding-discover').disabled = !ready;
+        $('onboarding-status').disabled = !available || busy || dirty() || !saved || state.capabilities.onboardingDiscovery !== true;
+        $('onboarding-confirm').disabled = !ready || !supported || (onboarding.status !== 'preview' && !resumable);
+        $('onboarding-approve').disabled = $('onboarding-confirm').disabled || !$('onboarding-confirm').checked;
+        $('onboarding-apply').disabled = !ready || !supported || onboarding.status !== 'approved';
+        $('onboarding-reconcile').disabled = !ready || !supported || !['attempting','partial','uncertain'].includes(onboarding.status);
+        $('onboarding-guidance').textContent = state.capabilities.onboardingDiscovery !== true ? 'Onboarding is unavailable in this running backend.' : !saved || dirty() ? 'Save or discard your pairing edits first.' : saved.id !== state.selectedProfileId ? 'Use this config under Environment before onboarding this pairing.' : 'Discover first. A valid existing Machine is reused unchanged, even if the config says Create. Only a proven missing account gets a separately approved creation plan.';
+        $('onboarding-confirm-text').textContent = creation ? 'I reviewed the exact target, audit actor, account fields and roles. I approve creating only this missing Machine with an independently generated encrypted credential and the listed role grants. Normal source audit/business rules/notifications may run.' : 'I reviewed this exact reuse preview and approve read-only Machine verification. No account, password or role changes.';
+        $('onboarding-approve').textContent = creation ? (resumable ? 'Approve remaining setup' : 'Approve exact creation preview') : 'Approve exact reuse preview';
+        $('onboarding-apply').textContent = creation ? 'Run approved Machine setup' : 'Verify approved reuse';
+        $('onboarding-reconcile').textContent = creation ? 'Reconcile write outcome (read-only)' : 'Reconcile read status';
+        $('onboarding-preview').hidden = !belongs;
+        if (belongs) $('onboarding-preview').textContent = JSON.stringify({ planId: onboarding.plan.id, planHash: onboarding.planHash, expiresAt: onboarding.plan.expiresAt, context: onboarding.plan.context, requestedRoles: onboarding.plan.requestedRoles, ...onboarding.plan.payload, steps: onboarding.steps, readiness: onboarding.readiness || null }, null, 2);
+        $('onboarding-state').textContent = belongs ? (current ? onboarding.status : 'stale — prepare a fresh preview') + (onboarding.sourceWrites ? ' · Source write attempts recorded; inspect steps' : ' · No source writes') : 'No onboarding preview loaded for this config.';
+        $('machine-setup-note').querySelector('strong').textContent = state.capabilities.onboardingEnsure === true ? 'Discover the Machine account first' : 'Machine creation requires the updated local service';
+        $('machine-setup-note').querySelector('p').textContent = 'Open Admin-led Machine onboarding below. Discovery reuses an existing exact account or prepares a missing-account creation preview. Saving this config alone never creates or resets an account.';
+      }
+      function acceptOnboarding(value) {
+        if (value && (!value.plan?.context || typeof value.planHash !== 'string' || !Array.isArray(value.plan.payload?.blockers))) throw new Error('The service returned an invalid onboarding preview. No approval was inferred.');
+        onboarding = value;
+        $('onboarding-confirm').checked = false;
+        renderOnboarding();
+      }
+      function discoverOnboarding() {
+        const saved = profile();
+        if ($('onboarding-discover').disabled) return;
+        const roles = $('onboarding-roles').value.split(',').map(value => value.trim()).filter(Boolean);
+        runAction('onboarding-discover', 'Reading…', async () => {
+          acceptOnboarding(null);
+          const result = await api('/api/onboarding/preview', { profileId: saved.id, expectedRevision: saved.revision, roles });
+          await pollJob(result.jobId, saved, 'Read-only Machine discovery', false, true);
+        });
+      }
+      function restoreOnboarding() {
+        if ($('onboarding-status').disabled) return;
+        runAction('onboarding-status', 'Reading…', async () => {
+          const result = await api('/api/onboarding/status?' + new URLSearchParams({ profileId: profile().id }));
+          acceptOnboarding(result.onboarding);
+          feedback('Local onboarding status', result.onboarding ? 'The authoritative local journal was restored. No live request or approval was made.' : 'No onboarding journal exists for this config.');
+        });
+      }
+      function approveOnboarding() {
+        if ($('onboarding-approve').disabled) return;
+        const exact = { planId: onboarding.plan.id, planHash: onboarding.planHash, confirmed: true };
+        runAction('onboarding-approve', 'Approving…', async () => {
+          const result = await api('/api/onboarding/approve', exact);
+          acceptOnboarding(result.onboarding);
+          feedback('Exact Machine preview approved', 'Approval was saved locally for this exact plan only. Run the approved action below; saving or editing the config invalidates it.');
+        });
+      }
+      function applyOnboarding(reconcile = false) {
+        if ($(reconcile ? 'onboarding-reconcile' : 'onboarding-apply').disabled) return;
+        const saved = profile(), exact = { planId: onboarding.plan.id, planHash: onboarding.planHash };
+        runAction(reconcile ? 'onboarding-reconcile' : 'onboarding-apply', 'Verifying…', async () => {
+          const result = await api('/api/onboarding/' + (reconcile ? 'reconcile' : 'apply'), exact);
+          await pollJob(result.jobId, saved, reconcile ? 'Read-only Machine reconciliation' : onboarding.plan.payload.mode === 'create' ? 'Approved Machine setup' : 'Read-only approved reuse', false, true);
+        });
+      }
+      $('onboarding-discover').addEventListener('click', discoverOnboarding);
+      $('onboarding-status').addEventListener('click', restoreOnboarding);
+      $('onboarding-approve').addEventListener('click', approveOnboarding);
+      $('onboarding-apply').addEventListener('click', () => applyOnboarding(false));
+      $('onboarding-reconcile').addEventListener('click', () => applyOnboarding(true));
+      $('onboarding-confirm').addEventListener('change', renderOnboarding);
+      $('onboarding-roles').addEventListener('input', () => acceptOnboarding(null));
+      function saveManualPerson(event) {
+        event.preventDefault();
+        const saved = profile();
+        if (!saved || busy || dirty() || !available || $('save-person').disabled || !$('manual-person-form').reportValidity()) return;
+        const selectedRole = $('person-role').value;
+        const original = saved.manualPeople?.find(person => person.id === editingPersonId);
+        const roles = original && original.roleProfiles[0] === selectedRole ? original.roleProfiles : [selectedRole];
+        const person = { displayName: $('person-name').value.trim(), email: $('person-email').value.trim(), serviceNowUserName: $('person-sn-user').value.trim(), accountIntent: $('person-intent').value, roleProfiles: roles };
+        if (editingPersonId) person.id = editingPersonId;
+        let personSaved = false;
+        runAction(null, '', async () => {
+          const result = await api('/api/manual-people', {profileId: saved.id, expectedRevision: saved.revision, person});
+          acceptProfile(result.profile); resetDirectory(); await refreshAfterAction();
+          personSaved = true;
+          feedback('Person plan saved', 'Saved ' + person.displayName + '. The form is ready for another user. The shared email is required in both Microsoft and ServiceNow; no source account or email was changed.', 'success');
+        }).then(() => {
+          if (personSaved && !$('panel-people').hidden && !$('manual-person-fields').disabled) $('person-name').focus();
+        });
+      }
+      function editPerson(person) {
+        if (busy || dirty() || !available) return;
+        editingPersonId = person.id;
+        personLoginEdited = true;
+        $('person-name').value = person.displayName;
+        $('person-email').value = person.email;
+        $('person-sn-user').value = person.serviceNowUserName;
+        $('person-intent').value = person.accountIntent;
+        $('person-role').value = person.roleProfiles[0];
+        $('save-person').textContent = 'Save person';
+        $('cancel-person-edit').hidden = false;
+        controls();$('person-name').focus();
+      }
+      function removePerson(personId) {
+        const saved = profile();
+        if (!saved || busy || dirty() || !available) return;
+        runAction(null, '', async () => {
+          const result = await api('/api/manual-people/remove', {profileId: saved.id, expectedRevision: saved.revision, personId});
+          acceptProfile(result.profile); resetDirectory(); await refreshAfterAction();
+          feedback('Person plan removed', 'Removed only this saved plan. No Microsoft or ServiceNow account was changed.', 'success');
+        });
+      }
+      function exportConfig() {
+        const saved = profile();
+        if (!saved || dirty() || busy || !available) return;
+        runAction('export-config', 'Preparing…', async () => {
+          const result = await api('/api/export?' + new URLSearchParams({ profileId: saved.id }).toString());
+          if (!result.config || typeof result.config !== 'object' || Array.isArray(result.config)) throw new Error('The service returned an invalid configuration export.');
+          const json = JSON.stringify(sanitizedExport(result.config), null, 2);
+          const blob = new Blob([json + '\n'], { type: 'application/json;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const link = node('a');
+          link.href = url;
+          link.download = result.fileName;
+          document.body.append(link);
+          try { link.click(); } finally { link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+          $('config-preview').textContent = json;
+          feedback('Nonsecret export prepared', 'The JSON download contains config details and planned people only. No passwords, credentials, session tokens, or request headers are included. Directory selections are private; share this file deliberately.', 'success');
+        });
+      }
+      async function connectLocal() {
+        if (busy || !launchContext) return;
+        await runAction('retry-state', 'Connecting…', async () => {
+          try {
+            await refreshState();
+            if (!viewedId && !dirty() && state.selectedProfileId) {
+              const selected = state.profiles.find(saved => saved.id === state.selectedProfileId);
+              if (selected) { loadDraft(selected); resetDirectory(); }
+            }
+            if (profile() && state.capabilities.onboardingDiscovery === true) {
+              const status = await api('/api/onboarding/status?' + new URLSearchParams({profileId:profile().id}));
+              acceptOnboarding(status.onboarding);
+            }
+          } catch (error) {
+            available = false;
+            $('server-status').textContent = 'Local service unavailable';
+            $('server-status').dataset.connected = 'false';
+            connectionNotice('The local service is not reachable', safeText(error.message) + ' This page does not simulate success, save fake data, or fall back to browser storage. Keep the SN DemoLoader launcher running and use its fresh session link.', true);
+            throw error;
+          }
+        });
+      }
+      $('config-form').addEventListener('submit', saveConfig);
+      fields.forEach(id => $(id).addEventListener('input', () => {
+        clearPasswords();
+        closeDelete();
+        $(id).setCustomValidity('');
+        pendingSwitch = undefined;
+        $('switch-guard').hidden = true;
+        controls();
+        renderPairingPreview();
+        renderDirectory();
+        renderChatHandoff();
+      }));
+      $('tenant-input').addEventListener('blur', () => {
+        const tenant = parsedTenant();
+        if (tenant.value && tenant.fromEmail) {
+          $('tenant-input').value = tenant.value;
+          controls();
+          renderPairingPreview();
+        }
+      });
+      $('delete-config').addEventListener('click', requestDelete);
+      $('confirm-delete').addEventListener('click', confirmDelete);
+      $('cancel-delete').addEventListener('click', () => { closeDelete(); $('delete-config').focus(); });
+      $('delete-dialog').addEventListener('cancel', () => { pendingDelete = null; });
+      $('add-config').addEventListener('click', () => {
+        if (viewedId === null && dirty()) {
+          pendingSwitch = null;
+          $('switch-message').textContent = 'Discard this unsaved draft to start a clean config, or keep editing.';
+          $('switch-guard').hidden = false;
+          showSection('pairing');
+          $('switch-keep').focus();
+        } else if (viewedId === null) { showSection('pairing'); $('config-name').focus(); }
+        else chooseConfig(null);
+      });
+      $('discard-draft').addEventListener('click', () => { if (!busy) { loadDraft(profile()); resetDirectory(); render(); } });
+      $('switch-discard').addEventListener('click', () => { if (!busy && pendingSwitch !== undefined) switchNow(pendingSwitch); });
+      $('switch-keep').addEventListener('click', () => { pendingSwitch = undefined; $('switch-guard').hidden = true; $('config-name').focus(); });
+      $('use-config').addEventListener('click', useConfig);
+      $('pairing-open-access').addEventListener('click', () => {
+        showSection('connections', true);
+        $('setup-navigation').scrollIntoView({ block: 'nearest' });
+      });
+      ['admin','integration'].forEach(purpose => $('credential-form-' + purpose).addEventListener('submit', event => { event.preventDefault(); savePassword(purpose); }));
+      ['admin','integration'].forEach(purpose => $('password-' + purpose).addEventListener('input', () => $('password-' + purpose).setCustomValidity('')));
+      $('test-integration').addEventListener('click', () => startJob('/api/test-pdi', 'integration', 'test-integration', 'Read-only Machine authentication'));
+      $('manual-person-form').addEventListener('submit', saveManualPerson);
+      $('person-name').addEventListener('input', () => {
+        if (editingPersonId || personLoginEdited) return;
+        const parts = $('person-name').value.trim().split(/\s+/);
+        const loginPart = value => value.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9-]/g, '').replace(/^-+|-+$/g, '');
+        const first = loginPart(parts[0]), last = parts.length > 1 ? loginPart(parts[parts.length - 1]) : '';
+        const suggestion = first && last ? first + '.' + last : '';
+        $('person-sn-user').value = suggestion.length <= 120 ? suggestion : '';
+      });
+      $('person-sn-user').addEventListener('input', () => { personLoginEdited = $('person-sn-user').value.length > 0; });
+      $('add-another-person').addEventListener('click', () => {
+        if ($('add-another-person').disabled || editingPersonId) return;
+        $('manual-person-form').scrollIntoView({block: 'center', behavior: 'smooth'});
+        $('person-name').focus({preventScroll: true});
+      });
+      $('cancel-person-edit').addEventListener('click', () => {resetDirectory();controls();$('person-name').focus();});
+      $('export-config').addEventListener('click', exportConfig);
+      $('dismiss-feedback').addEventListener('click', clearFeedback);
+      $('retry-state').addEventListener('click', connectLocal);
+      $('load-config').addEventListener('click', () => { if (!$('load-config').disabled) { clearPasswords(); $('config-file').click(); } });
+      $('config-file').addEventListener('change', readImport);
+      $('cancel-load').addEventListener('click', closeImport);
+      $('load-dialog').addEventListener('cancel', closeImport);
+      $('load-attested').addEventListener('change', () => { $('confirm-load').disabled = !$('load-attested').checked; });
+      $('confirm-load').addEventListener('click', confirmImport);
+      $('cancel-job').addEventListener('click', async () => {
+        if (!currentJobId) return;
+        $('cancel-job').disabled = true;
+        try { await api('/api/jobs/' + encodeURIComponent(currentJobId) + '/cancel', {}); }
+        catch (error) { feedback('Cancellation not confirmed', error.message, 'error'); $('cancel-job').disabled = false; }
+      });
+      window.addEventListener('pagehide', clearPasswords);
+      loadDraft(null);
+      render();
+      if (launchContext) connectLocal();
+      else {
+        $('server-status').textContent = 'Preview · no local session';
+        $('server-status').dataset.connected = 'false';
+        connectionNotice('Open through the SN DemoLoader loopback launcher', 'This is the interface preview, not a connected onboarding session. Opening an HTML file or a Co-create preview does not supply the local API and session token. Use the session link provided by the Windows SN DemoLoader launcher. Saving, protected credential dialogs, and authentication checks are disabled here; no mock profiles or browser storage are used.', false);
+      }
+    })();
+  </script>
+</body>
+</html>

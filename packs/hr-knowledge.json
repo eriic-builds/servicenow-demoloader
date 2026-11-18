@@ -1,0 +1,19 @@
+{
+  "id": "hr-essentials-v1",
+  "title": "HR knowledge pack",
+  "base": {"title": "Human Resources", "description": "Guidance for everyday employee requests and keeping personal information up to date."},
+  "category": {"label": "Time Off and Leave", "value": "time-off-and-leave"},
+  "criteriaName": "Human Resources knowledge contributors",
+  "articles": [
+    {
+      "key": "request-time-off",
+      "short_description": "Request time off and track your approval",
+      "text": "<h2>Before you submit</h2><p>Check your available balance and discuss coverage with your manager. If you are unsure which leave type applies, contact HR before choosing a category.</p><h2>Send your request</h2><ol><li>Open your employee self-service portal and find your time-off requests.</li><li>Choose the leave type, dates and any partial days. Check the total before submitting.</li><li>Add a short coverage note if one is needed. Do not include medical or other sensitive personal details.</li><li>Submit once and keep the request reference.</li></ol><h2>Track the outcome</h2><p>Open the existing request to check its status and approver. Pending does not mean approved. If the dates are approaching, send your manager the existing reference rather than creating a second request.</p><h2>When to contact HR</h2><p>Contact HR if your balance looks incorrect, the approver is wrong, or the leave type you need is unavailable. Share the request reference and the dates affected, not confidential supporting documents in an open ticket.</p>"
+    },
+    {
+      "key": "change-time-off",
+      "short_description": "Update or cancel a time-off request",
+      "text": "<h2>Find the original request</h2><p>Open your time-off history in the employee self-service portal and select the request you need to change. Check its current status before taking action.</p><h2>If approval is pending</h2><p>Use the available edit or withdraw action on the existing request. Correct the dates or duration, review the total and resubmit only if the portal asks you to. Let your approver know which reference changed.</p><h2>If the request is approved</h2><p>Check whether the portal offers an amendment or cancellation action. Coordinate the change with your manager so coverage and calendars stay aligned. If the action is unavailable, contact HR with the original reference and the change you need; do not assume that deleting a calendar entry cancels leave.</p><h2>Confirm the result</h2><p>Reopen the original request and check its final status, dates and balance impact. Keep any confirmation. If the balance has not updated or the request remains pending unexpectedly, contact HR rather than submitting a duplicate.</p>"
+    }
+  ]
+}

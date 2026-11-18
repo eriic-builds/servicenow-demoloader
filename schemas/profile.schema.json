@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SN DemoLoader named PDI/CDX pairing",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "name", "revision", "pdiUrl", "tenantInput", "tenantId", "adminUser", "integrationUser", "attestedDemo", "people", "createdAt", "updatedAt"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "id": {"type": "string", "format": "uuid"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 100},
+    "revision": {"type": "integer", "minimum": 1},
+    "pdiUrl": {"type": "string", "pattern": "^https://dev[a-z0-9]+\\.service-now\\.com$"},
+    "tenantInput": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "^(?:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.onmicrosoft\\.com)$", "description": "Canonical GUID or demo domain. Demo-user email input is reduced to its onmicrosoft.com domain before saving; this does not verify tenant identity."},
+    "tenantId": {"type": ["string", "null"], "format": "uuid"},
+    "tenantDisplayName": {"type": ["string", "null"]},
+    "authCacheKey": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "adminUser": {"type": "string", "minLength": 1, "maxLength": 120},
+    "integrationUser": {"type": "string", "minLength": 1, "maxLength": 120},
+    "integrationMode": {"enum": ["create", "existing"], "default": "existing", "description": "create stores admin-led setup intent; existing uses a pre-provisioned account. Missing field on old profiles means existing."},
+    "bootstrapMode": {"enum":["machine","admin"],"default":"admin","description":"Explicit provisioning credential: pre-created configured Machine with verified admin role, or separately configured admin API account. Legacy configs retain admin; new form entries recommend machine. Never grants privileges."},
+    "attestedDemo": {"const": true},
+    "people": {"type": "array", "maxItems": 100, "items": {"type": "object", "additionalProperties": false, "required": ["userId", "tenantId", "displayName", "userPrincipalName", "mail", "roleProfiles"], "properties": {"userId": {"type": "string", "format": "uuid"}, "tenantId": {"type": "string", "format": "uuid"}, "displayName": {"type": "string"}, "userPrincipalName": {"type": "string"}, "mail": {"type": ["string", "null"]}, "roleProfiles": {"type": "array", "uniqueItems": true, "minItems": 1, "items": {"enum": ["requester", "support", "knowledge-author", "knowledge-manager"]}}}}},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+    ,"manualPeople": {"type":"array","maxItems":100,"description":"User-declared Microsoft identities and intended ServiceNow handling. Not verified accounts and never automatic source-write approval.","items":{"type":"object","additionalProperties":false,"required":["id","displayName","email","serviceNowUserName","accountIntent","roleProfiles"],"properties":{"id":{"type":"string","format":"uuid"},"displayName":{"type":"string","minLength":1,"maxLength":160},"email":{"type":"string","format":"email","maxLength":254,"description":"Single canonical email required in both Microsoft and ServiceNow. The ServiceNow login may differ, but existing source email mismatches must block reuse/creation until explicitly corrected. This saved value is not proof of source equality."},"serviceNowUserName":{"type":"string","minLength":1,"maxLength":120,"description":"Exact ServiceNow login, normally firstname.lastname, separate from the shared email. New form entries suggest it from the name; explicit and saved values are preserved."},"accountIntent":{"enum":["existing","create-if-missing"]},"roleProfiles":{"type":"array","minItems":1,"maxItems":5,"uniqueItems":true,"description":"Explicitly selected planned roles only. Admin means full ServiceNow instance administration and always requires separate source-change approval; saving never grants it.","items":{"enum":["requester","support","knowledge-author","knowledge-manager","admin"]}}}}}
+  }
+}

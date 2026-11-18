@@ -1,0 +1,191 @@
+SN DemoLoader for Microsoft Scout - Windows local preview
+
+START HERE - NO EXPERIENCE ASSUMED
+Double-click PREREQUISITES.html in this extracted folder. It works offline and
+walks through every field, button, role assignment and Scout connection step.
+Its Users shortcut builds a link to your own /sys_user_list.do: paste your PDI
+address, Open Users table, check for demo.seeder, then New if it is absent.
+Short picture-led steps show New, Machine fields, Roles > Edit, then the right
+arrow > Save. Private browser/instance details and user rows are removed.
+The web-service-only Machine cannot sign in through the interactive UI. Save
+its unique password in your password manager for the config later; never chat.
+Entered addresses are not stored.
+README.md is the short front door. Do not start by double-clicking config HTML.
+
+BEFORE YOU INSTALL
+Prepare your own awake non-production ServiceNow PDI. Sign in as its separate
+Human administrator, then create demo.seeder (period, not underscore):
+- Active: ON. Identity type: Machine. Web service access only: ON.
+- Locked out: OFF. Password needs reset: OFF.
+- Set and privately store a strong unique Machine password.
+- Saved roles: admin, itil_admin, knowledge_admin, user_admin.
+Use Users > New (or the exact existing account), save, Set Password, then
+Roles > Edit: move each exact role into Selected, Save, and reopen to confirm.
+The guide illustrates these steps. Keep inherited roles; do not copy 150 roles.
+These are powerful sandbox permissions, not a production/least-privilege model.
+The current provisioning path explicitly checks admin; this documented recipe
+is not a claim that every role is independently required by every operation.
+The installer creates no account/roles and makes no ServiceNow connection.
+
+REQUIREMENTS
+Windows, PowerShell 7.2+, Node.js 22+ on PATH, Microsoft Edge and Microsoft Scout.
+Edge is discovered in Program Files (x86), Program Files and the current user's
+local application data. No npm packages or administrator elevation are needed.
+PowerShell: https://aka.ms/powershell-release
+Node.js: https://nodejs.org
+
+TRUSTED DOWNLOAD AND INSTALL
+1. Download the ZIP from a publisher you trust. This preview is unsigned,
+   not a signed enterprise MSI.
+2. Extract the ZIP and open Install.cmd (or run .\Install.cmd in a terminal).
+3. The installer lists the PDI/Machine/role preparation first. Type GUIDE to
+   open the illustrated steps. Type READY only after you complete them. Enter
+   without READY cancels. READY is your acknowledgement, NOT a connection test.
+   Then read the separate trust prompt: type TRUST only if you trust the
+   publisher and approve the action. Otherwise press Enter: nothing is unblocked
+   or installed. The launcher checks the installer and guide automatically;
+   the installer checks the payload before removing its download marks. These
+   checks do not authenticate the publisher. It does NOT recursively
+   unblock neighboring files, change execution policy or contact ServiceNow.
+4. Reload Scout's skills (or restart Scout), then invoke /sn-demoloader and ask
+   to configure the environment. The skill opens its private authenticated
+   loopback page in your default browser. Do not open config-builder.html as a
+   static file or share the private local session URL.
+
+Windows RemoteSigned download marks are handled by this explicit, scoped
+consent flow. AllSigned, AppLocker/WDAC, constrained-language or organization
+policies may require an IT-approved signed release. Do not bypass these policies.
+Once the package is already trusted/unblocked, the direct PowerShell alternative
+is .\Install-SN-DemoLoader.ps1 -Confirm -PrerequisitesConfirmed. The second
+switch acknowledges preparation only; it does not verify source access.
+Explicit -TrustDownloadedPayload is
+required if its verified payload still has Internet download marks.
+
+WHERE THINGS LIVE
+Skill:     %USERPROFILE%\.scout\m-skills\sn-demoloader
+Resources: <skill>\app
+Output:    %USERPROFILE%\.copilot\SN-DemoLoader-Output-Scout (new installs)
+           configs\, runs\ and logs\
+Protected: %LOCALAPPDATA%\Scout\ServiceNowDemoSeeder
+           Credentials, approvals, locks and live local execution journals.
+
+An existing Scout store junction is respected. No duplicate is installed under
+.copilot\skills. An unmanaged/authored skill will NOT be overwritten. For an
+isolated trial, pass separate absolute -SkillStore and -OutputRoot paths to the
+PowerShell installer; do not register both a trial and an authored skill.
+
+FIRST WORKING SESSION
+Before onboarding, manually create an active API-enabled Machine account in an
+awake, owned ServiceNow PDI. Current personal provisioning verifies its existing
+installed admin role. This is not a production permission template; the skill
+never grants itself admin. Use an owned demo tenant, not production.
+Environment: save the named PDI/Microsoft tenant pairing.
+Access: choose Machine bootstrap/existing; enter its password directly in the
+masked field, save it with Windows encryption, then test read access.
+People: enter display name, shared Microsoft/ServiceNow email, exact ServiceNow
+login, existing/create-if-missing intent and deliberate roles. Saving a config
+is local intent and creates no source records.
+Return to chat, select the saved name, review onboarding and requested account
+changes, then author content. Exact previews and approval precede source writes.
+Monitor the same operation; reconcile uncertain results read-only rather than
+rerunning POSTs. Articles are intended to be Published unless Draft is requested.
+Source publication/read-back must confirm that outcome; never infer it from a
+button click or claim that publication proves connector retrieval.
+Audience-visible content must feel real: no fake-data labels. Requester incident
+descriptions use first person. Audit actors/ownership are never spoofed.
+
+CHAT-ONLY HR KNOWLEDGE PACK
+The chat menu includes Load HR knowledge pack, separate from the HTML config.
+It uses exactly one configured existing Knowledge author/manager, asks when
+multiple are eligible, and previews all source content/access before approval.
+It creates a dedicated Human Resources base, Time Off and Leave category, two
+Published time-off articles, and exact-person Can Read/Can Contribute criteria.
+The base starts inactive until its access relationships are confirmed. No global
+user roles, existing HR bases or Microsoft accounts are changed. Platform admin
+exceptions remain; actual Human sign-in and connector retrieval are not implied.
+PackPreview / PackApprove / PackApply / PackStatus / PackReconcile are headless
+launcher actions. Do not retry an uncertain create/activation; reconcile the same
+journal read-only first. Re-preparing a reconciled partial pack refreshes its
+review window while preserving owned record IDs and requiring exact new approval
+for remaining steps. An unchanged completed rerun returns the same records.
+
+LOCAL COMMANDS (PowerShell 7.2+)
+$launch = Join-Path $HOME '.scout\m-skills\sn-demoloader\scripts\launch.ps1'
+& $launch -Action Prerequisites
+& $launch -Action Paths
+& $launch -Action Doctor
+& $launch -Action Configure -OpenBrowser
+& $launch -Action Profiles
+& $launch -Action History
+& $launch -Action StopConfig -Confirm
+& $launch -Action Diagnose
+& $launch -Action Recover -Confirm
+
+Doctor is local-only, not a PDI-permission or connector-readiness check.
+A stale startup record with a proven stopped/reused-PID owner is archived during
+Configure; no unrelated process is killed. Exact process creation time and
+executable identify new owners. A live/unverified owner is never auto-replaced.
+StopConfig refuses running actions or PDI leases. Expired sessions can be stopped
+and reopened without starting a parallel service. Startup failures are recorded
+in protected state\config-server-error.json.
+
+INTERRUPTED INSTALL / RECOVERY
+Run Diagnose first, then explicitly confirm Recover for abandoned local state.
+If the installed launcher is missing after an interrupted directory swap, use
+the same trusted extracted release instead:
+.\Install.cmd Diagnose
+.\Install.cmd Recover
+Or, once that installer is already trusted/unblocked:
+.\Install-SN-DemoLoader.ps1 -Action Diagnose
+.\Install-SN-DemoLoader.ps1 -Action Recover -Confirm
+For a custom store/output, pass the same -SkillStore and -OutputRoot values.
+
+Recovery must acquire an abandoned installer lease exclusively; an actively held
+lease cannot be cleared. It can restore a hash-verified previous installation
+when the published skill directory is missing. Otherwise it preserves the current
+valid installation. Interrupted staging is retained in .sn-recovered-* containers,
+and stale local metadata is archived under protected state\recovery. Rerun Install
+if needed. Recovery never kills processes, reads credential values, removes PDI
+execution locks, resets approval/ownership journals or changes ServiceNow.
+Multiple backup candidates, changed managed files or an active/unverified owner
+stop recovery rather than guessing. A PDI lease can block resource restoration;
+inspect/reconcile that exact source operation, not delete its evidence.
+
+UPDATE
+Stop the owned Config Builder with StopConfig -Confirm, extract the newer trusted
+ZIP and run Install.cmd. Only receipt-owned unchanged resources are replaced.
+Unknown/modified files, duplicate global registrations, active owners, PDI locks,
+downgrades and output-library changes stop the update. Staging and a verified
+previous installation support recovery after interruption. Output and protected
+runtime are neither erased nor included in releases.
+Verify: .\Install.cmd Verify
+Remove: .\Install.cmd Uninstall
+Removal preserves output, credentials/history and ALL ServiceNow records.
+
+RENAMED FROM SN-DEMOSEEDER
+Stop the old Config Builder before upgrading. The installer moves only a
+verified receipt-owned legacy skill registration to sn-demoloader, preserving
+its recorded output and all protected state. Reinstall also retains a detected
+legacy default library; two candidate libraries require explicit -OutputRoot.
+If both skill names exist, or the old
+skill is authored/unmanaged, it stops rather than overwriting either.
+The legacy protected runtime, receipt/product IDs and SN-DemoSeeder/SNDS source
+ownership markers are deliberately retained for recovery and duplicate safety.
+Do not manually rename them or copy/reset credentials to match the new brand.
+
+EXISTING DEVELOPMENT DATA
+The source checkout retains its original sibling SN-DemoSeed-Output library.
+Installation does not migrate it or silently switch a live development server.
+A current-machine cutover needs a deliberate copy/compare and registration plan
+that preserves canonical source, existing configs/runs and protected authority.
+Never copy credentials through OneDrive or reset journals to make install work.
+
+BOUNDARIES AND RELEASE ACCEPTANCE
+Implemented: named configs, Machine-first setup, reviewed Human provisioning,
+selected-profile incident/article creation and normal existing-Draft Publish.
+Unfinished: incident/content edits, Knowledge checkout/revisions, bulk re-seed,
+cleanup/transitions, standalone sn-create-kba and connector deployment.
+A passing isolated-home install is not proof of another Windows identity or PDI.
+Before broad rollout, a colleague must verify Scout discovery and the approved
+install -> configure -> incident -> Published article -> reopen -> update flow
+on their own supported PC and owned PDI. Keep source-write approvals explicit.

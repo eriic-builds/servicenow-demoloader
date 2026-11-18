@@ -1,0 +1,10 @@
+{
+  "product": "sn-demoseeder",
+  "displayName": "SN DemoLoader",
+  "skillName": "sn-demoloader",
+  "archivePrefix": "SN-DemoLoader",
+  "version": "0.12.1",
+  "minimumNodeMajor": 22,
+  "minimumPowerShellVersion": "7.2",
+  "outputFolder": "SN-DemoLoader-Output-Scout"
+}

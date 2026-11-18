@@ -1,0 +1,15 @@
+configs/
+runs/
+logs/
+snapshots/
+releases/
+node_modules/
+*.clixml
+*.pfx
+*.pem
+*.key
+.env*
+config-server*.json
+*.log
+*.zip
+*.zip.sha256

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "pdi-machine-v1",
+  "guide": "PREREQUISITES.html",
+  "machineUserName": "demo.seeder",
+  "identityType": "Machine",
+  "active": true,
+  "webServiceAccessOnly": true,
+  "lockedOut": false,
+  "passwordNeedsReset": false,
+  "requiredSetupRoles": ["admin", "itil_admin", "knowledge_admin", "user_admin"],
+  "scope": "Owned non-production ServiceNow Personal Developer Instance only",
+  "acknowledgementIsVerification": false
+}

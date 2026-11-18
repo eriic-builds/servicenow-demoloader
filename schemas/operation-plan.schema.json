@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Immutable shared context for exactly approved setup and selected-profile content creation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profileId", "profileRevision", "pdiUrl", "tenantId", "adminUser", "integrationUser", "actor", "operation", "payloadSha256"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "profileId": {"type": "string", "format": "uuid"},
+    "profileRevision": {"type": "integer", "minimum": 1},
+    "pdiUrl": {"type": "string", "pattern": "^https://dev[a-z0-9]+\\.service-now\\.com$"},
+    "tenantId": {"type": ["string", "null"], "format": "uuid", "description": "May be null for ServiceNow-only onboarding with a declared pairing. This does not mark Microsoft authentication as verified."},
+    "adminUser": {"type": "string", "minLength": 1, "maxLength": 120},
+    "integrationUser": {"type": "string", "minLength": 1, "maxLength": 120},
+    "actor": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": false, "required": ["sysId", "userName", "authMethod", "impersonating"], "properties": {"sysId": {"type": "string", "pattern": "^[0-9a-f]{32}$"}, "userName": {"type": "string"}, "authMethod": {"enum": ["basic-exact-principal", "basic-machine-principal", "isolated-browser-session"]}, "impersonating": {"const": false}}}]},
+    "operation": {"enum": ["incident.create", "incident.update", "knowledge.create", "knowledge.update", "knowledge.publish", "onboarding.discover", "onboarding.create", "onboarding.reuse", "people.provision", "content.prepare", "content.create", "knowledge.pack"]},
+    "payloadSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
