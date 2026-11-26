@@ -67,11 +67,6 @@ html[data-theme="dark"] {
   --cp-sheen: rgba(255, 255, 255, 0.04);
   --cp-highlight: rgba(253, 142, 161, 0.12);
 }
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--cp-bg);color:var(--cp-text);font-family:"Segoe UI",Aptos,Calibri,-apple-system,BlinkMacSystemFont,sans-serif;font-size:17px;line-height:1.6}a{color:var(--cp-link);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--cp-link);outline-offset:4px}code,pre{font-family:Consolas,"Courier New",Courier,monospace}code{overflow-wrap:anywhere;background:var(--cp-surface-soft);padding:2px 6px;border-radius:4px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--cp-surface-soft);border:1px solid var(--cp-border);padding:16px;border-radius:10px;font-size:15px}.shell{max-width:1180px;margin:auto;padding:40px 24px 64px}.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cp-text-muted)}h1{font-size:clamp(32px,5vw,52px);line-height:1.1;max-width:830px;margin:12px 0 20px;letter-spacing:-.03em}h2{font-size:27px;line-height:1.25;margin:0 0 16px}h3{font-size:20px;line-height:1.35;margin:28px 0 12px}p{margin:12px 0}header>p{max-width:800px;font-size:20px}.notice{border-left:4px solid var(--cp-warning);background:var(--cp-surface);padding:16px 20px;margin:24px 0;border-radius:0 10px 10px 0}.notice p{margin:4px 0}.notice.danger{border-color:var(--cp-danger)}.layout{display:grid;grid-template-columns:244px minmax(0,1fr);gap:28px;margin-top:32px}.sidebar{align-self:start;position:sticky;top:24px;background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:16px;padding:20px}.sidebar ol{list-style:none;padding:0;margin:16px 0}.sidebar li{margin:12px 0}.sidebar a{display:block;color:var(--cp-text);text-decoration:none}.sidebar a:hover{color:var(--cp-link);text-decoration:underline}.sidebar p{font-size:14px;color:var(--cp-text-muted)}progress{display:block;width:100%;height:12px;margin:12px 0;accent-color:var(--cp-accent)}.content{min-width:0}.part{background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:16px;padding:28px;margin-bottom:24px}.where{display:inline-block;font-size:13px;font-weight:700;background:var(--cp-accent-soft);color:var(--cp-text);padding:4px 10px;border-radius:6px;margin-bottom:12px}.steps{padding-left:24px}.steps>li{padding-left:8px;margin:20px 0}.steps p{margin:8px 0}.expect{padding:10px 14px;background:var(--cp-surface-soft);border-left:3px solid var(--cp-success);font-size:15px;margin-top:8px}.stop{border-left-color:var(--cp-danger)}.check{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--cp-border);padding:14px 16px;border-radius:10px;margin:16px 0;background:var(--cp-bg-elevated);cursor:pointer}.check input{width:20px;height:20px;flex-shrink:0;margin-top:4px;accent-color:var(--cp-accent)}.check:has(input:checked){border-color:var(--cp-success)}.table-scroll{overflow-x:auto;border:1px solid var(--cp-border);border-radius:10px;margin:16px 0}table{border-collapse:collapse;width:100%;font-size:16px}th,td{text-align:left;vertical-align:top;padding:12px 16px;border-bottom:1px solid var(--cp-border)}th{background:var(--cp-surface-soft);font-weight:600}tr:last-child td{border-bottom:0}td:first-child{width:38%}.role-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.role{padding:14px;border:1px solid var(--cp-border);border-radius:10px;background:var(--cp-bg-elevated)}.role p{font-size:14px;color:var(--cp-text-muted);margin:8px 0 0}.role code{font-size:17px}.mock{border:1px solid var(--cp-border-strong);border-radius:10px;overflow:hidden;margin:16px 0}.mock-title{background:var(--cp-surface-soft);padding:12px 16px;font-weight:600}.mock dl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 20px;padding:20px;margin:0}.mock dt{color:var(--cp-text-muted)}.mock dd{margin:0;font-weight:600;overflow-wrap:anywhere}.caption{font-size:14px;color:var(--cp-text-muted)}details{border-top:1px solid var(--cp-border);margin-top:20px;padding-top:16px}summary{cursor:pointer;font-weight:600}button,.button{font:inherit;background:var(--cp-accent);color:var(--cp-accent-fg);border:1px solid var(--cp-accent);padding:10px 16px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-block}button:hover,.button:hover{background:var(--cp-accent-hover);color:var(--cp-accent-fg)}.quiet{background:var(--cp-surface);color:var(--cp-text);border-color:var(--cp-border-strong)}.quiet:hover{background:var(--cp-surface-soft);color:var(--cp-text)}.finish{border:2px solid var(--cp-border-strong);padding:20px;border-radius:10px}.finish.complete{border-color:var(--cp-success)}.finish strong{font-size:20px}footer{color:var(--cp-text-muted);font-size:14px;margin-top:32px}.skip{position:absolute;left:16px;top:-80px;background:var(--cp-surface);padding:12px}.skip:focus{top:12px}.muted{color:var(--cp-text-muted)}
-@media(max-width:800px){.shell{padding:24px 16px 40px}.layout{grid-template-columns:1fr;gap:20px}.sidebar{position:static}.sidebar ol{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}.sidebar li{margin:4px 0}.part{padding:22px}header>p{font-size:18px}}
-@media(max-width:480px){.role-list{grid-template-columns:1fr}.sidebar ol{grid-template-columns:1fr}.part{padding:18px}.mock dl{grid-template-columns:1fr;gap:4px;padding:16px}.mock dd{margin-bottom:12px}td,th{padding:10px}.steps{padding-left:20px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-@media print{body{background:var(--cp-surface);font-size:11pt}.shell{padding:0;max-width:none}.layout{display:block}.sidebar,.skip,button{display:none}.part{break-inside:avoid;border-radius:0;padding:16px}details>*{display:block}details>summary{list-style:none}a{color:var(--cp-text)}h1{font-size:28pt}.notice{margin:16px 0}}
 /* Match the approved Config Builder's light interface and control palette. */
 html[data-theme="light"] {
   --cp-template-paper: #f6f9f0;
@@ -98,49 +93,227 @@ html[data-theme="light"] {
   --cp-input-pending-border: #708c9a;
   --cp-success-ink: #237246;
   --cp-danger-ink: #b02a25;
+  --cp-guide-sky: #e7f3fa;
+  --cp-guide-sage: #e8f2e5;
+  --cp-guide-green: #316746;
 }
-body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}.masthead{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--cp-border)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:24px;height:24px;flex-shrink:0}.brand-title{font-size:16px;font-weight:650;letter-spacing:-.3px}.brand-caption{padding-left:12px;border-left:1px solid var(--cp-border);font-size:13px;color:var(--cp-text-muted)}.local-tag{font-size:13px;color:var(--cp-text-muted)}header.hero{padding:24px 0 0}.eyebrow{font-size:13px;font-weight:500;letter-spacing:0;text-transform:none}h1{font-size:1.875rem;font-weight:600;letter-spacing:-.035em;line-height:1.25;margin:8px 0 12px}h2{font-size:1.25rem;font-weight:600;letter-spacing:-.02em;line-height:1.4}h3{font-size:1rem;font-weight:600;line-height:1.4}header>p{font-size:15px;max-width:80ch}.layout{grid-template-columns:280px minmax(0,1fr);gap:24px;margin-top:24px}.sidebar{background:none;border:0;border-right:1px solid var(--cp-border);border-radius:0;padding:8px 24px 24px 0}.sidebar li{margin:4px 0}.sidebar a{padding:8px 12px;border-left:2px solid var(--cp-border);font-size:14px}.sidebar a:hover,.sidebar a:focus-visible{border-left-color:var(--cp-brand);color:var(--cp-brand);background:var(--cp-brand-soft)}.sidebar strong,.sidebar>p,.sidebar>progress{margin-left:12px}.sidebar>progress{width:calc(100% - 12px)}.content{background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:10px;overflow:hidden}.part{border:0;border-bottom:1px solid var(--cp-border);border-radius:0;padding:24px;margin:0}.where{color:var(--cp-brand);background:none;border:0;border-left:2px solid var(--cp-brand);border-radius:0;padding:0 0 0 8px;font-size:13px}.notice{border:1px solid var(--cp-border);border-left:3px solid var(--cp-warning);border-radius:10px;font-size:14px}.notice.danger{border-left-color:var(--cp-danger)}.expect{font-size:14px}.check{padding:12px 14px;font-size:14px;font-weight:400}.check input{width:18px;height:18px;min-height:18px}.role-list{gap:12px}.role p,.caption,footer{font-size:13px}table{font-size:14px}button,.button{min-height:44px;font-weight:600;font-size:15px}.quiet{border-color:var(--cp-border)}:focus-visible{outline:2px solid var(--cp-accent);outline-offset:4px}.users-shortcut{padding:20px;margin:20px 0;border:1px solid var(--cp-border);border-left:3px solid var(--cp-brand);border-radius:10px;background:var(--cp-bg-elevated)}.users-shortcut label{display:block;font-size:14px;font-weight:600;margin-bottom:4px}.users-shortcut input{display:block;width:100%;min-height:44px;padding:9px 14px;border:1px solid var(--cp-border);border-radius:10px;background:var(--cp-surface);color:var(--cp-text);font:inherit}.users-shortcut input:placeholder-shown{background:var(--cp-input-pending);border-color:var(--cp-input-pending-border)}.users-shortcut input[aria-invalid="true"]{border-color:var(--cp-danger-ink)}.shortcut-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 8px}.button[aria-disabled="true"]{opacity:.5;cursor:not-allowed}.shortcut-destination{font-size:13px;overflow-wrap:anywhere;min-height:24px}.reference-picture{margin:20px 0;border:1px solid var(--cp-border);border-radius:10px;overflow:hidden;break-inside:avoid}.reference-picture img{display:block;max-width:100%;height:auto;margin:0 auto}.reference-picture figcaption{padding:12px 16px;font-size:13px;color:var(--cp-text-muted);border-top:1px solid var(--cp-border);background:var(--cp-bg-elevated)}.content>footer{padding:24px;margin:0}progress{accent-color:var(--cp-brand)}[hidden]{display:none!important}
-@media(max-width:1100px){.shell{padding:0 24px 24px}}
-@media(max-width:880px){.layout{grid-template-columns:1fr;gap:20px}.sidebar{position:static;border-right:0;border-bottom:1px solid var(--cp-border);padding:0 0 20px}.sidebar ol{display:grid;grid-template-columns:1fr 1fr}.sidebar strong,.sidebar>p,.sidebar>progress{margin-left:0}.sidebar>progress{width:100%}.part{padding:24px}}
-@media(max-width:600px){.shell{padding:0 16px 24px}.masthead{min-height:64px;gap:12px}.brand-caption{display:none}.local-tag{font-size:12px}header.hero{padding-top:20px}.sidebar ol{grid-template-columns:1fr}.part{padding:24px 20px}.users-shortcut{padding:16px}.mock dl{grid-template-columns:1fr;gap:4px;padding:16px}.mock dd{margin-bottom:12px}}
-@media print{.masthead,.users-shortcut input,.shortcut-actions{display:none}.shell{max-width:none;padding:0}.layout{display:block}.content{border:0;overflow:visible}.part{padding:16px}.reference-picture img{max-height:420px;width:auto;max-width:100%}.content>footer{padding:16px}}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 20px; }
+body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 15px/1.65 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+[hidden] { display: none !important; }
+a { color: var(--cp-link); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--cp-brand); outline-offset: 4px; }
+code { font: .94em Consolas, "Courier New", Courier, monospace; overflow-wrap: anywhere; padding: 2px 4px; border-radius: 4px; background: var(--cp-surface-soft); }
+h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
+h1 { margin: 8px 0 16px; max-width: 22ch; font-size: clamp(2.15rem, 4.2vw, 3.75rem); font-weight: 650; letter-spacing: -.05em; }
+h2 { margin: 0; font-size: clamp(1.45rem, 2.2vw, 2rem); font-weight: 650; letter-spacing: -.035em; }
+h3 { margin: 28px 0 8px; font-size: 1.125rem; font-weight: 650; }
+p { margin: 12px 0; max-width: 72ch; }
+button, .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--cp-accent); background: var(--cp-accent); color: var(--cp-accent-fg); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+button:not(:disabled):hover, .button:not([aria-disabled="true"]):hover { background: var(--cp-accent-hover); }
+.quiet { border-color: var(--cp-border-strong); background: transparent; color: var(--cp-text); }
+button.quiet:not(:disabled):hover { background: var(--cp-surface-soft); }
+button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+.skip { position: absolute; z-index: 4; left: 16px; top: -100px; padding: 12px; background: var(--cp-surface); }
+.skip:focus { top: 8px; }
+.shell { max-width: 1440px; margin-inline: auto; padding: 0 clamp(20px, 5vw, 72px) 48px; }
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark { width: 22px; height: 22px; flex: none; color: var(--cp-brand); }
+.brand-title { font-weight: 650; }
+.brand-caption, .local-tag, .caption, footer { font-size: .85rem; color: var(--cp-text-muted); }
+.brand-caption { padding-left: 10px; border-left: 1px solid var(--cp-border); }
+.layout { display: grid; grid-template-columns: 196px minmax(0, 960px); grid-template-areas: "sidebar hero" "sidebar content"; column-gap: clamp(32px, 4vw, 64px); row-gap: 28px; padding-top: 40px; }
+.hero { grid-area: hero; min-width: 0; padding-bottom: 24px; border-bottom: 1px solid var(--cp-border); }
+.eyebrow { color: var(--cp-brand); font-size: .8rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.hero .lead { font-size: 1.15rem; max-width: 59ch; }
+.hero .caption { margin-bottom: 0; }
+.mode-action { margin-top: 8px; }
+.notice { margin: 20px 0; padding: 12px 16px; border-left: 2px solid var(--cp-brand); background: var(--cp-bg-elevated); }
+.notice p { margin: 4px 0 0; }
+.notice.danger { border-left-color: var(--cp-danger-ink); }
+.sidebar { grid-area: sidebar; min-width: 0; }
+.rail { font-size: .875rem; }
+.contents > summary, .rail-title { font-weight: 650; color: var(--cp-text); }
+.contents-location { display: block; margin-inline-start: 16px; overflow: hidden; color: var(--cp-text-muted); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
+.contents[open] .contents-location, .contents-location:empty { display: none; }
+.rail-title { display: none; margin: 0 0 16px; }
+.rail-group + .rail-group { margin-top: 14px; }
+.rail-group { --route-color: var(--cp-brand); color: var(--cp-text-muted); }
+.rail-group.service { --route-color: var(--cp-guide-green); }
+.rail-heading { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: .825rem; font-weight: 650; }
+.rail-heading :is(svg, img) { width: 16px; height: 16px; flex: none; }
+.service-mark { filter: grayscale(1); opacity: .7; }
+.rail-group[data-active] .service-mark { filter: none; opacity: 1; }
+.rail-group[data-active] .rail-heading { color: var(--route-color); }
+.rail-rows { position: relative; }
+.rail-rows ol { list-style: none; padding: 0; margin: 0; }
+.rail-rows a { display: flex; align-items: center; min-height: 30px; padding: 4px 0 4px 26px; color: var(--cp-text-muted); line-height: 1.3; text-decoration: none; }
+.rail-rows a:hover { color: var(--cp-text); text-decoration: underline; }
+.rail-rows a[aria-current] { color: var(--cp-text); font-weight: 650; }
+.rail-track { position: absolute; top: 0; left: 7.5px; width: 16px; height: 100%; pointer-events: none; overflow: visible; }
+.rail-track path { fill: none; stroke-width: 1; }
+.rail-base { stroke: color-mix(in srgb, var(--cp-border) 65%, var(--cp-border-strong)); }
+.rail-trace { stroke: var(--route-color); stroke-dasharray: 1; }
+.rail-dot { fill: var(--route-color); }
+.rail-group:not([data-traced]) :is(.rail-trace, .rail-dot) { visibility: hidden; }
+.rail-progress { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--cp-border); }
+progress { display: block; width: 100%; height: 8px; margin: 8px 0 0; accent-color: var(--cp-guide-green); }
+#progress-label { margin: 0; }
+.guide-tools { margin-top: 12px; font-size: .85rem; }
+.guide-tools button { margin-top: 8px; font-size: .85rem; }
+.content { grid-area: content; min-width: 0; }
+.part { margin: 0 0 40px; padding: 0 0 32px; border-bottom: 1px solid var(--cp-border); }
+.task-heading { margin-bottom: 20px; }
+.where { display: block; margin-top: 8px; color: var(--cp-brand); font-size: .875rem; font-weight: 600; }
+.done-when { display: none; margin: 12px 0 0; }
+[data-guide-mode="guided"] .task-heading { padding: clamp(16px, 3vw, 28px); background: var(--cp-guide-sky); border-radius: 16px; }
+[data-guide-mode="guided"] :is(#pdi, #account, #password, #roles, #review) .task-heading { background: var(--cp-guide-sage); }
+[data-guide-mode="guided"] .done-when { display: block; }
+.steps { max-width: 76ch; margin: 12px 0 20px; padding-left: 24px; }
+.steps > li { padding-left: 4px; margin: 8px 0; }
+.check { display: flex; align-items: flex-start; gap: 10px; max-width: 72ch; padding: 10px 12px; margin: 12px 0; border: 1px solid var(--cp-border); border-radius: 10px; background: var(--cp-bg-elevated); cursor: pointer; }
+.check input { width: 18px; height: 18px; flex: none; margin: 3px 0 0; accent-color: var(--cp-guide-green); }
+.check:has(input:checked), .finish.complete { border-color: var(--cp-guide-green); }
+.table-scroll { overflow-x: auto; border: 1px solid var(--cp-border); border-radius: 10px; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; background: var(--cp-bg-elevated); }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--cp-border); }
+th { background: var(--cp-surface-soft); font-weight: 650; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { width: 38%; }
+.role-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 44ch; gap: 8px; margin: 16px 0; }
+.role { padding: 8px 12px; background: var(--cp-bg-elevated); border: 1px solid var(--cp-border); border-radius: 8px; }
+.role code { background: transparent; padding: 0; }
+.users-shortcut { max-width: 72ch; margin: 16px 0 20px; padding: 16px 20px; border: 1px solid var(--cp-border); border-radius: 10px; background: var(--cp-bg-elevated); }
+.users-shortcut h3 { margin-top: 0; }
+.users-shortcut label { display: block; margin-bottom: 4px; font-weight: 600; }
+.users-shortcut input { display: block; width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--cp-border-strong); border-radius: 10px; background: var(--cp-surface); color: var(--cp-text); font: inherit; }
+.users-shortcut input:placeholder-shown { background: var(--cp-input-pending); border-color: var(--cp-input-pending-border); }
+.users-shortcut input[aria-invalid="true"] { border-color: var(--cp-danger-ink); }
+.copy-value { margin-left: 6px; min-height: 36px; padding: 4px 10px; font-size: .85rem; }
+#copy-status:not(:empty) { display: block; margin-top: 4px; }
+.shortcut-actions { margin: 12px 0 6px; }
+.shortcut-destination { margin: 4px 0 0; min-height: 22px; font-size: .85rem; overflow-wrap: anywhere; }
+.reference-picture { max-width: 100%; width: fit-content; margin: 20px 0; border: 1px solid var(--cp-border); border-radius: 10px; overflow: hidden; break-inside: avoid; background: var(--cp-surface); }
+.reference-picture img { display: block; max-width: 100%; height: auto; }
+.reference-picture figcaption { max-width: 70ch; padding: 8px 12px; border-top: 1px solid var(--cp-border); background: var(--cp-bg-elevated); color: var(--cp-text-muted); font-size: .85rem; }
+.part details { max-width: 72ch; border-top: 1px solid var(--cp-border); padding: 12px 0; }
+summary { cursor: pointer; font-weight: 600; }
+.finish { max-width: 72ch; padding: 14px 16px; border: 1px solid var(--cp-border); border-radius: 10px; }
+.finish p { margin: 4px 0 0; }
+.walk-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: -20px 0 32px; }
+.walk-controls p { flex: 1 1 200px; margin: 0; }
+footer { max-width: 72ch; }
+footer time { white-space: nowrap; }
+@media (min-width: 861px) {
+  .contents > summary { display: none; }
+  .rail-title { display: block; }
+  .rail[data-fits] { position: sticky; top: var(--rail-top); }
+}
+@media (min-width: 861px) and (min-height: 500px) {
+  html { scroll-padding-top: 84px; }
+  .masthead { position: sticky; top: 0; z-index: 2; }
+}
+@media (width < 861px) {
+  .shell { max-width: 760px; padding-inline: clamp(16px, 4vw, 32px); }
+  .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "sidebar" "content"; gap: 20px; padding-top: 24px; }
+  .contents > summary { min-height: 44px; padding: 10px 0; }
+  .rail-rows a { min-height: 44px; }
+  .rail-progress { margin-top: 8px; }
+}
+@media (max-width: 440px) {
+  .brand-caption { display: none; }
+  .role-list { grid-template-columns: minmax(0, 1fr); }
+  .users-shortcut { padding: 14px; }
+  th, td { padding: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .rail-trace { stroke-dashoffset: 0 !important; } .rail-dot { opacity: 1 !important; } }
+@media print {
+  body { background: var(--cp-surface); font-size: 11pt; }
+  .shell { max-width: none; padding: 0; }
+  .layout { display: block; padding: 0; }
+  .masthead, .sidebar, .skip, .mode-action, .walk-controls, .users-shortcut input, .shortcut-actions, .shortcut-destination { display: none; }
+  .part, .part[hidden] { display: block !important; padding-bottom: 12px; margin-bottom: 16px; }
+  [data-guide-mode] .part .task-heading { padding: 0; background: none; }
+  [data-guide-mode] .done-when { display: none; }
+  .part details::details-content { content-visibility: visible; }
+  .part details > :not(summary) { display: block; }
+  .reference-picture img { max-height: 400px; width: auto; }
+  h1 { font-size: 28pt; }
+  h2, h3 { break-after: avoid; }
+}
 </style>
-<style>.notice.danger{border-color:var(--cp-border);border-left-color:var(--cp-danger)}</style>
 </head>
 <body>
 <a class="skip" href="#steps">Skip to the instructions</a>
 <div class="shell">
 <div class="masthead"><div class="brand"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7m-3.5-3.5v7"/></svg><span class="brand-title">SN DemoLoader</span><span class="brand-caption">Setup guide</span></div><span class="local-tag">Local instructions</span></div>
-<header class="hero">
-<div class="eyebrow">SN DemoLoader / Start here / Offline setup guide</div>
-<h1>Set up Scout's ServiceNow account</h1>
-<p>Use your Human admin to create <code>demo.seeder</code>. Scout will use it for headless API work.</p>
-<div class="notice danger"><strong>Your own practice PDI only. Never production.</strong><p>These are powerful permissions, not a production or least-privilege setup.</p></div>
-<p class="caption">Offline instructions. No passwords collected, background requests or saved checklist/address. Links open only when clicked.</p>
-</header>
 <div class="layout">
-<aside class="sidebar" aria-label="Guide navigation and progress">
-<strong>Your setup checklist</strong>
-<progress id="guide-progress" max="8" value="0" aria-label="Self-reported setup progress"></progress>
-<p id="progress-label" role="status" aria-live="polite">0 of 8 preparation checks marked</p>
+<header class="hero">
+<div class="eyebrow">Prerequisites &amp; installation</div>
+<h1>Set up Scout's ServiceNow account</h1>
+<p class="lead">Use your Human admin to create <code>demo.seeder</code>, then install SN DemoLoader and test read access in Scout.</p>
+<div class="notice danger"><strong>Your own practice PDI only. Never production.</strong><p>These are powerful permissions, not a production or least-privilege setup.</p></div>
+<button id="guide-mode" class="mode-action" type="button" hidden>Start guided setup</button>
+<p class="caption">No account is created by this guide or installer. Do steps 1-7 first. No passwords collected, background requests or saved checklist/address.</p>
+</header>
+<aside class="sidebar">
+<div class="rail" id="guide-rail">
+<details class="contents" id="guide-contents" open>
+<summary>Contents<span class="contents-location" id="contents-location"></span></summary>
+<p class="rail-title" aria-hidden="true">Contents</p>
+<nav aria-label="Setup contents" id="guide-nav">
+<div class="rail-group">
+<p class="rail-heading"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><rect x="2.5" y="2.5" width="11" height="8" rx="1"/><path d="M1 13.5h14m-9-3v3m4-3v3"/></svg>Prepare</p>
+<div class="rail-rows">
 <ol>
-<li><a href="#before">1. Check your computer</a></li>
-<li><a href="#pdi">2. Open your PDI</a></li>
-<li><a href="#account">3. Create the Machine account</a></li>
-<li><a href="#password">4. Set its password</a></li>
-<li><a href="#roles">5. Add the four roles</a></li>
-<li><a href="#review">6. Reopen and check</a></li>
-<li><a href="#microsoft">7. Have your tenant ready</a></li>
-<li><a href="#install">8. Install and open Scout</a></li>
+<li><a href="#before">Check your computer</a></li>
+<li><a href="#pdi">Open your PDI</a></li>
+</ol>
+</div>
+</div>
+<div class="rail-group service">
+<p class="rail-heading"><img class="service-mark" width="16" height="16" alt="" src="data:image/png;base64,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">ServiceNow</p>
+<div class="rail-rows">
+<ol>
+<li><a href="#account">Create the Machine account</a></li>
+<li><a href="#password">Set its password</a></li>
+<li><a href="#roles">Add the four roles</a></li>
+<li><a href="#review">Reopen and check</a></li>
+</ol>
+</div>
+</div>
+<div class="rail-group">
+<p class="rail-heading"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><rect x="2.25" y="2.25" width="11.5" height="11.5" rx="1.25"/><path d="M2.5 6h11m-8 3 2 2 3.5-3.5"/></svg>Scout</p>
+<div class="rail-rows">
+<ol>
+<li><a href="#microsoft">Have your tenant ready</a></li>
+<li><a href="#install">Install and open Scout</a></li>
 <li><a href="#troubleshooting">If something looks different</a></li>
 </ol>
+</div>
+</div>
+</nav>
+</details>
+<div class="rail-progress">
+<strong>Setup checklist</strong>
+<progress id="guide-progress" max="8" value="0" aria-label="Self-reported setup progress"></progress>
+<p class="caption" id="progress-label" role="status" aria-live="polite">0 of 8 preparation checks marked</p>
+</div>
+<details class="guide-tools">
+<summary>Guide tools</summary>
 <button class="quiet" id="reset-checks" type="button">Clear my checklist</button>
-<p>No account is created by this guide or installer. Do steps 1-7 first.</p>
+</details>
+</div>
 </aside>
-<main class="content" id="steps">
+<main class="content" id="steps" tabindex="-1">
 <section class="part" id="before" aria-labelledby="before-title">
+<div class="task-heading">
+<h2 id="before-title" tabindex="-1">1. Check your computer</h2>
 <span class="where">On your Windows computer</span>
-<h2 id="before-title">1. Check your computer</h2>
+<p class="done-when"><strong>Done when:</strong> All four apps are installed.</p>
+</div>
 <p>On your Windows PC, install these through your approved software channel.</p>
 <div class="table-scroll"><table><thead><tr><th>You need</th><th>Where</th></tr></thead><tbody>
 <tr><td>Microsoft Scout</td><td>Your approved Scout distribution.</td></tr>
@@ -151,8 +324,11 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <label class="check"><input type="checkbox" data-check="computer"><span>These four apps are installed.</span></label>
 </section>
 <section class="part" id="pdi" aria-labelledby="pdi-title">
+<div class="task-heading">
+<h2 id="pdi-title" tabindex="-1">2. Open your own PDI</h2>
 <span class="where">In your browser / ServiceNow</span>
-<h2 id="pdi-title">2. Open your own PDI</h2>
+<p class="done-when"><strong>Done when:</strong> Your PDI is awake and you're signed in as Human admin.</p>
+</div>
 <ol class="steps">
 <li>Open <a href="https://developer.servicenow.com/" rel="noreferrer">developer.servicenow.com</a>.</li>
 <li>Sign in to the developer portal. Request a Personal Developer Instance if you need one.</li>
@@ -163,9 +339,11 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <label class="check"><input type="checkbox" data-check="awake"><span>It is awake; I am signed in as its Human admin.</span></label>
 </section>
 <section class="part" id="account" aria-labelledby="account-title">
+<div class="task-heading">
+<h2 id="account-title" tabindex="-1">3. Create <code>demo.seeder</code> Machine account (service account)</h2>
 <span class="where">Stay signed in as your Human administrator</span>
-<h2 id="account-title">3. Create <code>demo.seeder</code> Machine account (service account)</h2>
-<p>Stay signed in as your <strong>Human admin</strong>.</p>
+<p class="done-when"><strong>Done when:</strong> The saved Machine account is active and API-only.</p>
+</div>
 <div class="users-shortcut" aria-labelledby="users-shortcut-title">
 <h3 id="users-shortcut-title">Open your Users table</h3>
 <label for="guide-pdi-url">Your PDI address</label>
@@ -183,7 +361,7 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <figure class="reference-picture"><img id="users-new-image" width="396" height="128" alt="Users list: the New button is in the top-right corner, marked by the red arrow." src="data:image/png;base64,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"><figcaption>Click <strong>New</strong> at the top-right of the Users table.</figcaption></figure>
 <p>Fill in these fields:</p>
 <div class="table-scroll"><table><thead><tr><th>Field on the User form</th><th>Set it to</th></tr></thead><tbody>
-<tr><td>User ID</td><td><code>demo.seeder</code> (period, not underscore)</td></tr>
+<tr><td>User ID</td><td><code id="machine-user-id">demo.seeder</code> <button class="quiet copy-value" id="copy-machine-id" type="button" aria-label="Copy the User ID" hidden>Copy</button> (period, not underscore)<span class="caption" id="copy-status" role="status"></span></td></tr>
 <tr><td>First name</td><td><code>Demo</code></td></tr>
 <tr><td>Last name</td><td><code>Seeder</code></td></tr>
 <tr><td>Active</td><td><strong>Checked / on</strong></td></tr>
@@ -197,8 +375,11 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <label class="check"><input type="checkbox" data-check="machine"><span>Saved: Active, Machine, Web service access only.</span></label>
 </section>
 <section class="part" id="password" aria-labelledby="password-title">
+<div class="task-heading">
+<h2 id="password-title" tabindex="-1">4. Set its own password</h2>
 <span class="where">In the saved demo.seeder User record</span>
-<h2 id="password-title">4. Set its own password</h2>
+<p class="done-when"><strong>Done when:</strong> The Machine password is saved privately.</p>
+</div>
 <ol class="steps">
 <li>On the saved user, click <strong>Set Password</strong>.</li>
 <li>Set a strong, unique password. Do not reuse your admin or Microsoft password.</li>
@@ -210,8 +391,11 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <label class="check"><input type="checkbox" data-check="password"><span>Machine password saved privately for the config later.</span></label>
 </section>
 <section class="part" id="roles" aria-labelledby="roles-title">
+<div class="task-heading">
+<h2 id="roles-title" tabindex="-1">5. Add these four roles</h2>
 <span class="where">Still in the demo.seeder User record</span>
-<h2 id="roles-title">5. Add these four roles</h2>
+<p class="done-when"><strong>Done when:</strong> All four roles are saved.</p>
+</div>
 <p>On the saved user, scroll down. Click <strong>Roles</strong>, then <strong>Edit...</strong> on the right.</p>
 <figure class="reference-picture"><img id="roles-edit-image" width="739" height="160" alt="Bottom of the saved user: select the Roles tab on the left, then click Edit on the right, both boxed in red." src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAuMAAACgBAMAAABUAH98AAAAHlBMVEX///8AM0ra5uwof57/AAD//yh9fX0tjRnIyB7//4CWJtXIAAAKIklEQVR42u3dT2/buBIA8AHxIFi3pQTkzDAL1roJDFBgj1sEBfZbRGSgbo4bH3x9fg62e4yaQt5+24chZdeW/8m2LDvODNrYtSXV+YkeDSWTBgCAh7vjxz283fjRMHbYJJETOZETOZETOZETOZETOZHvGEkz8W+7kn/OjxVvnjxsRv6yK/nxTB6InMiJ/EKOn0DkRE7kRN5ylfiNyLs+fr4QeYvBmpALIu86mQORd5zMvxF518n8hci7TuaCyLtO5kDkHWeWl9ZMmHQh3js5azevrDeRe0V9Pbd5s2UlMd27B/xHy9vsLrO01AylGu4RRrA9yOUe+1ewrfukq8zy0g45k8O9ov6LNyM/RnTXzFtKtkztR24ukjxss5GvI5cf9iN/ukhy1uLBk8gx1Nar5n/+szb+bnTZ3WwlZ/s2EvYWyTv4YMlnIidyIidyIidyIify90Bef1oSeVvkk+GwquIn879DL4XQAsDX4UDAZHgPr6JGnmQ8Xk9upVQa/yxEwjmvHkriprQZ17g5WWil5zf4dsllMhDL5KWAyQAgNFJA7ykZQFAnz7TMonXk/UgmXOPNInnk1ltFnug14iqSthXyhh/4nnY6m3/e+2FXcjG1XiAfQzgYI/l0kV66SN6PNyUWpWXxUUsZL5NXK9bJ++vIi+pN47Z6CPnRrqMEu5NXmjXyDymSa7yPi4RmkfxabyIvpIyRxy6TV4+9d3L2ZYgtmX0ZCPg6vK9a9xj83sBbDf9bJB95hN9cIjNKy2utfuORVC7Dj31Ld7d18hGmZyR3i2aca8V1wnnssrbiNftCO3Klq8SSxRdAPhEfdDLwN0/hU2LmyIfDe7COfLySPH6YI49lJkdGzZEXK8gL/UGrKIml9ek5lrie0rJ/5bJ27Z3h9oGVWZXLf7b0N0weDsRYwFcxEWOAsc8yPqHgYsmA4WH0qU6eVce2eXIsUey0YNlAPpZynMR9Lfu68MsWLvtLWSTR6oqlH1XkxQUkFmzHY6SfiK/D4SB09cuU3O2Tda28z2Ol6+QjvZ084zxOYsU5j5SuHkNyLCGz5YJTxdIWetrKr94+ufwqkPNDOhFj/D1KNJ8nT8frEksyJf/0kzzJrraQj9yziTu8YqWO+ZvjyqNZHqnFyCXwC8rlnnPiEwv2gp5+5nK3gKtY6uRYsSQrWrlPOZtyua3IXY2i3GaqVu6XGawoWmymZ3X55O3ncvYzl7vHwkXysfClu1muyxfIvZr2O2NDxdKPq3eI6yfhQv1q5aruHC+Rj6Wtdku1+NuvWNKqYlE6sT3dr5KKHEuYmP7A9z7rdTn2IvMZeT9OONYef7nawrfuNXV5pl2HMvFlSp9ztM90PzL9WGZJXi/YM9yulaOKvDTFBZCHT+zL8N7V5cN7V5sjeW84HIoQT7G4cyz13idWErGcksssVlp9nNXVmJk5j2S0+hxLxnVVlxdoiivj2YOCa1ef1IrEGHddP6oOn/zN5/I1UdafXjrHsnwmca5rWJ1cWdulnMsZs37ssc8knjv5tFHP4nUn8lkPfZvbSNeTz7slXzpfzmAn8qaR/MU1kV/qVSEiJ3IiJ3IiJ3IiJ3IiJ3IiJ3IiJ3IiJ3IiJ/IzIJ/F/MtbvUTrL5LIf8anbsgX3mPHJq/Hd9y8H/+b/DhNzL+cu/9ueZFtBRNnQP7r3YligfxOdEMO8vTk7O48yP/oiJzJk5P/50zI7zoih5ngych/PRfyl47IZ828MXlLMSsGvp8LuemkYpkrlU5Gfjat/BuRd00uOyMXJyZPiLxrcvlwHuSf3hG5zE8UC+R/yPdEfg7nWD7LCyNXGa+He2v/zg+IqE1y0wb5ze2G0B2TiyP0MhgcPZq+SLZdfN68C3IBl03uWW63BJG3TX6zjVx3SQ6XTg5Efgry29ummYXIifydk7f0FasrLjzeEflq8iMHkRM5kRM5kTcn10yzyyRneb7UtQ3N3tsciYPJ8V8WyVN2q28ukLw0ypwZOZPSVq1cvF4guV3xxInJX6vEcntL5B2SaxBMhynAzeWRu0we5AZYbkWo81TlJjQrEvyWUDwClsWZAAg+clFwzWII/XWUaMN6OPcJu18iBwZMhxrYTuTqkO7m3/lDvff5/Pjv3ePz44/nx2d/s8/XwGAbzitQn8vxvpVKBEbpMJfMyjLMpUp33KqVhQiihCN5LHtXMhPWm9yZcsN6WQSgrmqHzxsNNmU63DWxbLr+MQtbO/k+uwy0MOWpO8cScK6hENDTQYrT7O37QbtFcqxYQu1mrgtNaKo7fia7XSKFXloIl1iCFK5TCNJClNvfitdcsOyX2uHzRod4+DwO+dorbyvIdZE68ihIi0O+qq2svounqstLE+R57sk1eu1FzjlPxzNy1zIK8frsWvlGDx4pvpTLNTsP8jSMZ638kM+Shnk6T85soPF/yPNDyLWUOPfgHHkUpNaR/643N3Ns5OdKDiPh3rFBep0ecty0i71P6yaXKk1yCHk1LfJ8K+9FxlcsmdjYzDmsIp/mcmHFjbg5US5PIYjccSlIe7HMDv7QtCMXwIwrCl99YuntmcsjXyHO5/LwKvXkm9+T178sd4WMr1huBdzAa8vku7VysFh94b0J19AGeWixOMEfpVRIjhVLsgc5bqLQinty1zIg8+TGyhgysa6NsFUdfgESyTXctN7K15J/vN1yVQhaIcdSFuvyXAS5QXJwdfnu5IpfQZjFhScHbBkwEt99LmcWrLDi6GcSDyO/ld2QX9TJ24PIt1/7JHIiJ3IiJ3IiJ3IiJ3IiJ3Iib5/88A87t0kuLp2cEfkpyA8fuNImuRKXTd7S8KxWyTPefkRtDrXd8CWoDbZk2hmE2Cb5eUbt8Hf6obZETuRETuRETuRETuRETuREfr7kAt5PHGX+ckbkRE7kRE7kRE7kRE7kRE7kRE7kjZd/FQDlan4cFCjXPbOwSqiJvB1yLZPVwzxsbdgxkbdFngKoVZhL8xkQeYvkK2eLIPIWyMM8r4bR5+kCObM4Ng2CJBeYv5UbBB66dKPcvBLuwVy7f5XKEnlT8lIq/ItzRAj3+RtbkYOVbv6IPMl1meJozNR9QEdAaKQVSicGH9T4Q5RGEnlTcgvAzHSAMVTn/T15gvNHBClY0dM97ZNKkFuhBCgcLj92wzN7OEVEmVJiad7KjZuswy4kZU+O87l4cifvdwrLdZnneYrrKLdPcKlSEHljcoZjiaWUnnwusfj5I0RFrlJM7hg9U7qx/1LKAMlx3Lkg8kbLl75iYXliZqXHXGIJTaD93YVWDqFxvm7PVJlnbeVD5IvLu4YrAJS09WrP1+U+eXvyKpcznHPDdYbGwq0T4DNE3nB5nCNCQy6tKLWbCWWp94ldzYq8qliCXOYixBpFaWmZlTk+o1Iib3ZaS03r7Wp6q6VzLG7+CE/uJ5So5miq1jGg8kfjNkPkdCaRyImcyImcyImcyN8A+f8B5vlbetwPcP0AAAAASUVORK5CYII="><figcaption>Bottom of the saved user: <strong>Roles</strong> (left), then <strong>Edit...</strong> (right). Cropped views joined side by side.</figcaption></figure>
 <div class="role-list">
@@ -232,20 +416,29 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <label class="check"><input type="checkbox" data-check="roles"><span>All four roles are saved.</span></label>
 </section>
 <section class="part" id="review" aria-labelledby="review-title">
+<div class="task-heading">
+<h2 id="review-title" tabindex="-1">6. Reopen once and compare</h2>
 <span class="where">Final ServiceNow check</span>
-<h2 id="review-title">6. Reopen once and compare</h2>
+<p class="done-when"><strong>Done when:</strong> The reopened record matches the setup below.</p>
+</div>
 <p>Reopen <code>demo.seeder</code>. Confirm <strong>Active</strong>, <strong>Machine</strong>, <strong>Web service access only</strong>, no lockout/reset, and the four saved roles. Leave unrelated settings alone.</p>
 <label class="check"><input type="checkbox" data-check="review"><span>I checked the saved record, not just the unsaved form.</span></label>
 </section>
 <section class="part" id="microsoft" aria-labelledby="microsoft-title">
+<div class="task-heading">
+<h2 id="microsoft-title" tabindex="-1">7. Have the matching tenant ready</h2>
 <span class="where">Your Microsoft demo environment</span>
-<h2 id="microsoft-title">7. Have the matching tenant ready</h2>
+<p class="done-when"><strong>Done when:</strong> Your tenant domain and matching emails are ready.</p>
+</div>
 <p>Have your Microsoft demo tenant's <code>onmicrosoft.com</code> domain and intended people's exact emails ready. Their emails must match in both systems. <strong>No Microsoft password is needed.</strong></p>
 <label class="check"><input type="checkbox" data-check="tenant"><span>I have my authorized demo-tenant details.</span></label>
 </section>
 <section class="part" id="install" aria-labelledby="install-title">
+<div class="task-heading">
+<h2 id="install-title" tabindex="-1">8. Install, then connect in Scout</h2>
 <span class="where">Back on your Windows computer</span>
-<h2 id="install-title">8. Install, then connect in Scout</h2>
+<p class="done-when"><strong>Done when:</strong> Scout's <strong>Test read access</strong> succeeds.</p>
+</div>
 <h3>Install the local skill</h3>
 <ol class="steps">
 <li>Get the <strong>SN-DemoLoader-Scout</strong> ZIP from a publisher you trust.</li>
@@ -270,14 +463,21 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
 <div class="finish" id="readiness-summary" role="status" aria-live="polite"><strong id="readiness-title">Work through the 8 preparation checks</strong><p id="readiness-text">Tick each box only after completing it. Your checklist does not run installation or test ServiceNow.</p></div>
 </section>
 <section class="part" id="troubleshooting" aria-labelledby="help-title">
+<div class="task-heading">
+<h2 id="help-title" tabindex="-1">Stuck? Open only what you need</h2>
 <span class="where">Stop here if you are stuck</span>
-<h2 id="help-title">Stuck? Open only what you need</h2>
+</div>
 <details><summary>Users link, field, role or Edit is missing</summary><p>Sign in as Human admin. Fallback: <strong>All &gt; User Administration &gt; Users</strong>. If sign-in returns home, click the Users link again. Release layouts vary; ask your PDI administrator. Do not invent fields/roles or change ACLs.</p></details>
 <details><summary>401, 403, interactiveRequired or a sign-in page</summary><p>Check: PDI awake, correct URL/login/password, Active, Machine, Web service access only, roles, no lockout/reset. These errors do not establish the cause. Stop rather than bypass authentication, MFA or add more roles.</p></details>
-<details><summary>Blocked installer, update or recovery</summary><p>Use the trusted ZIP's <code>Install.cmd</code>. Signed-only devices need IT-approved delivery; never bypass policy. Restart Scout if the skill is missing. For interrupted installs, use <code>Install.cmd Diagnose</code> and see <a href="https://github.com/eriic-builds/servicenow-demoloader/blob/main/INSTALL.txt" rel="noreferrer">recovery instructions</a>. Never delete PDI locks/journals.</p></details>
+<details><summary>Blocked installer, update or recovery</summary><p>Use the trusted ZIP's <code>Install.cmd</code>. Signed-only devices need IT-approved delivery; never bypass policy. Restart Scout if the skill is missing. For interrupted installs, use <code>Install.cmd Diagnose</code> and see the <a href="https://github.com/eriic-builds/servicenow-demoloader/blob/main/INSTALL.txt" rel="noreferrer">recovery instructions</a>. Never delete PDI locks/journals.</p></details>
 <details><summary>Old login or private data</summary><p>An existing <code>demo_seeder</code> login is different: do not rename or duplicate it blindly. Never upload passwords, configs or run history to GitHub.</p></details>
 </section>
-<footer>Sandbox recipe, not least privilege. Admin may include other roles. Guide checks are self-reported, not source/access/connector verification. No telemetry or automatic account changes.</footer>
+<div class="walk-controls" id="walk-controls" hidden>
+<button id="walk-back" class="quiet" type="button">Back</button>
+<button id="walk-next" type="button">Continue</button>
+<p id="walk-preview" class="caption"></p>
+</div>
+<footer><p>Sandbox recipe, not least privilege. Admin may include other roles. Guide checks are self-reported, not source/access/connector verification.</p><p>Last updated: <time datetime="2026-11-26">11.26.26</time></p></footer>
 </main>
 </div>
 </div>
@@ -332,6 +532,251 @@ body{font-size:15px;line-height:1.6}.shell{max-width:1280px;padding:0 40px 32px}
   });
   update();
   updateUsersLink();
+  const copy = document.getElementById('copy-machine-id');
+  const copyStatus = document.getElementById('copy-status');
+  copy.hidden = false;
+  copy.addEventListener('click', async () => {
+    const value = document.getElementById('machine-user-id').textContent;
+    copy.textContent = 'Copy';
+    copyStatus.textContent = '';
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(value);
+        copy.textContent = 'Copied';
+        copyStatus.textContent = 'Copied. Paste into User ID.';
+        return;
+      } catch {
+        // The browser can deny clipboard access even on a local page.
+      }
+    }
+    copyStatus.textContent = 'Clipboard unavailable. Select and copy the User ID above.';
+  });
+
+  const root = document.documentElement;
+  const rail = document.getElementById('guide-rail');
+  const contents = document.getElementById('guide-contents');
+  const contentsLocation = document.getElementById('contents-location');
+  const masthead = document.querySelector('.masthead');
+  const modeButton = document.getElementById('guide-mode');
+  const controls = document.getElementById('walk-controls');
+  const back = document.getElementById('walk-back');
+  const next = document.getElementById('walk-next');
+  const nextPreview = document.getElementById('walk-preview');
+  const wide = matchMedia('(min-width: 861px)');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const svgNS = 'http://www.w3.org/2000/svg';
+  function svg(name, attributes) {
+    const element = document.createElementNS(svgNS, name);
+    for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
+    return element;
+  }
+  const entries = [];
+  const groups = Array.from(rail.querySelectorAll('.rail-group'), group => {
+    const rows = group.querySelector('.rail-rows');
+    const track = svg('svg', { class: 'rail-track', 'aria-hidden': 'true', focusable: 'false' });
+    const base = svg('path', { class: 'rail-base' });
+    const trace = svg('path', { class: 'rail-trace', pathLength: '1' });
+    const dot = svg('circle', { class: 'rail-dot', cx: '11.5', r: '2.5' });
+    track.append(base, trace, dot);
+    rows.prepend(track);
+    const items = Array.from(rows.querySelectorAll('a'), link => {
+      const section = document.getElementById(link.hash.slice(1));
+      const heading = document.getElementById(section.getAttribute('aria-labelledby'));
+      const entry = { index: entries.length, link, section, heading, group };
+      entries.push(entry);
+      return entry;
+    });
+    return { group, rows, track, base, trace, dot, items };
+  });
+  const lastTask = entries.findIndex(entry => entry.section.id === 'install');
+  let mode = 'reference';
+  let current = -1;
+  let drawn = -1;
+  let anchoredTop = null;
+  let animations = [];
+  let railFrame = 0;
+  let readingFrame = 0;
+  let historyFrame = 0;
+  let pendingArrival = null;
+
+  function cancelTrace() {
+    for (const animation of animations) animation.cancel();
+    animations = [];
+  }
+  function measureRail() {
+    railFrame = 0;
+    const headerHeight = getComputedStyle(masthead).position === 'sticky' ? masthead.offsetHeight : 0;
+    const spare = innerHeight - headerHeight - rail.offsetHeight;
+    rail.toggleAttribute('data-fits', wide.matches && spare >= 32);
+    rail.style.setProperty('--rail-top', (headerHeight + spare / 2) + 'px');
+    if (!contents.open) {
+      cancelTrace();
+      drawn = current;
+      finishArrival();
+      return;
+    }
+
+    // Both the neutral branches and the active trace use rendered row centers.
+    const radius = 5.5;
+    const bend = y => `A ${radius} ${radius} 0 0 0 6 ${y} H 11.5`;
+    const route = y => `M 0.5 0 V ${y - radius} ${bend(y)}`;
+    for (const { group, rows, track, base, trace, dot, items } of groups) {
+      if (!rows.offsetHeight) continue;
+      const top = track.getBoundingClientRect().top;
+      const centers = items.map(({ link }) => {
+        const bounds = link.getBoundingClientRect();
+        return bounds.top + bounds.height / 2 - top;
+      });
+      const branches = centers.slice(0, -1).map(y => `M 0.5 ${y - radius} ${bend(y)}`);
+      base.setAttribute('d', [route(centers.at(-1)), ...branches].join(' '));
+      const row = items.findIndex(entry => entry.index === current);
+      if (row < 0) continue;
+      const y = centers[row];
+      trace.setAttribute('d', route(y));
+      dot.setAttribute('cy', y);
+      group.setAttribute('data-traced', '');
+      if (drawn !== current && drawn !== -1 && !reduced.matches && typeof trace.animate === 'function') {
+        const duration = Math.max(270, Math.min(wide.matches ? 540 : 320, Math.round(240 + y * 1.3)));
+        const dotDuration = wide.matches ? 150 : 90;
+        animations = [
+          trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration, easing: 'ease-out' }),
+          dot.animate([{ opacity: 0 }, { opacity: 1 }], { duration: dotDuration, delay: duration, fill: 'backwards', easing: 'ease-out' })
+        ];
+        const arrival = pendingArrival;
+        if (arrival) animations[1].addEventListener('finish', () => finishArrival(arrival), { once: true });
+      }
+      drawn = current;
+    }
+    if (pendingArrival && !animations.length) finishArrival();
+  }
+  function queueRail() {
+    if (!railFrame) railFrame = requestAnimationFrame(measureRail);
+  }
+  function select(index) {
+    if (index === current) return;
+    cancelTrace();
+    if (current >= 0) {
+      const previous = entries[current];
+      previous.link.removeAttribute('aria-current');
+      previous.group.removeAttribute('data-active');
+      previous.group.removeAttribute('data-traced');
+    }
+    current = index;
+    entries[index].link.setAttribute('aria-current', 'location');
+    entries[index].group.setAttribute('data-active', '');
+    contentsLocation.textContent = entries[index].link.textContent;
+    queueRail();
+  }
+  function readLocation() {
+    readingFrame = 0;
+    if (mode === 'guided' || pendingArrival || anchoredTop === scrollY) return;
+    anchoredTop = null;
+    const line = parseFloat(getComputedStyle(root).scrollPaddingTop) + 10;
+    let index = 0;
+    for (const entry of entries) {
+      if (entry.heading.getBoundingClientRect().top > line) break;
+      index = entry.index;
+    }
+    if (scrollY > 0 && root.scrollHeight - scrollY - innerHeight <= 2) index = entries.length - 1;
+    select(index);
+  }
+  function queueReading() {
+    if (!readingFrame) readingFrame = requestAnimationFrame(readLocation);
+  }
+  function arrive({ entry, focus, fromContents }) {
+    if (fromContents && !wide.matches) contents.open = false;
+    if (focus) entry.heading.focus({ preventScroll: true });
+    entry.section.scrollIntoView({ block: 'start' });
+    anchoredTop = scrollY;
+    queueRail();
+  }
+  function finishArrival(arrival = pendingArrival) {
+    if (!arrival || arrival !== pendingArrival) return;
+    pendingArrival = null;
+    arrive(arrival);
+  }
+  function show(index, nextMode, { focus = false, historyEntry = false, fromContents = false, pointer = false } = {}) {
+    const entry = entries[index];
+    const arrival = { entry, focus, fromContents };
+    // Let a narrow-screen pointer tap finish the visible route before the page jumps.
+    const playBeforeJump = index !== current && fromContents && pointer && contents.open && !wide.matches && !reduced.matches;
+    pendingArrival = playBeforeJump ? arrival : null;
+    mode = nextMode;
+    root.dataset.guideMode = mode;
+    const guided = mode === 'guided';
+    entries.forEach(item => { item.section.hidden = guided && item !== entry; });
+    modeButton.textContent = guided ? 'Show full reference' : 'Start guided setup';
+    controls.hidden = !guided;
+    back.disabled = index === 0;
+    next.textContent = index < lastTask ? 'Continue' : 'Finish walkthrough';
+    nextPreview.textContent = index < lastTask ? 'Next: ' + entries[index + 1].link.textContent : 'Return to the full reference.';
+    select(index);
+    if (historyEntry && (location.hash !== entry.link.hash || history.state?.guideMode !== mode)) {
+      history.pushState({ guideMode: mode }, '', entry.link.hash);
+    }
+    if (!playBeforeJump) arrive(arrival);
+  }
+  const hashIndex = () => entries.findIndex(entry => entry.link.hash === location.hash);
+  function restoreLocation() {
+    historyFrame = 0;
+    const index = hashIndex();
+    if (index >= 0) {
+      show(index, history.state?.guideMode === 'guided' ? 'guided' : 'reference');
+    } else {
+      if (mode === 'guided') show(0, 'reference');
+      anchoredTop = null;
+      queueReading();
+    }
+  }
+  function queueHistory() {
+    pendingArrival = null;
+    if (!historyFrame) historyFrame = requestAnimationFrame(restoreLocation);
+  }
+  function syncContents() {
+    contents.open = wide.matches;
+    finishArrival();
+    queueRail();
+    queueReading();
+  }
+  for (const entry of entries) {
+    entry.link.addEventListener('click', event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+      event.preventDefault();
+      show(entry.index, mode, { focus: true, historyEntry: true, fromContents: true, pointer: event.detail > 0 });
+    });
+  }
+  document.querySelector('.skip').addEventListener('click', event => {
+    if (mode !== 'guided' || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+    event.preventDefault();
+    show(current, mode, { focus: true });
+  });
+  modeButton.hidden = false;
+  modeButton.addEventListener('click', () => {
+    if (mode === 'guided') show(current, 'reference', { focus: true, historyEntry: true });
+    else show(0, 'guided', { focus: true, historyEntry: true });
+  });
+  back.addEventListener('click', () => show(current - 1, 'guided', { focus: true, historyEntry: true }));
+  next.addEventListener('click', () => {
+    if (current < lastTask) show(current + 1, 'guided', { focus: true, historyEntry: true });
+    else show(current, 'reference', { focus: true, historyEntry: true });
+  });
+  window.addEventListener('scroll', queueReading, { passive: true });
+  window.addEventListener('resize', () => { queueRail(); queueReading(); });
+  window.addEventListener('popstate', queueHistory);
+  window.addEventListener('hashchange', queueHistory);
+  window.addEventListener('pageshow', event => { if (event.persisted) { queueRail(); queueReading(); } });
+  wide.addEventListener('change', syncContents);
+  reduced.addEventListener('change', () => { cancelTrace(); finishArrival(); });
+  contents.addEventListener('toggle', queueRail);
+  const resize = new ResizeObserver(queueRail);
+  resize.observe(rail);
+  resize.observe(masthead);
+  for (const { rows } of groups) resize.observe(rows);
+  document.fonts.ready.then(queueRail);
+  syncContents();
+  const initial = hashIndex();
+  if (initial >= 0) show(initial, history.state?.guideMode === 'guided' ? 'guided' : 'reference');
+  else select(0);
   document.documentElement.dataset.guideReady = 'true';
 })();
 </script>
