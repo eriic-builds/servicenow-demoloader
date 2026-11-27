@@ -116,7 +116,7 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await pick('account');
  await until(`document.querySelector('.rail-group[data-traced] a[href="#account"][aria-current]') !== null`);
  assert.equal(await evaluate(aligned),true);
- await evaluate(`window.railHeight=document.querySelector('a[aria-current]').offsetHeight;document.getElementById('guide-rail').style.width='135px'`);
+ await evaluate(`window.railHeight=document.querySelector('a[aria-current]').offsetHeight;document.getElementById('guide-rail').style.width='100px'`);
  await until(`document.querySelector('a[aria-current]').offsetHeight>railHeight && ${aligned}`);
  await evaluate(`document.getElementById('guide-rail').style.removeProperty('width')`);
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
@@ -126,19 +126,10 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  assert.equal(await evaluate(`document.querySelector('[data-traced] .rail-track').getAnimations({subtree:true}).length`),0);
 
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:1040,height:460,deviceScaleFactor:1,mobile:false});
- await until(`getComputedStyle(document.getElementById('guide-rail')).position==='static'`);
+ await until(`getComputedStyle(document.querySelector('.sidebar')).position==='sticky'`);
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:768,height:900,deviceScaleFactor:1,mobile:false});
- const open=`document.getElementById('mobile-contents').open`;
- const toggle='#mobile-contents-toggle';
- const openContents=()=>evaluate(`document.querySelector('${toggle}').click()`);
- await until(`document.querySelector('${toggle}').offsetHeight>=44`);
+ await until(`getComputedStyle(document.getElementById('guide-rail')).position==='sticky'`);
  assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
- await openContents();
- await until(`${open} && ${aligned}`);
- assert.equal(await evaluate(`document.activeElement.id`),'mobile-contents-close');
- await browser.cdp.send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
- await browser.cdp.send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
- await until(`!${open} && document.activeElement.id==='mobile-contents-toggle'`);
 
  await evaluate(`document.getElementById('guide-mode').click()`);
  const visible=()=>evaluate(`Array.from(document.querySelectorAll('.part:not([hidden])'),task=>task.id)`);
@@ -149,7 +140,6 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  assert.equal(await evaluate(`document.getElementById('guide-progress').value`),0);
  await evaluate(`document.getElementById('walk-back').click()`);
  assert.deepEqual(await visible(),['before']);
- await openContents();
  await pick('account');
  assert.deepEqual(await visible(),['account']);
  assert.equal(await evaluate(`document.activeElement.id`),'account-title');
@@ -158,14 +148,13 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await evaluate(`(async()=>{const copy=document.getElementById('copy-machine-id');navigator.clipboard.writeText=async()=>{throw new Error('denied')};copy.click();await Promise.resolve();})()`);
  assert.match(await evaluate(`document.getElementById('copy-status').textContent`),/Select and copy the User ID/);
  await evaluate(`document.querySelector('#account input[data-check]').click()`);
- await openContents();
  await pick('install');
  assert.deepEqual(await visible(),['install']);
 
  await browser.cdp.send('Emulation.setEmulatedMedia',{media:'print'});
  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.part')).every(task=>getComputedStyle(task).display==='block')`),true);
  assert.equal(await evaluate(`getComputedStyle(document.getElementById('walk-controls')).display`),'none');
- assert.equal(await evaluate(`getComputedStyle(document.getElementById('mobile-dock')).display`),'none');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.sidebar')).display`),'none');
  await browser.cdp.send('Emulation.setEmulatedMedia',{media:''});
  await evaluate(`document.getElementById('walk-next').click()`);
  assert.equal((await visible()).length,9);
@@ -175,12 +164,14 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await until(`document.documentElement.dataset.guideMode==='guided'`);
  assert.deepEqual(await visible(),['install']);
 
- // Tap visible controls without scrolling them into view, just as on a phone.
+ // On a phone the whole rail stays in view during page scrolling and link navigation.
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:700,deviceScaleFactor:1,mobile:true});
  await browser.cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
  await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?phone=1#install'});
- await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#install' && !${open}`);
+ await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#install' && ${aligned}`);
+ const railVisible=`(()=>{const links=[...document.querySelectorAll('#guide-nav a')];return links.length===9 && links.every(a=>{const r=a.getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight && a.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));});})()`;
+ const headingBelow=id=>`document.getElementById('${id}').getBoundingClientRect().top>=document.querySelector('.sidebar').getBoundingClientRect().bottom`;
  const tap=async selector=>{
   const point=await evaluate(`(()=>{const target=document.querySelector(${JSON.stringify(selector)}),r=target.getBoundingClientRect(),x=Math.round(r.left+r.width/2),y=Math.round(r.top+r.height/2);return target.contains(document.elementFromPoint(x,y))?[x,y]:null;})()`);
   assert.ok(point,`${selector} must be visible and tappable without scrolling`);
@@ -188,55 +179,30 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
   await browser.cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
   await browser.cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
  };
- const scrollBefore=await evaluate('scrollY');assert.ok(scrollBefore>700);
- const routeVisible=`(()=>{const group=document.querySelector('[data-traced]'),row=group?.querySelector('a[aria-current]');if(!row)return false;return group.getBoundingClientRect().top>=document.querySelector('.mobile-contents-head').getBoundingClientRect().bottom-1 && row.getBoundingClientRect().bottom<=innerHeight;})()`;
- await tap(toggle);
- await until(`${open} && ${aligned}`);
- assert.equal(await evaluate('scrollY'),scrollBefore);
- assert.equal(await evaluate(routeVisible),true);
+ assert.ok(await evaluate('scrollY>700'));
+ assert.equal(await evaluate(headingBelow('install-title')),true);
+ assert.equal(await evaluate(railVisible),true);
  assert.equal(await logoFilter(),'grayscale(1)');
- assert.equal(await evaluate(`document.querySelector('.service-mark').naturalWidth`),32);
  assert.ok(await evaluate(`document.querySelector('#guide-nav a[href="#roles"]').offsetHeight>=44`));
- await tap('#guide-nav a[href="#roles"]');
- await until(`${open} && document.querySelector('.service[data-traced] a[href="#roles"][aria-current]') && document.querySelector('.service .rail-dot').getAnimations().length===1 && ${routeVisible}`);
- assert.equal(await evaluate('location.hash'),'#install');
+ const scrollBefore=await evaluate('scrollY');
+ const railTop=await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`);
+ await evaluate(`scrollBy(0,document.getElementById('roles-title').getBoundingClientRect().top-parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop))`);
+ await until(`document.querySelector('[data-traced] a[aria-current]')?.hash==='#roles' && ${aligned} && ${railVisible} && document.querySelector('.service .rail-trace').getAnimations().length===1`);
+ assert.notEqual(await evaluate('scrollY'),scrollBefore);
+ assert.equal(await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`),railTop);
  assert.equal(await logoFilter(),'none');
- assert.equal(await evaluate(aligned),true);
- await until(`!${open} && document.activeElement.id==='roles-title' && location.hash==='#roles'`);
- assert.equal(await evaluate(`document.getElementById('contents-location').textContent`),'Add the four roles');
+ await tap('#guide-nav a[href="#password"]');
+ await until(`location.hash==='#password' && document.activeElement.id==='password-title' && ${headingBelow('password-title')} && ${railVisible} && ${aligned}`);
 
- await tap(toggle);
- await until(`${open} && ${aligned}`);
- await evaluate(`document.querySelector('#guide-nav a[href="#review"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}))`);
- await until(`${open} && document.querySelector('[data-traced] a[aria-current]')?.hash==='#review' && document.querySelector('.service .rail-dot').getAnimations().length===1`);
- await evaluate(`document.querySelector('.service .rail-track').getAnimations({subtree:true}).forEach(animation=>animation.cancel())`);
- await until(`!${open} && location.hash==='#review' && document.activeElement.id==='review-title'`);
- await pick('roles');
-
- await tap(toggle);
- await until(`${open} && ${aligned}`);
- assert.equal(await evaluate(routeVisible),true);
- await evaluate(`(() => {document.querySelector('#guide-nav a[href="#account"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));document.getElementById('mobile-contents-close').click();})()`);
- await until(`!${open} && document.activeElement.id==='mobile-contents-toggle' && document.querySelector('#guide-nav a[aria-current]').hash==='#roles'`);
- assert.equal(await evaluate('location.hash'),'#roles');
- await tap(toggle);
- await until(`${open} && ${aligned}`);
- await evaluate(`(() => {for(const id of ['account','microsoft']) document.querySelector('#guide-nav a[href="#'+id+'"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));})()`);
- await until(`!${open} && document.activeElement.id==='microsoft-title' && location.hash==='#microsoft'`);
- assert.equal(await logoFilter(),'grayscale(1)');
- await evaluate(`scrollBy(0,document.getElementById('roles-title').getBoundingClientRect().top-18)`);
- await until(`document.querySelector('#guide-nav a[aria-current]').hash==='#roles'`);
- assert.equal(await logoFilter(),'none');
- assert.equal(await evaluate(`document.getElementById('contents-location').textContent`),'Add the four roles');
+ // A short screen keeps enough height for reading without hiding or nesting the menu.
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:320,height:360,deviceScaleFactor:1,mobile:true});
+ await until(`innerWidth===320 && ${railVisible} && ${aligned}`);
  assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
- await tap(toggle);
- await until(`${open} && ${aligned}`);
- assert.equal(await evaluate(`(()=>{const panel=document.getElementById('mobile-contents');return panel.scrollHeight>panel.clientHeight && panel.getBoundingClientRect().top>=0;})()`),true);
- assert.equal(await evaluate(`document.querySelector('[data-traced]').getAnimations({subtree:true}).length`),0);
+ assert.ok(await evaluate(`innerHeight-document.querySelector('.sidebar').getBoundingClientRect().bottom>120`));
  await tap('#guide-nav a[href="#roles"]');
- await until(`!${open} && document.activeElement.id==='roles-title'`);
+ await until(`document.activeElement.id==='roles-title' && ${headingBelow('roles-title')} && ${aligned}`);
+ assert.equal(await evaluate(`document.querySelector('[data-traced]').getAnimations({subtree:true}).length`),0);
 
  // iPad Safari can report a Mac without a coarse primary pointer.
  await browser.cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});
@@ -245,41 +211,13 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await browser.cdp.send('Page.addScriptToEvaluateOnNewDocument',{source:`Object.defineProperties(navigator,{platform:{value:'MacIntel'},maxTouchPoints:{value:5}})`});
  await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?tablet=1#roles'});
  await until(`location.search.includes('tablet=1') && document.documentElement.dataset.guideReady==='true' && document.querySelector('#guide-nav a[aria-current]')?.hash==='#roles'`);
- assert.deepEqual(await evaluate(`({platform:navigator.platform,touches:navigator.maxTouchPoints,wide:matchMedia('(min-width: 861px)').matches,coarse:matchMedia('(pointer: coarse)').matches})`),{platform:'MacIntel',touches:5,wide:true,coarse:false});
- assert.equal(await evaluate(`getComputedStyle(document.getElementById('mobile-dock')).position`),'fixed');
- const dockVisible=`(()=>{const b=document.querySelector('${toggle}'),r=b.getBoundingClientRect(),x=(r.left+r.right)/2,y=(r.top+r.bottom)/2;return r.height>=44 && b.contains(document.elementFromPoint(x,y));})()`;
+ assert.equal(await evaluate(`getComputedStyle(document.getElementById('guide-rail')).position`),'sticky');
+ const tabletTop=await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`);
  await evaluate(`scrollBy(0, 500)`);
- assert.equal(await evaluate(dockVisible),true);
- const tabletScroll=await evaluate('scrollY');
- await openContents();
- await until(`${open} && ${aligned}`);
- assert.equal(await evaluate('scrollY'),tabletScroll);
- await pick('install');
- await until(`!${open} && document.activeElement.id==='install-title'`);
- assert.equal(await evaluate(dockVisible),true);
+ assert.equal(await evaluate(railVisible),true);
+ assert.equal(await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`),tabletTop);
+ assert.ok(await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().right<document.getElementById('steps').getBoundingClientRect().left`));
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:1024,height:1366,deviceScaleFactor:1,mobile:false});
- await until(`innerWidth===1024 && ${dockVisible}`);
-
- // The visible area can shrink independently of the layout viewport.
- await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:700,deviceScaleFactor:1,mobile:true});
- await browser.cdp.send('Emulation.setPageScaleFactor',{pageScaleFactor:1.5});
- const withinVisualViewport=selector=>`(()=>{const r=document.querySelector('${selector}').getBoundingClientRect(),v=visualViewport;return r.height>0 && r.top>=v.offsetTop-1 && r.left>=v.offsetLeft-1 && r.right<=v.offsetLeft+v.width+1 && r.bottom<=v.offsetTop+v.height+1;})()`;
- await until(`visualViewport.scale>1 && ${withinVisualViewport('#mobile-dock')}`);
- await openContents();
- await until(`${open} && ${withinVisualViewport('#mobile-contents')}`);
- await pick('before');
- await until(`!${open} && document.activeElement.id==='before-title' && ${withinVisualViewport('#mobile-dock')}`);
- await browser.cdp.send('Emulation.setPageScaleFactor',{pageScaleFactor:1});
-
- // No native dialog: the fixed button still opens the inline navigation from deep in the guide.
- await browser.cdp.send('Page.addScriptToEvaluateOnNewDocument',{source:`HTMLDialogElement.prototype.showModal=undefined`});
- await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?legacy=1#install'});
- await until(`location.search.includes('legacy=1') && document.documentElement.dataset.guideReady==='true' && ${dockVisible}`);
- assert.ok(await evaluate('scrollY>700'));
- await openContents();
- await until(`document.getElementById('guide-contents').open && !${open} && ${aligned}`);
- assert.equal(await evaluate(`document.querySelector('${toggle}').getAttribute('aria-controls')`),'guide-contents');
- await pick('before');
- await until(`!document.getElementById('guide-contents').open && document.activeElement.id==='before-title' && ${dockVisible}`);
+ await until(`innerWidth===1024 && ${railVisible} && ${aligned}`);
  assert.equal(blocked,0);assert.ok(requests.size>=2);
 });

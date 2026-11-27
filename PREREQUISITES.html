@@ -98,7 +98,7 @@ html[data-theme="light"] {
   --cp-guide-green: #316746;
 }
 * { box-sizing: border-box; }
-html { scroll-padding-top: 20px; }
+html { scroll-padding-top: var(--guide-top, 222px); }
 body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 15px/1.65 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
 [hidden] { display: none !important; }
 a { color: var(--cp-link); text-underline-offset: 3px; }
@@ -124,7 +124,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowe
 .brand-title { font-weight: 650; }
 .brand-caption, .local-tag, .caption, footer { font-size: .85rem; color: var(--cp-text-muted); }
 .brand-caption { padding-left: 10px; border-left: 1px solid var(--cp-border); }
-.layout { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "sidebar" "content"; gap: 20px; padding-top: 24px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "sidebar" "hero" "content"; gap: 20px; }
 .hero { grid-area: hero; min-width: 0; padding-bottom: 24px; border-bottom: 1px solid var(--cp-border); }
 .eyebrow { color: var(--cp-brand); font-size: .8rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
 .hero .lead { font-size: 1.15rem; max-width: 59ch; }
@@ -133,24 +133,23 @@ button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowe
 .notice { margin: 20px 0; padding: 12px 16px; border-left: 2px solid var(--cp-brand); background: var(--cp-bg-elevated); }
 .notice p { margin: 4px 0 0; }
 .notice.danger { border-left-color: var(--cp-danger-ink); }
-.sidebar { grid-area: sidebar; min-width: 0; }
+.sidebar { grid-area: sidebar; min-width: 0; position: sticky; top: 0; align-self: start; z-index: 2; padding: 8px 0; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
 .rail { font-size: .875rem; }
-.contents > summary, .rail-title { font-weight: 650; color: var(--cp-text); }
-.contents > summary { min-height: 44px; padding: 10px 0; }
-.mobile-contents { display: none; }
-.contents-location { min-width: 0; overflow: hidden; color: var(--cp-text-muted); font-size: .875rem; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
 .rail-title { display: none; margin: 0 0 16px; }
-.rail-group + .rail-group { margin-top: 14px; }
-.rail-group { --route-color: var(--cp-brand); color: var(--cp-text-muted); }
+#guide-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.rail-group { --route-color: var(--cp-brand); min-width: 0; color: var(--cp-text-muted); }
 .rail-group.service { --route-color: var(--cp-guide-green); }
-.rail-heading { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: .825rem; font-weight: 650; }
+.rail-heading { display: flex; align-items: center; gap: 4px; margin: 0 0 4px; font-size: .8rem; font-weight: 650; overflow-wrap: anywhere; }
 .rail-heading :is(svg, img) { width: 16px; height: 16px; flex: none; }
 .service-mark { filter: grayscale(1); opacity: .7; }
 .rail-group[data-active] .service-mark { filter: none; opacity: 1; }
 .rail-group[data-active] .rail-heading { color: var(--route-color); }
 .rail-rows { position: relative; }
 .rail-rows ol { list-style: none; padding: 0; margin: 0; }
-.rail-rows a { display: flex; align-items: center; min-height: 44px; padding: 4px 0 4px 26px; color: var(--cp-text-muted); line-height: 1.3; text-decoration: none; }
+.rail-rows a { display: flex; align-items: center; min-height: 44px; padding: 4px 0 4px 24px; color: var(--cp-text-muted); line-height: 1.3; text-decoration: none; overflow-wrap: anywhere; }
+.rail-rows a:focus-visible { outline-offset: 1px; }
+.rail-step-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.rail-step-short { min-width: 0; font-size: .825rem; }
 .rail-rows a:hover { color: var(--cp-text); text-decoration: underline; }
 .rail-rows a[aria-current] { color: var(--cp-text); font-weight: 650; }
 .rail-track { position: absolute; top: 0; left: 7.5px; width: 16px; height: 100%; pointer-events: none; overflow: visible; }
@@ -159,7 +158,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowe
 .rail-trace { stroke: var(--route-color); stroke-dasharray: 1; }
 .rail-dot { fill: var(--route-color); }
 .rail-group:not([data-traced]) :is(.rail-trace, .rail-dot) { visibility: hidden; }
-.rail-progress { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--cp-border); }
+.rail-progress { max-width: 22rem; margin-top: 16px; }
 progress { display: block; width: 100%; height: 8px; margin: 8px 0 0; accent-color: var(--cp-guide-green); }
 #progress-label { margin: 0; }
 .guide-tools { margin-top: 12px; font-size: .85rem; }
@@ -207,31 +206,31 @@ summary { cursor: pointer; font-weight: 600; }
 .walk-controls p { flex: 1 1 200px; margin: 0; }
 footer { max-width: 72ch; }
 footer time { white-space: nowrap; }
-@media (min-width: 861px) {
-  html:where(:not([data-touch-layout])) .shell { max-width: 1440px; padding-inline: clamp(20px, 5vw, 72px); }
-  html:where(:not([data-touch-layout])) .layout { grid-template-columns: 196px minmax(0, 960px); grid-template-areas: "sidebar hero" "sidebar content"; column-gap: clamp(32px, 4vw, 64px); row-gap: 28px; padding-top: 40px; }
-  html:where(:not([data-touch-layout])) .contents > summary { display: none; }
-  html:where(:not([data-touch-layout])) .rail-title { display: block; }
-  html:where(:not([data-touch-layout])) .rail-rows a { min-height: 30px; }
-  .rail[data-fits] { position: sticky; top: var(--rail-top); }
+@media (min-width: 740px) and (min-height: 660px) {
+  html { scroll-padding-top: var(--guide-top, 84px); }
+  .shell { max-width: 1440px; padding-inline: clamp(20px, 5vw, 72px); }
+  .layout { grid-template-columns: clamp(164px, 18vw, 196px) minmax(0, 960px); grid-template-areas: "sidebar hero" "sidebar content"; column-gap: clamp(24px, 4vw, 64px); row-gap: 28px; padding-top: 40px; }
+  .masthead { position: sticky; top: 0; z-index: 2; }
+  .sidebar { position: static; align-self: stretch; padding: 0; border: 0; }
+  .rail { position: sticky; top: var(--rail-top, 84px); }
+  .rail-title { display: block; font-weight: 650; }
+  #guide-nav { display: block; }
+  .rail-group + .rail-group { margin-top: 14px; }
+  .rail-heading { gap: 8px; }
+  .rail-step-label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: normal; }
+  .rail-step-short { display: none; }
 }
-@media (min-width: 861px) and (min-height: 500px) {
-  html:where(:not([data-touch-layout])) { scroll-padding-top: 84px; }
-  html:where(:not([data-touch-layout])) .masthead { position: sticky; top: 0; z-index: 2; }
+@media (min-width: 740px) and (min-height: 660px) and (pointer: fine) {
+  .rail-rows a { min-height: 30px; }
 }
-html[data-touch-layout] .rail-progress { margin-top: 8px; }
-html[data-mobile-contents] { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + var(--guide-vv-bottom, 0px)); }
-html[data-mobile-contents] .shell { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
-html:has(.mobile-contents[open]) { overflow: hidden; }
-.mobile-dock, .mobile-contents[open] { position: fixed; top: auto; right: var(--guide-vv-right, 0px); bottom: var(--guide-vv-bottom, 0px); left: var(--guide-vv-left, 0px); }
-.mobile-dock { display: flex; z-index: 3; justify-content: center; padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); background: var(--cp-bg); border-top: 1px solid var(--cp-border); }
-.mobile-dock .quiet { width: min(100%, 696px); justify-content: space-between; gap: 12px; background: var(--cp-bg-elevated); border-color: var(--cp-border); }
-.mobile-dock .quiet > :first-child { flex: none; color: var(--cp-brand); }
-.mobile-contents[open] { display: block; margin: 0 auto; width: auto; max-width: 760px; max-height: calc(var(--guide-vv-height, 100vh) - 12px); padding: 0; overflow: auto; overscroll-behavior: contain; background: var(--cp-bg); color: var(--cp-text); border: 1px solid var(--cp-border); border-radius: 16px 16px 0 0; }
-.mobile-contents::backdrop { background: color-mix(in srgb, var(--cp-text) 36%, transparent); }
-.mobile-contents-head { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 16px; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
-.mobile-contents-head h2 { font-size: 1.125rem; }
-.mobile-contents #guide-nav { padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); font-size: .875rem; }
+@media (max-height: 480px) {
+  html { scroll-padding-top: var(--guide-top, 163px); }
+  .rail-rows a { min-height: 32px; }
+}
+@media (max-height: 240px) {
+  html { scroll-padding-top: 16px; }
+  .sidebar { position: static; }
+}
 @media (max-width: 440px) {
   .brand-caption { display: none; }
   .role-list { grid-template-columns: minmax(0, 1fr); }
@@ -240,12 +239,10 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { .rail-trace { stroke-dashoffset: 0 !important; } .rail-dot { opacity: 1 !important; } }
 @media print {
-  html:has(.mobile-contents[open]) { overflow: visible; }
   body { background: var(--cp-surface); font-size: 11pt; }
   html .shell { max-width: none; padding: 0; }
   html .layout { display: block; padding: 0; }
-  .masthead, .sidebar, .skip, .mode-action, .walk-controls, .users-shortcut input, .shortcut-actions, .shortcut-destination, .mobile-dock, .mobile-contents[open] { display: none; }
-  html[data-mobile-contents] .shell { padding: 0; }
+  .masthead, .sidebar, .skip, .mode-action, .walk-controls, .guide-tools, .users-shortcut input, .shortcut-actions, .shortcut-destination { display: none; }
   .part, .part[hidden] { display: block !important; padding-bottom: 12px; margin-bottom: 16px; }
   [data-guide-mode] .part .task-heading { padding: 0; background: none; }
   [data-guide-mode] .done-when { display: none; }
@@ -259,32 +256,19 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 </head>
 <body>
 <a class="skip" href="#steps">Skip to the instructions</a>
-<div class="mobile-dock" id="mobile-dock" hidden>
-<button class="quiet" id="mobile-contents-toggle" type="button" aria-haspopup="dialog" aria-controls="mobile-contents"><span>Contents</span><span class="contents-location" id="contents-location"></span></button>
-</div>
 <div class="shell">
 <div class="masthead"><div class="brand"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7m-3.5-3.5v7"/></svg><span class="brand-title">SN DemoLoader</span><span class="brand-caption">Setup guide</span></div><span class="local-tag">Local instructions</span></div>
 <div class="layout">
-<header class="hero">
-<div class="eyebrow">Prerequisites &amp; installation</div>
-<h1>Set up Scout's ServiceNow account</h1>
-<p class="lead">Use your Human admin to create <code>demo.seeder</code>, then install SN DemoLoader and test read access in Scout.</p>
-<div class="notice danger"><strong>Your own practice PDI only. Never production.</strong><p>These are powerful permissions, not a production or least-privilege setup.</p></div>
-<button id="guide-mode" class="mode-action" type="button" hidden>Start guided setup</button>
-<p class="caption">No account is created by this guide or installer. Do steps 1-7 first. No passwords collected, background requests or saved checklist/address.</p>
-</header>
 <aside class="sidebar">
 <div class="rail" id="guide-rail">
-<details class="contents" id="guide-contents" open>
-<summary>Contents</summary>
 <p class="rail-title" aria-hidden="true">Contents</p>
 <nav aria-label="Setup contents" id="guide-nav">
 <div class="rail-group">
 <p class="rail-heading"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><rect x="2.5" y="2.5" width="11" height="8" rx="1"/><path d="M1 13.5h14m-9-3v3m4-3v3"/></svg>Prepare</p>
 <div class="rail-rows">
 <ol>
-<li><a href="#before">Check your computer</a></li>
-<li><a href="#pdi">Open your PDI</a></li>
+<li><a href="#before"><span class="rail-step-label">Check your computer</span><span class="rail-step-short" aria-hidden="true">Computer</span></a></li>
+<li><a href="#pdi"><span class="rail-step-label">Open your PDI</span><span class="rail-step-short" aria-hidden="true">PDI</span></a></li>
 </ol>
 </div>
 </div>
@@ -292,10 +276,10 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 <p class="rail-heading"><img class="service-mark" width="16" height="16" alt="" src="data:image/png;base64,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">ServiceNow</p>
 <div class="rail-rows">
 <ol>
-<li><a href="#account">Create the Machine account</a></li>
-<li><a href="#password">Set its password</a></li>
-<li><a href="#roles">Add the four roles</a></li>
-<li><a href="#review">Reopen and check</a></li>
+<li><a href="#account"><span class="rail-step-label">Create the Machine account</span><span class="rail-step-short" aria-hidden="true">Account</span></a></li>
+<li><a href="#password"><span class="rail-step-label">Set its password</span><span class="rail-step-short" aria-hidden="true">Password</span></a></li>
+<li><a href="#roles"><span class="rail-step-label">Add the four roles</span><span class="rail-step-short" aria-hidden="true">Roles</span></a></li>
+<li><a href="#review"><span class="rail-step-label">Reopen and check</span><span class="rail-step-short" aria-hidden="true">Check</span></a></li>
 </ol>
 </div>
 </div>
@@ -303,14 +287,22 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 <p class="rail-heading"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true" focusable="false"><rect x="2.25" y="2.25" width="11.5" height="11.5" rx="1.25"/><path d="M2.5 6h11m-8 3 2 2 3.5-3.5"/></svg>Scout</p>
 <div class="rail-rows">
 <ol>
-<li><a href="#microsoft">Have your tenant ready</a></li>
-<li><a href="#install">Install and open Scout</a></li>
-<li><a href="#troubleshooting">If something looks different</a></li>
+<li><a href="#microsoft"><span class="rail-step-label">Have your tenant ready</span><span class="rail-step-short" aria-hidden="true">Tenant</span></a></li>
+<li><a href="#install"><span class="rail-step-label">Install and open Scout</span><span class="rail-step-short" aria-hidden="true">Install</span></a></li>
+<li><a href="#troubleshooting"><span class="rail-step-label">Help if something looks different</span><span class="rail-step-short" aria-hidden="true">Help</span></a></li>
 </ol>
 </div>
 </div>
 </nav>
-</details>
+</div>
+</aside>
+<header class="hero">
+<div class="eyebrow">Prerequisites &amp; installation</div>
+<h1>Set up Scout's ServiceNow account</h1>
+<p class="lead">Use your Human admin to create <code>demo.seeder</code>, then install SN DemoLoader and test read access in Scout.</p>
+<div class="notice danger"><strong>Your own practice PDI only. Never production.</strong><p>These are powerful permissions, not a production or least-privilege setup.</p></div>
+<button id="guide-mode" class="mode-action" type="button" hidden>Start guided setup</button>
+<p class="caption">No account is created by this guide or installer. Do steps 1-7 first. No passwords collected, background requests or saved checklist/address.</p>
 <div class="rail-progress">
 <strong>Setup checklist</strong>
 <progress id="guide-progress" max="8" value="0" aria-label="Self-reported setup progress"></progress>
@@ -320,8 +312,7 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 <summary>Guide tools</summary>
 <button class="quiet" id="reset-checks" type="button">Clear my checklist</button>
 </details>
-</div>
-</aside>
+</header>
 <main class="content" id="steps" tabindex="-1">
 <section class="part" id="before" aria-labelledby="before-title">
 <div class="task-heading">
@@ -496,9 +487,6 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 </main>
 </div>
 </div>
-<dialog class="mobile-contents" id="mobile-contents" aria-labelledby="mobile-contents-title">
-<header class="mobile-contents-head"><h2 id="mobile-contents-title">Contents</h2><button class="quiet" id="mobile-contents-close" type="button" autofocus>Close</button></header>
-</dialog>
 <script>
 (() => {
   const checks = Array.from(document.querySelectorAll('input[data-check]'));
@@ -572,26 +560,13 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
 
   const root = document.documentElement;
   const rail = document.getElementById('guide-rail');
-  const contents = document.getElementById('guide-contents');
-  const nav = document.getElementById('guide-nav');
-  const mobileDock = document.getElementById('mobile-dock');
-  const mobileToggle = document.getElementById('mobile-contents-toggle');
-  const mobileContents = document.getElementById('mobile-contents');
-  const mobileHeader = mobileContents.querySelector('header');
-  const supportsDialog = typeof mobileContents.showModal === 'function';
-  const contentsLocation = document.getElementById('contents-location');
+  const sidebar = rail.closest('.sidebar');
   const masthead = document.querySelector('.masthead');
   const modeButton = document.getElementById('guide-mode');
   const controls = document.getElementById('walk-controls');
   const back = document.getElementById('walk-back');
   const next = document.getElementById('walk-next');
   const nextPreview = document.getElementById('walk-preview');
-  const wide = matchMedia('(min-width: 861px)');
-  const touchTablet = matchMedia('(max-width: 1400px) and (pointer: coarse) and (hover: none)');
-  // iPadOS can identify as macOS, even with a fine pointer attached.
-  const appleTouch = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const desktopRail = () => wide.matches && !touchTablet.matches && !appleTouch;
-  const viewport = window.visualViewport;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const svgNS = 'http://www.w3.org/2000/svg';
   function svg(name, attributes) {
@@ -611,7 +586,7 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
     const items = Array.from(rows.querySelectorAll('a'), link => {
       const section = document.getElementById(link.hash.slice(1));
       const heading = document.getElementById(section.getAttribute('aria-labelledby'));
-      const entry = { index: entries.length, link, section, heading, group };
+      const entry = { index: entries.length, link, section, heading, group, label: link.querySelector('.rail-step-label').textContent };
       entries.push(entry);
       return entry;
     });
@@ -626,25 +601,21 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
   let railFrame = 0;
   let readingFrame = 0;
   let historyFrame = 0;
-  let viewportFrame = 0;
-  let pendingArrival = null;
-  let replayTrace = false;
 
   function cancelTrace() {
     for (const animation of animations) animation.cancel();
     animations = [];
   }
+  function positionRail() {
+    const headerHeight = getComputedStyle(masthead).position === 'sticky' ? masthead.offsetHeight : 0;
+    const stacked = getComputedStyle(sidebar).position === 'sticky';
+    const railTop = Math.max(headerHeight + 12, (innerHeight + headerHeight - rail.offsetHeight) / 2);
+    rail.style.setProperty('--rail-top', railTop + 'px');
+    root.style.setProperty('--guide-top', ((stacked ? sidebar.offsetHeight : headerHeight) + 16) + 'px');
+  }
   function measureRail() {
     railFrame = 0;
-    const headerHeight = getComputedStyle(masthead).position === 'sticky' ? masthead.offsetHeight : 0;
-    const spare = innerHeight - headerHeight - rail.offsetHeight;
-    rail.toggleAttribute('data-fits', desktopRail() && spare >= 32);
-    rail.style.setProperty('--rail-top', (headerHeight + spare / 2) + 'px');
-    if (!mobileContents.open && (contents.hidden || !contents.open)) {
-      cancelTrace();
-      drawn = current;
-      return;
-    }
+    positionRail();
 
     // Both the neutral branches and the active trace use rendered row centers.
     const radius = 5.5;
@@ -665,20 +636,15 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
       trace.setAttribute('d', route(y));
       dot.setAttribute('cy', y);
       group.setAttribute('data-traced', '');
-      if ((replayTrace || (drawn !== current && drawn !== -1)) && !reduced.matches && typeof trace.animate === 'function') {
-        const duration = Math.max(270, Math.min(desktopRail() ? 540 : 320, Math.round(240 + y * 1.3)));
-        const dotFrames = pendingArrival ? [{ opacity: 0 }, { opacity: 1, offset: .5 }, { opacity: 1 }] : [{ opacity: 0 }, { opacity: 1 }];
+      if (drawn !== current && drawn !== -1 && !reduced.matches && typeof trace.animate === 'function') {
+        const duration = Math.max(270, Math.min(540, Math.round(240 + y * 1.3)));
         animations = [
           trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration, easing: 'ease-out' }),
-          dot.animate(dotFrames, { duration: 150, delay: duration, fill: 'backwards', easing: 'ease-out' })
+          dot.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, delay: duration, fill: 'backwards', easing: 'ease-out' })
         ];
-        const arrival = pendingArrival;
-        if (arrival) animations[1].addEventListener('finish', () => finishArrival(arrival), { once: true });
       }
       drawn = current;
     }
-    replayTrace = false;
-    if (pendingArrival && !animations.length) finishArrival();
   }
   function queueRail() {
     if (!railFrame) railFrame = requestAnimationFrame(measureRail);
@@ -695,12 +661,11 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
     current = index;
     entries[index].link.setAttribute('aria-current', 'location');
     entries[index].group.setAttribute('data-active', '');
-    contentsLocation.textContent = entries[index].link.textContent;
     queueRail();
   }
   function readLocation() {
     readingFrame = 0;
-    if (mode === 'guided' || mobileContents.open || anchoredTop === scrollY) return;
+    if (mode === 'guided' || anchoredTop === scrollY) return;
     anchoredTop = null;
     const line = parseFloat(getComputedStyle(root).scrollPaddingTop) + 10;
     let index = 0;
@@ -714,66 +679,8 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
   function queueReading() {
     if (!readingFrame) readingFrame = requestAnimationFrame(readLocation);
   }
-  function measureViewport() {
-    viewportFrame = 0;
-    if (!viewport || mobileDock.hidden || !viewport.width || !viewport.height) return;
-    // Fixed elements use the layout viewport; Safari's visible area can be smaller.
-    const left = Math.max(0, viewport.offsetLeft);
-    const right = Math.max(0, root.clientWidth - viewport.offsetLeft - viewport.width);
-    const bottom = Math.max(0, root.clientHeight - viewport.offsetTop - viewport.height);
-    root.style.setProperty('--guide-vv-left', left + 'px');
-    root.style.setProperty('--guide-vv-right', right + 'px');
-    root.style.setProperty('--guide-vv-bottom', bottom + 'px');
-    root.style.setProperty('--guide-vv-height', viewport.height + 'px');
-    if (mobileContents.open && current >= 0) {
-      revealMobileRoute(entries[current]);
-      queueRail();
-    }
-  }
-  function queueViewport() {
-    if (!viewportFrame) viewportFrame = requestAnimationFrame(measureViewport);
-  }
-  function revealMobileRoute(entry) {
-    const top = mobileHeader.getBoundingClientRect().bottom + 4;
-    const bottom = mobileContents.getBoundingClientRect().bottom - 8;
-    const row = entry.link.getBoundingClientRect();
-    const groupTop = entry.group.getBoundingClientRect().top;
-    const start = row.bottom - groupTop <= bottom - top ? groupTop : row.top;
-    if (start < top) mobileContents.scrollTop += start - top;
-    else if (row.bottom > bottom) mobileContents.scrollTop += row.bottom - bottom;
-  }
-  function finishArrival(arrival = pendingArrival) {
-    if (!mobileContents.open || !arrival || arrival !== pendingArrival) return;
-    show(arrival.index, arrival.mode, { focus: true, historyEntry: true, fromContents: true });
-  }
-  function clearArrival() {
-    if (!pendingArrival) return;
-    clearTimeout(pendingArrival.timeout);
-    pendingArrival = null;
-  }
-  function cancelArrival() {
-    if (!pendingArrival) return;
-    const { previous } = pendingArrival;
-    clearArrival();
-    select(previous);
-  }
-  function show(index, nextMode, { focus = false, historyEntry = false, fromContents = false, pointer = false } = {}) {
+  function show(index, nextMode, { focus = false, historyEntry = false } = {}) {
     const entry = entries[index];
-    // Keep the route on screen before navigating away from a tapped row.
-    if (fromContents && pointer && mobileContents.open && !reduced.matches) {
-      if (pendingArrival?.index === index) return;
-      if (index !== current) {
-        const arrival = { index, mode: nextMode, previous: pendingArrival?.previous ?? current };
-        clearArrival();
-        pendingArrival = arrival;
-        // Even if the browser drops the animation's finish event, the tap still navigates.
-        arrival.timeout = setTimeout(() => finishArrival(arrival), 650);
-        select(index);
-        revealMobileRoute(entry);
-        return;
-      }
-    }
-    clearArrival();
     mode = nextMode;
     root.dataset.guideMode = mode;
     const guided = mode === 'guided';
@@ -782,13 +689,12 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
     controls.hidden = !guided;
     back.disabled = index === 0;
     next.textContent = index < lastTask ? 'Continue' : 'Finish walkthrough';
-    nextPreview.textContent = index < lastTask ? 'Next: ' + entries[index + 1].link.textContent : 'Return to the full reference.';
+    nextPreview.textContent = index < lastTask ? 'Next: ' + entries[index + 1].label : 'Return to the full reference.';
     select(index);
     if (historyEntry && (location.hash !== entry.link.hash || history.state?.guideMode !== mode)) {
       history.pushState({ guideMode: mode }, '', entry.link.hash);
     }
-    if (mobileContents.open) mobileContents.close();
-    else if (fromContents && !desktopRail()) contents.open = false;
+    positionRail();
     if (focus) entry.heading.focus({ preventScroll: true });
     entry.section.scrollIntoView({ block: 'start' });
     anchoredTop = scrollY;
@@ -807,60 +713,13 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
     }
   }
   function queueHistory() {
-    cancelArrival();
-    if (mobileContents.open) mobileContents.close();
     if (!historyFrame) historyFrame = requestAnimationFrame(restoreLocation);
   }
-  function syncContents() {
-    const compact = !desktopRail();
-    const useSheet = compact && supportsDialog;
-    if (!useSheet && mobileContents.open) {
-      cancelArrival();
-      mobileContents.close();
-    }
-    root.toggleAttribute('data-touch-layout', compact);
-    root.toggleAttribute('data-mobile-contents', compact);
-    mobileDock.hidden = !compact;
-    contents.hidden = useSheet;
-    contents.open = !compact;
-    mobileToggle.setAttribute('aria-controls', useSheet ? mobileContents.id : contents.id);
-    if (!useSheet) mobileToggle.removeAttribute('aria-haspopup');
-    else mobileToggle.setAttribute('aria-haspopup', 'dialog');
-    const parent = useSheet ? mobileContents : contents;
-    if (nav.parentElement !== parent) parent.append(nav);
-    queueViewport();
-    queueRail();
-    queueReading();
-  }
-  mobileToggle.addEventListener('click', () => {
-    if (!supportsDialog) {
-      contents.open = true;
-      contents.querySelector('summary').focus({ preventScroll: true });
-      contents.scrollIntoView({ block: 'start' });
-      return;
-    }
-    cancelTrace();
-    mobileToggle.focus({ preventScroll: true });
-    mobileContents.showModal();
-    mobileContents.scrollTop = 0;
-    revealMobileRoute(entries[current]);
-    replayTrace = true;
-    queueRail();
-  });
-  document.getElementById('mobile-contents-close').addEventListener('click', () => mobileContents.close());
-  mobileContents.addEventListener('close', () => {
-    if (mobileContents.open) return;
-    cancelArrival();
-    replayTrace = false;
-    cancelTrace();
-    queueRail();
-    queueReading();
-  });
   for (const entry of entries) {
     entry.link.addEventListener('click', event => {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
       event.preventDefault();
-      show(entry.index, mode, { focus: true, historyEntry: true, fromContents: true, pointer: event.detail > 0 });
+      show(entry.index, mode, { focus: true, historyEntry: true });
     });
   }
   document.querySelector('.skip').addEventListener('click', event => {
@@ -879,20 +738,12 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
     else show(current, 'reference', { focus: true, historyEntry: true });
   });
   window.addEventListener('scroll', queueReading, { passive: true });
-  window.addEventListener('resize', () => { queueViewport(); queueRail(); queueReading(); });
-  viewport?.addEventListener('resize', queueViewport);
-  viewport?.addEventListener('scroll', queueViewport, { passive: true });
+  window.addEventListener('resize', () => { queueRail(); queueReading(); });
   window.addEventListener('popstate', queueHistory);
   window.addEventListener('hashchange', queueHistory);
-  window.addEventListener('pageshow', event => { if (event.persisted) { queueViewport(); queueRail(); queueReading(); } });
-  function watchMedia(query, listener) {
-    if (query.addEventListener) query.addEventListener('change', listener);
-    else query.addListener(listener);
-  }
-  watchMedia(wide, syncContents);
-  watchMedia(touchTablet, syncContents);
-  watchMedia(reduced, () => { cancelTrace(); finishArrival(); });
-  contents.addEventListener('toggle', queueRail);
+  window.addEventListener('pageshow', event => { if (event.persisted) { queueRail(); queueReading(); } });
+  if (reduced.addEventListener) reduced.addEventListener('change', cancelTrace);
+  else reduced.addListener(cancelTrace);
   if (typeof ResizeObserver === 'function') {
     const resize = new ResizeObserver(queueRail);
     resize.observe(rail);
@@ -900,10 +751,10 @@ html:has(.mobile-contents[open]) { overflow: hidden; }
     for (const { rows } of groups) resize.observe(rows);
   }
   document.fonts?.ready.then(queueRail);
-  syncContents();
+  positionRail();
   const initial = hashIndex();
   if (initial >= 0) show(initial, history.state?.guideMode === 'guided' ? 'guided' : 'reference');
-  else select(0);
+  else { select(0); queueReading(); }
   document.documentElement.dataset.guideReady = 'true';
 })();
 </script>
