@@ -117,14 +117,14 @@ button.quiet:not(:disabled):hover { background: var(--cp-surface-soft); }
 button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
 .skip { position: absolute; z-index: 4; left: 16px; top: -100px; padding: 12px; background: var(--cp-surface); }
 .skip:focus { top: 8px; }
-.shell { max-width: 1440px; margin-inline: auto; padding: 0 clamp(20px, 5vw, 72px) 48px; }
+.shell { max-width: 760px; margin-inline: auto; padding: 0 clamp(16px, 4vw, 32px) 48px; }
 .masthead { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand-mark { width: 22px; height: 22px; flex: none; color: var(--cp-brand); }
 .brand-title { font-weight: 650; }
 .brand-caption, .local-tag, .caption, footer { font-size: .85rem; color: var(--cp-text-muted); }
 .brand-caption { padding-left: 10px; border-left: 1px solid var(--cp-border); }
-.layout { display: grid; grid-template-columns: 196px minmax(0, 960px); grid-template-areas: "sidebar hero" "sidebar content"; column-gap: clamp(32px, 4vw, 64px); row-gap: 28px; padding-top: 40px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "sidebar" "content"; gap: 20px; padding-top: 24px; }
 .hero { grid-area: hero; min-width: 0; padding-bottom: 24px; border-bottom: 1px solid var(--cp-border); }
 .eyebrow { color: var(--cp-brand); font-size: .8rem; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
 .hero .lead { font-size: 1.15rem; max-width: 59ch; }
@@ -136,7 +136,8 @@ button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowe
 .sidebar { grid-area: sidebar; min-width: 0; }
 .rail { font-size: .875rem; }
 .contents > summary, .rail-title { font-weight: 650; color: var(--cp-text); }
-.mobile-dock, .mobile-contents { display: none; }
+.contents > summary { min-height: 44px; padding: 10px 0; }
+.mobile-contents { display: none; }
 .contents-location { min-width: 0; overflow: hidden; color: var(--cp-text-muted); font-size: .875rem; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
 .rail-title { display: none; margin: 0 0 16px; }
 .rail-group + .rail-group { margin-top: 14px; }
@@ -149,7 +150,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowe
 .rail-group[data-active] .rail-heading { color: var(--route-color); }
 .rail-rows { position: relative; }
 .rail-rows ol { list-style: none; padding: 0; margin: 0; }
-.rail-rows a { display: flex; align-items: center; min-height: 30px; padding: 4px 0 4px 26px; color: var(--cp-text-muted); line-height: 1.3; text-decoration: none; }
+.rail-rows a { display: flex; align-items: center; min-height: 44px; padding: 4px 0 4px 26px; color: var(--cp-text-muted); line-height: 1.3; text-decoration: none; }
 .rail-rows a:hover { color: var(--cp-text); text-decoration: underline; }
 .rail-rows a[aria-current] { color: var(--cp-text); font-weight: 650; }
 .rail-track { position: absolute; top: 0; left: 7.5px; width: 16px; height: 100%; pointer-events: none; overflow: visible; }
@@ -207,32 +208,30 @@ summary { cursor: pointer; font-weight: 600; }
 footer { max-width: 72ch; }
 footer time { white-space: nowrap; }
 @media (min-width: 861px) {
-  .contents > summary { display: none; }
-  .rail-title { display: block; }
+  html:where(:not([data-touch-layout])) .shell { max-width: 1440px; padding-inline: clamp(20px, 5vw, 72px); }
+  html:where(:not([data-touch-layout])) .layout { grid-template-columns: 196px minmax(0, 960px); grid-template-areas: "sidebar hero" "sidebar content"; column-gap: clamp(32px, 4vw, 64px); row-gap: 28px; padding-top: 40px; }
+  html:where(:not([data-touch-layout])) .contents > summary { display: none; }
+  html:where(:not([data-touch-layout])) .rail-title { display: block; }
+  html:where(:not([data-touch-layout])) .rail-rows a { min-height: 30px; }
   .rail[data-fits] { position: sticky; top: var(--rail-top); }
 }
 @media (min-width: 861px) and (min-height: 500px) {
-  html { scroll-padding-top: 84px; }
-  .masthead { position: sticky; top: 0; z-index: 2; }
+  html:where(:not([data-touch-layout])) { scroll-padding-top: 84px; }
+  html:where(:not([data-touch-layout])) .masthead { position: sticky; top: 0; z-index: 2; }
 }
-@media not all and (min-width: 861px) {
-  .shell { max-width: 760px; padding-inline: clamp(16px, 4vw, 32px); }
-  .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "sidebar" "content"; gap: 20px; padding-top: 24px; }
-  .contents > summary { min-height: 44px; padding: 10px 0; }
-  .rail-rows a { min-height: 44px; }
-  .rail-progress { margin-top: 8px; }
-  html[data-mobile-contents] { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
-  html[data-mobile-contents] .shell { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
-  html:has(.mobile-contents[open]) { overflow: hidden; }
-  .mobile-dock { display: flex; position: fixed; z-index: 3; inset: auto 0 0; justify-content: center; padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); background: var(--cp-bg); border-top: 1px solid var(--cp-border); }
-  .mobile-dock .quiet { width: min(100%, 696px); justify-content: space-between; gap: 12px; background: var(--cp-bg-elevated); border-color: var(--cp-border); }
-  .mobile-dock .quiet > :first-child { flex: none; color: var(--cp-brand); }
-  .mobile-contents[open] { display: block; position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 760px); max-width: none; max-height: calc(100vh - 12px); max-height: calc(100dvh - 12px); padding: 0; overflow: auto; overscroll-behavior: contain; background: var(--cp-bg); color: var(--cp-text); border: 1px solid var(--cp-border); border-radius: 16px 16px 0 0; }
-  .mobile-contents::backdrop { background: color-mix(in srgb, var(--cp-text) 36%, transparent); }
-  .mobile-contents-head { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 16px; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
-  .mobile-contents-head h2 { font-size: 1.125rem; }
-  .mobile-contents #guide-nav { padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); font-size: .875rem; }
-}
+html[data-touch-layout] .rail-progress { margin-top: 8px; }
+html[data-mobile-contents] { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + var(--guide-vv-bottom, 0px)); }
+html[data-mobile-contents] .shell { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+html:has(.mobile-contents[open]) { overflow: hidden; }
+.mobile-dock, .mobile-contents[open] { position: fixed; top: auto; right: var(--guide-vv-right, 0px); bottom: var(--guide-vv-bottom, 0px); left: var(--guide-vv-left, 0px); }
+.mobile-dock { display: flex; z-index: 3; justify-content: center; padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); background: var(--cp-bg); border-top: 1px solid var(--cp-border); }
+.mobile-dock .quiet { width: min(100%, 696px); justify-content: space-between; gap: 12px; background: var(--cp-bg-elevated); border-color: var(--cp-border); }
+.mobile-dock .quiet > :first-child { flex: none; color: var(--cp-brand); }
+.mobile-contents[open] { display: block; margin: 0 auto; width: auto; max-width: 760px; max-height: calc(var(--guide-vv-height, 100vh) - 12px); padding: 0; overflow: auto; overscroll-behavior: contain; background: var(--cp-bg); color: var(--cp-text); border: 1px solid var(--cp-border); border-radius: 16px 16px 0 0; }
+.mobile-contents::backdrop { background: color-mix(in srgb, var(--cp-text) 36%, transparent); }
+.mobile-contents-head { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 16px; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
+.mobile-contents-head h2 { font-size: 1.125rem; }
+.mobile-contents #guide-nav { padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); font-size: .875rem; }
 @media (max-width: 440px) {
   .brand-caption { display: none; }
   .role-list { grid-template-columns: minmax(0, 1fr); }
@@ -243,8 +242,8 @@ footer time { white-space: nowrap; }
 @media print {
   html:has(.mobile-contents[open]) { overflow: visible; }
   body { background: var(--cp-surface); font-size: 11pt; }
-  .shell { max-width: none; padding: 0; }
-  .layout { display: block; padding: 0; }
+  html .shell { max-width: none; padding: 0; }
+  html .layout { display: block; padding: 0; }
   .masthead, .sidebar, .skip, .mode-action, .walk-controls, .users-shortcut input, .shortcut-actions, .shortcut-destination, .mobile-dock, .mobile-contents[open] { display: none; }
   html[data-mobile-contents] .shell { padding: 0; }
   .part, .part[hidden] { display: block !important; padding-bottom: 12px; margin-bottom: 16px; }
@@ -588,6 +587,11 @@ footer time { white-space: nowrap; }
   const next = document.getElementById('walk-next');
   const nextPreview = document.getElementById('walk-preview');
   const wide = matchMedia('(min-width: 861px)');
+  const touchTablet = matchMedia('(max-width: 1400px) and (pointer: coarse) and (hover: none)');
+  // iPadOS can identify as macOS, even with a fine pointer attached.
+  const appleTouch = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const desktopRail = () => wide.matches && !touchTablet.matches && !appleTouch;
+  const viewport = window.visualViewport;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const svgNS = 'http://www.w3.org/2000/svg';
   function svg(name, attributes) {
@@ -622,6 +626,7 @@ footer time { white-space: nowrap; }
   let railFrame = 0;
   let readingFrame = 0;
   let historyFrame = 0;
+  let viewportFrame = 0;
   let pendingArrival = null;
   let replayTrace = false;
 
@@ -633,7 +638,7 @@ footer time { white-space: nowrap; }
     railFrame = 0;
     const headerHeight = getComputedStyle(masthead).position === 'sticky' ? masthead.offsetHeight : 0;
     const spare = innerHeight - headerHeight - rail.offsetHeight;
-    rail.toggleAttribute('data-fits', wide.matches && spare >= 32);
+    rail.toggleAttribute('data-fits', desktopRail() && spare >= 32);
     rail.style.setProperty('--rail-top', (headerHeight + spare / 2) + 'px');
     if (!mobileContents.open && (contents.hidden || !contents.open)) {
       cancelTrace();
@@ -653,7 +658,7 @@ footer time { white-space: nowrap; }
         return bounds.top + bounds.height / 2 - top;
       });
       const branches = centers.slice(0, -1).map(y => `M 0.5 ${y - radius} ${bend(y)}`);
-      base.setAttribute('d', [route(centers.at(-1)), ...branches].join(' '));
+      base.setAttribute('d', [route(centers[centers.length - 1]), ...branches].join(' '));
       const row = items.findIndex(entry => entry.index === current);
       if (row < 0) continue;
       const y = centers[row];
@@ -661,7 +666,7 @@ footer time { white-space: nowrap; }
       dot.setAttribute('cy', y);
       group.setAttribute('data-traced', '');
       if ((replayTrace || (drawn !== current && drawn !== -1)) && !reduced.matches && typeof trace.animate === 'function') {
-        const duration = Math.max(270, Math.min(wide.matches ? 540 : 320, Math.round(240 + y * 1.3)));
+        const duration = Math.max(270, Math.min(desktopRail() ? 540 : 320, Math.round(240 + y * 1.3)));
         const dotFrames = pendingArrival ? [{ opacity: 0 }, { opacity: 1, offset: .5 }, { opacity: 1 }] : [{ opacity: 0 }, { opacity: 1 }];
         animations = [
           trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration, easing: 'ease-out' }),
@@ -709,6 +714,25 @@ footer time { white-space: nowrap; }
   function queueReading() {
     if (!readingFrame) readingFrame = requestAnimationFrame(readLocation);
   }
+  function measureViewport() {
+    viewportFrame = 0;
+    if (!viewport || mobileDock.hidden || !viewport.width || !viewport.height) return;
+    // Fixed elements use the layout viewport; Safari's visible area can be smaller.
+    const left = Math.max(0, viewport.offsetLeft);
+    const right = Math.max(0, root.clientWidth - viewport.offsetLeft - viewport.width);
+    const bottom = Math.max(0, root.clientHeight - viewport.offsetTop - viewport.height);
+    root.style.setProperty('--guide-vv-left', left + 'px');
+    root.style.setProperty('--guide-vv-right', right + 'px');
+    root.style.setProperty('--guide-vv-bottom', bottom + 'px');
+    root.style.setProperty('--guide-vv-height', viewport.height + 'px');
+    if (mobileContents.open && current >= 0) {
+      revealMobileRoute(entries[current]);
+      queueRail();
+    }
+  }
+  function queueViewport() {
+    if (!viewportFrame) viewportFrame = requestAnimationFrame(measureViewport);
+  }
   function revealMobileRoute(entry) {
     const top = mobileHeader.getBoundingClientRect().bottom + 4;
     const bottom = mobileContents.getBoundingClientRect().bottom - 8;
@@ -720,13 +744,17 @@ footer time { white-space: nowrap; }
   }
   function finishArrival(arrival = pendingArrival) {
     if (!mobileContents.open || !arrival || arrival !== pendingArrival) return;
-    pendingArrival = null;
     show(arrival.index, arrival.mode, { focus: true, historyEntry: true, fromContents: true });
+  }
+  function clearArrival() {
+    if (!pendingArrival) return;
+    clearTimeout(pendingArrival.timeout);
+    pendingArrival = null;
   }
   function cancelArrival() {
     if (!pendingArrival) return;
     const { previous } = pendingArrival;
-    pendingArrival = null;
+    clearArrival();
     select(previous);
   }
   function show(index, nextMode, { focus = false, historyEntry = false, fromContents = false, pointer = false } = {}) {
@@ -735,13 +763,17 @@ footer time { white-space: nowrap; }
     if (fromContents && pointer && mobileContents.open && !reduced.matches) {
       if (pendingArrival?.index === index) return;
       if (index !== current) {
-        pendingArrival = { index, mode: nextMode, previous: pendingArrival?.previous ?? current };
+        const arrival = { index, mode: nextMode, previous: pendingArrival?.previous ?? current };
+        clearArrival();
+        pendingArrival = arrival;
+        // Even if the browser drops the animation's finish event, the tap still navigates.
+        arrival.timeout = setTimeout(() => finishArrival(arrival), 650);
         select(index);
         revealMobileRoute(entry);
         return;
       }
     }
-    pendingArrival = null;
+    clearArrival();
     mode = nextMode;
     root.dataset.guideMode = mode;
     const guided = mode === 'guided';
@@ -756,7 +788,7 @@ footer time { white-space: nowrap; }
       history.pushState({ guideMode: mode }, '', entry.link.hash);
     }
     if (mobileContents.open) mobileContents.close();
-    else if (fromContents && !wide.matches) contents.open = false;
+    else if (fromContents && !desktopRail()) contents.open = false;
     if (focus) entry.heading.focus({ preventScroll: true });
     entry.section.scrollIntoView({ block: 'start' });
     anchoredTop = scrollY;
@@ -780,21 +812,33 @@ footer time { white-space: nowrap; }
     if (!historyFrame) historyFrame = requestAnimationFrame(restoreLocation);
   }
   function syncContents() {
-    const mobile = !wide.matches && supportsDialog;
-    if (!mobile && mobileContents.open) {
+    const compact = !desktopRail();
+    const useSheet = compact && supportsDialog;
+    if (!useSheet && mobileContents.open) {
       cancelArrival();
       mobileContents.close();
     }
-    root.toggleAttribute('data-mobile-contents', mobile);
-    mobileDock.hidden = !mobile;
-    contents.hidden = mobile;
-    contents.open = wide.matches;
-    const parent = mobile ? mobileContents : contents;
+    root.toggleAttribute('data-touch-layout', compact);
+    root.toggleAttribute('data-mobile-contents', compact);
+    mobileDock.hidden = !compact;
+    contents.hidden = useSheet;
+    contents.open = !compact;
+    mobileToggle.setAttribute('aria-controls', useSheet ? mobileContents.id : contents.id);
+    if (!useSheet) mobileToggle.removeAttribute('aria-haspopup');
+    else mobileToggle.setAttribute('aria-haspopup', 'dialog');
+    const parent = useSheet ? mobileContents : contents;
     if (nav.parentElement !== parent) parent.append(nav);
+    queueViewport();
     queueRail();
     queueReading();
   }
   mobileToggle.addEventListener('click', () => {
+    if (!supportsDialog) {
+      contents.open = true;
+      contents.querySelector('summary').focus({ preventScroll: true });
+      contents.scrollIntoView({ block: 'start' });
+      return;
+    }
     cancelTrace();
     mobileToggle.focus({ preventScroll: true });
     mobileContents.showModal();
@@ -835,18 +879,27 @@ footer time { white-space: nowrap; }
     else show(current, 'reference', { focus: true, historyEntry: true });
   });
   window.addEventListener('scroll', queueReading, { passive: true });
-  window.addEventListener('resize', () => { queueRail(); queueReading(); });
+  window.addEventListener('resize', () => { queueViewport(); queueRail(); queueReading(); });
+  viewport?.addEventListener('resize', queueViewport);
+  viewport?.addEventListener('scroll', queueViewport, { passive: true });
   window.addEventListener('popstate', queueHistory);
   window.addEventListener('hashchange', queueHistory);
-  window.addEventListener('pageshow', event => { if (event.persisted) { queueRail(); queueReading(); } });
-  wide.addEventListener('change', syncContents);
-  reduced.addEventListener('change', () => { cancelTrace(); finishArrival(); });
+  window.addEventListener('pageshow', event => { if (event.persisted) { queueViewport(); queueRail(); queueReading(); } });
+  function watchMedia(query, listener) {
+    if (query.addEventListener) query.addEventListener('change', listener);
+    else query.addListener(listener);
+  }
+  watchMedia(wide, syncContents);
+  watchMedia(touchTablet, syncContents);
+  watchMedia(reduced, () => { cancelTrace(); finishArrival(); });
   contents.addEventListener('toggle', queueRail);
-  const resize = new ResizeObserver(queueRail);
-  resize.observe(rail);
-  resize.observe(masthead);
-  for (const { rows } of groups) resize.observe(rows);
-  document.fonts.ready.then(queueRail);
+  if (typeof ResizeObserver === 'function') {
+    const resize = new ResizeObserver(queueRail);
+    resize.observe(rail);
+    resize.observe(masthead);
+    for (const { rows } of groups) resize.observe(rows);
+  }
+  document.fonts?.ready.then(queueRail);
   syncContents();
   const initial = hashIndex();
   if (initial >= 0) show(initial, history.state?.guideMode === 'guided' ? 'guided' : 'reference');

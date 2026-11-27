@@ -207,6 +207,14 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
 
  await tap(toggle);
  await until(`${open} && ${aligned}`);
+ await evaluate(`document.querySelector('#guide-nav a[href="#review"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}))`);
+ await until(`${open} && document.querySelector('[data-traced] a[aria-current]')?.hash==='#review' && document.querySelector('.service .rail-dot').getAnimations().length===1`);
+ await evaluate(`document.querySelector('.service .rail-track').getAnimations({subtree:true}).forEach(animation=>animation.cancel())`);
+ await until(`!${open} && location.hash==='#review' && document.activeElement.id==='review-title'`);
+ await pick('roles');
+
+ await tap(toggle);
+ await until(`${open} && ${aligned}`);
  assert.equal(await evaluate(routeVisible),true);
  await evaluate(`(() => {document.querySelector('#guide-nav a[href="#account"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));document.getElementById('mobile-contents-close').click();})()`);
  await until(`!${open} && document.activeElement.id==='mobile-contents-toggle' && document.querySelector('#guide-nav a[aria-current]').hash==='#roles'`);
@@ -229,5 +237,49 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  assert.equal(await evaluate(`document.querySelector('[data-traced]').getAnimations({subtree:true}).length`),0);
  await tap('#guide-nav a[href="#roles"]');
  await until(`!${open} && document.activeElement.id==='roles-title'`);
+
+ // iPad Safari can report a Mac without a coarse primary pointer.
+ await browser.cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});
+ await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:1366,height:1024,deviceScaleFactor:1,mobile:false});
+ await browser.cdp.send('Network.setUserAgentOverride',{userAgent:'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15',platform:'MacIntel'});
+ await browser.cdp.send('Page.addScriptToEvaluateOnNewDocument',{source:`Object.defineProperties(navigator,{platform:{value:'MacIntel'},maxTouchPoints:{value:5}})`});
+ await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?tablet=1#roles'});
+ await until(`location.search.includes('tablet=1') && document.documentElement.dataset.guideReady==='true' && document.querySelector('#guide-nav a[aria-current]')?.hash==='#roles'`);
+ assert.deepEqual(await evaluate(`({platform:navigator.platform,touches:navigator.maxTouchPoints,wide:matchMedia('(min-width: 861px)').matches,coarse:matchMedia('(pointer: coarse)').matches})`),{platform:'MacIntel',touches:5,wide:true,coarse:false});
+ assert.equal(await evaluate(`getComputedStyle(document.getElementById('mobile-dock')).position`),'fixed');
+ const dockVisible=`(()=>{const b=document.querySelector('${toggle}'),r=b.getBoundingClientRect(),x=(r.left+r.right)/2,y=(r.top+r.bottom)/2;return r.height>=44 && b.contains(document.elementFromPoint(x,y));})()`;
+ await evaluate(`scrollBy(0, 500)`);
+ assert.equal(await evaluate(dockVisible),true);
+ const tabletScroll=await evaluate('scrollY');
+ await openContents();
+ await until(`${open} && ${aligned}`);
+ assert.equal(await evaluate('scrollY'),tabletScroll);
+ await pick('install');
+ await until(`!${open} && document.activeElement.id==='install-title'`);
+ assert.equal(await evaluate(dockVisible),true);
+ await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:1024,height:1366,deviceScaleFactor:1,mobile:false});
+ await until(`innerWidth===1024 && ${dockVisible}`);
+
+ // The visible area can shrink independently of the layout viewport.
+ await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:700,deviceScaleFactor:1,mobile:true});
+ await browser.cdp.send('Emulation.setPageScaleFactor',{pageScaleFactor:1.5});
+ const withinVisualViewport=selector=>`(()=>{const r=document.querySelector('${selector}').getBoundingClientRect(),v=visualViewport;return r.height>0 && r.top>=v.offsetTop-1 && r.left>=v.offsetLeft-1 && r.right<=v.offsetLeft+v.width+1 && r.bottom<=v.offsetTop+v.height+1;})()`;
+ await until(`visualViewport.scale>1 && ${withinVisualViewport('#mobile-dock')}`);
+ await openContents();
+ await until(`${open} && ${withinVisualViewport('#mobile-contents')}`);
+ await pick('before');
+ await until(`!${open} && document.activeElement.id==='before-title' && ${withinVisualViewport('#mobile-dock')}`);
+ await browser.cdp.send('Emulation.setPageScaleFactor',{pageScaleFactor:1});
+
+ // No native dialog: the fixed button still opens the inline navigation from deep in the guide.
+ await browser.cdp.send('Page.addScriptToEvaluateOnNewDocument',{source:`HTMLDialogElement.prototype.showModal=undefined`});
+ await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?legacy=1#install'});
+ await until(`location.search.includes('legacy=1') && document.documentElement.dataset.guideReady==='true' && ${dockVisible}`);
+ assert.ok(await evaluate('scrollY>700'));
+ await openContents();
+ await until(`document.getElementById('guide-contents').open && !${open} && ${aligned}`);
+ assert.equal(await evaluate(`document.querySelector('${toggle}').getAttribute('aria-controls')`),'guide-contents');
+ await pick('before');
+ await until(`!document.getElementById('guide-contents').open && document.activeElement.id==='before-title' && ${dockVisible}`);
  assert.equal(blocked,0);assert.ok(requests.size>=2);
 });
