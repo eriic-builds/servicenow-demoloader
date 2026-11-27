@@ -136,8 +136,8 @@ button:disabled, .button[aria-disabled="true"] { opacity: .5; cursor: not-allowe
 .sidebar { grid-area: sidebar; min-width: 0; }
 .rail { font-size: .875rem; }
 .contents > summary, .rail-title { font-weight: 650; color: var(--cp-text); }
-.contents-location { display: block; margin-inline-start: 16px; overflow: hidden; color: var(--cp-text-muted); font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
-.contents[open] .contents-location, .contents-location:empty { display: none; }
+.mobile-dock, .mobile-contents { display: none; }
+.contents-location { min-width: 0; overflow: hidden; color: var(--cp-text-muted); font-size: .875rem; font-weight: 400; text-overflow: ellipsis; white-space: nowrap; }
 .rail-title { display: none; margin: 0 0 16px; }
 .rail-group + .rail-group { margin-top: 14px; }
 .rail-group { --route-color: var(--cp-brand); color: var(--cp-text-muted); }
@@ -215,12 +215,23 @@ footer time { white-space: nowrap; }
   html { scroll-padding-top: 84px; }
   .masthead { position: sticky; top: 0; z-index: 2; }
 }
-@media (width < 861px) {
+@media not all and (min-width: 861px) {
   .shell { max-width: 760px; padding-inline: clamp(16px, 4vw, 32px); }
   .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "sidebar" "content"; gap: 20px; padding-top: 24px; }
   .contents > summary { min-height: 44px; padding: 10px 0; }
   .rail-rows a { min-height: 44px; }
   .rail-progress { margin-top: 8px; }
+  html[data-mobile-contents] { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  html[data-mobile-contents] .shell { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  html:has(.mobile-contents[open]) { overflow: hidden; }
+  .mobile-dock { display: flex; position: fixed; z-index: 3; inset: auto 0 0; justify-content: center; padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); background: var(--cp-bg); border-top: 1px solid var(--cp-border); }
+  .mobile-dock .quiet { width: min(100%, 696px); justify-content: space-between; gap: 12px; background: var(--cp-bg-elevated); border-color: var(--cp-border); }
+  .mobile-dock .quiet > :first-child { flex: none; color: var(--cp-brand); }
+  .mobile-contents[open] { display: block; position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 760px); max-width: none; max-height: calc(100vh - 12px); max-height: calc(100dvh - 12px); padding: 0; overflow: auto; overscroll-behavior: contain; background: var(--cp-bg); color: var(--cp-text); border: 1px solid var(--cp-border); border-radius: 16px 16px 0 0; }
+  .mobile-contents::backdrop { background: color-mix(in srgb, var(--cp-text) 36%, transparent); }
+  .mobile-contents-head { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 16px; background: var(--cp-bg); border-bottom: 1px solid var(--cp-border); }
+  .mobile-contents-head h2 { font-size: 1.125rem; }
+  .mobile-contents #guide-nav { padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); font-size: .875rem; }
 }
 @media (max-width: 440px) {
   .brand-caption { display: none; }
@@ -230,10 +241,12 @@ footer time { white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) { .rail-trace { stroke-dashoffset: 0 !important; } .rail-dot { opacity: 1 !important; } }
 @media print {
+  html:has(.mobile-contents[open]) { overflow: visible; }
   body { background: var(--cp-surface); font-size: 11pt; }
   .shell { max-width: none; padding: 0; }
   .layout { display: block; padding: 0; }
-  .masthead, .sidebar, .skip, .mode-action, .walk-controls, .users-shortcut input, .shortcut-actions, .shortcut-destination { display: none; }
+  .masthead, .sidebar, .skip, .mode-action, .walk-controls, .users-shortcut input, .shortcut-actions, .shortcut-destination, .mobile-dock, .mobile-contents[open] { display: none; }
+  html[data-mobile-contents] .shell { padding: 0; }
   .part, .part[hidden] { display: block !important; padding-bottom: 12px; margin-bottom: 16px; }
   [data-guide-mode] .part .task-heading { padding: 0; background: none; }
   [data-guide-mode] .done-when { display: none; }
@@ -247,6 +260,9 @@ footer time { white-space: nowrap; }
 </head>
 <body>
 <a class="skip" href="#steps">Skip to the instructions</a>
+<div class="mobile-dock" id="mobile-dock" hidden>
+<button class="quiet" id="mobile-contents-toggle" type="button" aria-haspopup="dialog" aria-controls="mobile-contents"><span>Contents</span><span class="contents-location" id="contents-location"></span></button>
+</div>
 <div class="shell">
 <div class="masthead"><div class="brand"><svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7m-3.5-3.5v7"/></svg><span class="brand-title">SN DemoLoader</span><span class="brand-caption">Setup guide</span></div><span class="local-tag">Setup instructions</span></div>
 <div class="layout">
@@ -261,7 +277,7 @@ footer time { white-space: nowrap; }
 <aside class="sidebar">
 <div class="rail" id="guide-rail">
 <details class="contents" id="guide-contents" open>
-<summary>Contents<span class="contents-location" id="contents-location"></span></summary>
+<summary>Contents</summary>
 <p class="rail-title" aria-hidden="true">Contents</p>
 <nav aria-label="Setup contents" id="guide-nav">
 <div class="rail-group">
@@ -481,6 +497,9 @@ footer time { white-space: nowrap; }
 </main>
 </div>
 </div>
+<dialog class="mobile-contents" id="mobile-contents" aria-labelledby="mobile-contents-title">
+<header class="mobile-contents-head"><h2 id="mobile-contents-title">Contents</h2><button class="quiet" id="mobile-contents-close" type="button" autofocus>Close</button></header>
+</dialog>
 <script>
 (() => {
   const checks = Array.from(document.querySelectorAll('input[data-check]'));
@@ -555,6 +574,12 @@ footer time { white-space: nowrap; }
   const root = document.documentElement;
   const rail = document.getElementById('guide-rail');
   const contents = document.getElementById('guide-contents');
+  const nav = document.getElementById('guide-nav');
+  const mobileDock = document.getElementById('mobile-dock');
+  const mobileToggle = document.getElementById('mobile-contents-toggle');
+  const mobileContents = document.getElementById('mobile-contents');
+  const mobileHeader = mobileContents.querySelector('header');
+  const supportsDialog = typeof mobileContents.showModal === 'function';
   const contentsLocation = document.getElementById('contents-location');
   const masthead = document.querySelector('.masthead');
   const modeButton = document.getElementById('guide-mode');
@@ -598,6 +623,7 @@ footer time { white-space: nowrap; }
   let readingFrame = 0;
   let historyFrame = 0;
   let pendingArrival = null;
+  let replayTrace = false;
 
   function cancelTrace() {
     for (const animation of animations) animation.cancel();
@@ -609,10 +635,9 @@ footer time { white-space: nowrap; }
     const spare = innerHeight - headerHeight - rail.offsetHeight;
     rail.toggleAttribute('data-fits', wide.matches && spare >= 32);
     rail.style.setProperty('--rail-top', (headerHeight + spare / 2) + 'px');
-    if (!contents.open) {
+    if (!mobileContents.open && (contents.hidden || !contents.open)) {
       cancelTrace();
       drawn = current;
-      finishArrival();
       return;
     }
 
@@ -635,18 +660,19 @@ footer time { white-space: nowrap; }
       trace.setAttribute('d', route(y));
       dot.setAttribute('cy', y);
       group.setAttribute('data-traced', '');
-      if (drawn !== current && drawn !== -1 && !reduced.matches && typeof trace.animate === 'function') {
+      if ((replayTrace || (drawn !== current && drawn !== -1)) && !reduced.matches && typeof trace.animate === 'function') {
         const duration = Math.max(270, Math.min(wide.matches ? 540 : 320, Math.round(240 + y * 1.3)));
-        const dotDuration = wide.matches ? 150 : 90;
+        const dotFrames = pendingArrival ? [{ opacity: 0 }, { opacity: 1, offset: .5 }, { opacity: 1 }] : [{ opacity: 0 }, { opacity: 1 }];
         animations = [
           trace.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration, easing: 'ease-out' }),
-          dot.animate([{ opacity: 0 }, { opacity: 1 }], { duration: dotDuration, delay: duration, fill: 'backwards', easing: 'ease-out' })
+          dot.animate(dotFrames, { duration: 150, delay: duration, fill: 'backwards', easing: 'ease-out' })
         ];
         const arrival = pendingArrival;
         if (arrival) animations[1].addEventListener('finish', () => finishArrival(arrival), { once: true });
       }
       drawn = current;
     }
+    replayTrace = false;
     if (pendingArrival && !animations.length) finishArrival();
   }
   function queueRail() {
@@ -669,7 +695,7 @@ footer time { white-space: nowrap; }
   }
   function readLocation() {
     readingFrame = 0;
-    if (mode === 'guided' || pendingArrival || anchoredTop === scrollY) return;
+    if (mode === 'guided' || mobileContents.open || anchoredTop === scrollY) return;
     anchoredTop = null;
     const line = parseFloat(getComputedStyle(root).scrollPaddingTop) + 10;
     let index = 0;
@@ -683,24 +709,39 @@ footer time { white-space: nowrap; }
   function queueReading() {
     if (!readingFrame) readingFrame = requestAnimationFrame(readLocation);
   }
-  function arrive({ entry, focus, fromContents }) {
-    if (fromContents && !wide.matches) contents.open = false;
-    if (focus) entry.heading.focus({ preventScroll: true });
-    entry.section.scrollIntoView({ block: 'start' });
-    anchoredTop = scrollY;
-    queueRail();
+  function revealMobileRoute(entry) {
+    const top = mobileHeader.getBoundingClientRect().bottom + 4;
+    const bottom = mobileContents.getBoundingClientRect().bottom - 8;
+    const row = entry.link.getBoundingClientRect();
+    const groupTop = entry.group.getBoundingClientRect().top;
+    const start = row.bottom - groupTop <= bottom - top ? groupTop : row.top;
+    if (start < top) mobileContents.scrollTop += start - top;
+    else if (row.bottom > bottom) mobileContents.scrollTop += row.bottom - bottom;
   }
   function finishArrival(arrival = pendingArrival) {
-    if (!arrival || arrival !== pendingArrival) return;
+    if (!mobileContents.open || !arrival || arrival !== pendingArrival) return;
     pendingArrival = null;
-    arrive(arrival);
+    show(arrival.index, arrival.mode, { focus: true, historyEntry: true, fromContents: true });
+  }
+  function cancelArrival() {
+    if (!pendingArrival) return;
+    const { previous } = pendingArrival;
+    pendingArrival = null;
+    select(previous);
   }
   function show(index, nextMode, { focus = false, historyEntry = false, fromContents = false, pointer = false } = {}) {
     const entry = entries[index];
-    const arrival = { entry, focus, fromContents };
-    // Let a narrow-screen pointer tap finish the visible route before the page jumps.
-    const playBeforeJump = index !== current && fromContents && pointer && contents.open && !wide.matches && !reduced.matches;
-    pendingArrival = playBeforeJump ? arrival : null;
+    // Keep the route on screen before navigating away from a tapped row.
+    if (fromContents && pointer && mobileContents.open && !reduced.matches) {
+      if (pendingArrival?.index === index) return;
+      if (index !== current) {
+        pendingArrival = { index, mode: nextMode, previous: pendingArrival?.previous ?? current };
+        select(index);
+        revealMobileRoute(entry);
+        return;
+      }
+    }
+    pendingArrival = null;
     mode = nextMode;
     root.dataset.guideMode = mode;
     const guided = mode === 'guided';
@@ -714,7 +755,12 @@ footer time { white-space: nowrap; }
     if (historyEntry && (location.hash !== entry.link.hash || history.state?.guideMode !== mode)) {
       history.pushState({ guideMode: mode }, '', entry.link.hash);
     }
-    if (!playBeforeJump) arrive(arrival);
+    if (mobileContents.open) mobileContents.close();
+    else if (fromContents && !wide.matches) contents.open = false;
+    if (focus) entry.heading.focus({ preventScroll: true });
+    entry.section.scrollIntoView({ block: 'start' });
+    anchoredTop = scrollY;
+    queueRail();
   }
   const hashIndex = () => entries.findIndex(entry => entry.link.hash === location.hash);
   function restoreLocation() {
@@ -729,15 +775,43 @@ footer time { white-space: nowrap; }
     }
   }
   function queueHistory() {
-    pendingArrival = null;
+    cancelArrival();
+    if (mobileContents.open) mobileContents.close();
     if (!historyFrame) historyFrame = requestAnimationFrame(restoreLocation);
   }
   function syncContents() {
+    const mobile = !wide.matches && supportsDialog;
+    if (!mobile && mobileContents.open) {
+      cancelArrival();
+      mobileContents.close();
+    }
+    root.toggleAttribute('data-mobile-contents', mobile);
+    mobileDock.hidden = !mobile;
+    contents.hidden = mobile;
     contents.open = wide.matches;
-    finishArrival();
+    const parent = mobile ? mobileContents : contents;
+    if (nav.parentElement !== parent) parent.append(nav);
     queueRail();
     queueReading();
   }
+  mobileToggle.addEventListener('click', () => {
+    cancelTrace();
+    mobileToggle.focus({ preventScroll: true });
+    mobileContents.showModal();
+    mobileContents.scrollTop = 0;
+    revealMobileRoute(entries[current]);
+    replayTrace = true;
+    queueRail();
+  });
+  document.getElementById('mobile-contents-close').addEventListener('click', () => mobileContents.close());
+  mobileContents.addEventListener('close', () => {
+    if (mobileContents.open) return;
+    cancelArrival();
+    replayTrace = false;
+    cancelTrace();
+    queueRail();
+    queueReading();
+  });
   for (const entry of entries) {
     entry.link.addEventListener('click', event => {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
