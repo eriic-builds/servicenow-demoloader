@@ -128,10 +128,17 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:1040,height:460,deviceScaleFactor:1,mobile:false});
  await until(`getComputedStyle(document.getElementById('guide-rail')).position==='static'`);
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:768,height:900,deviceScaleFactor:1,mobile:false});
- await until(`!document.getElementById('guide-contents').open`);
+ const open=`document.getElementById('mobile-contents').open`;
+ const toggle='#mobile-contents-toggle';
+ const openContents=()=>evaluate(`document.querySelector('${toggle}').click()`);
+ await until(`document.querySelector('${toggle}').offsetHeight>=44`);
  assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
- await evaluate(`document.querySelector('#guide-contents > summary').click()`);
- await until(`document.getElementById('guide-contents').open && ${aligned}`);
+ await openContents();
+ await until(`${open} && ${aligned}`);
+ assert.equal(await evaluate(`document.activeElement.id`),'mobile-contents-close');
+ await browser.cdp.send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+ await browser.cdp.send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+ await until(`!${open} && document.activeElement.id==='mobile-contents-toggle'`);
 
  await evaluate(`document.getElementById('guide-mode').click()`);
  const visible=()=>evaluate(`Array.from(document.querySelectorAll('.part:not([hidden])'),task=>task.id)`);
@@ -142,6 +149,7 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  assert.equal(await evaluate(`document.getElementById('guide-progress').value`),0);
  await evaluate(`document.getElementById('walk-back').click()`);
  assert.deepEqual(await visible(),['before']);
+ await openContents();
  await pick('account');
  assert.deepEqual(await visible(),['account']);
  assert.equal(await evaluate(`document.activeElement.id`),'account-title');
@@ -150,12 +158,14 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await evaluate(`(async()=>{const copy=document.getElementById('copy-machine-id');navigator.clipboard.writeText=async()=>{throw new Error('denied')};copy.click();await Promise.resolve();})()`);
  assert.match(await evaluate(`document.getElementById('copy-status').textContent`),/Select and copy the User ID/);
  await evaluate(`document.querySelector('#account input[data-check]').click()`);
+ await openContents();
  await pick('install');
  assert.deepEqual(await visible(),['install']);
 
  await browser.cdp.send('Emulation.setEmulatedMedia',{media:'print'});
  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.part')).every(task=>getComputedStyle(task).display==='block')`),true);
  assert.equal(await evaluate(`getComputedStyle(document.getElementById('walk-controls')).display`),'none');
+ assert.equal(await evaluate(`getComputedStyle(document.getElementById('mobile-dock')).display`),'none');
  await browser.cdp.send('Emulation.setEmulatedMedia',{media:''});
  await evaluate(`document.getElementById('walk-next').click()`);
  assert.equal((await visible()).length,9);
@@ -165,31 +175,43 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await until(`document.documentElement.dataset.guideMode==='guided'`);
  assert.deepEqual(await visible(),['install']);
 
- // A real emulated phone tap plays the in-flow route before leaving Contents.
+ // Tap visible controls without scrolling them into view, just as on a phone.
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:700,deviceScaleFactor:1,mobile:true});
  await browser.cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
- await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?phone=1#before'});
- await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#before' && !document.getElementById('guide-contents').open`);
+ await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?phone=1#install'});
+ await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#install' && !${open}`);
  const tap=async selector=>{
-  const [x,y]=await evaluate(`(()=>{const target=document.querySelector(${JSON.stringify(selector)});target.scrollIntoView({block:'center'});const r=target.getBoundingClientRect();return [Math.round(r.left+r.width/2),Math.round(r.top+r.height/2)];})()`);
+  const point=await evaluate(`(()=>{const target=document.querySelector(${JSON.stringify(selector)}),r=target.getBoundingClientRect(),x=Math.round(r.left+r.width/2),y=Math.round(r.top+r.height/2);return target.contains(document.elementFromPoint(x,y))?[x,y]:null;})()`);
+  assert.ok(point,`${selector} must be visible and tappable without scrolling`);
+  const [x,y]=point;
   await browser.cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
   await browser.cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
  };
- const open=`document.getElementById('guide-contents').open`;
- await tap('#guide-contents > summary');
+ const scrollBefore=await evaluate('scrollY');assert.ok(scrollBefore>700);
+ const routeVisible=`(()=>{const group=document.querySelector('[data-traced]'),row=group?.querySelector('a[aria-current]');if(!row)return false;return group.getBoundingClientRect().top>=document.querySelector('.mobile-contents-head').getBoundingClientRect().bottom-1 && row.getBoundingClientRect().bottom<=innerHeight;})()`;
+ await tap(toggle);
  await until(`${open} && ${aligned}`);
+ assert.equal(await evaluate('scrollY'),scrollBefore);
+ assert.equal(await evaluate(routeVisible),true);
  assert.equal(await logoFilter(),'grayscale(1)');
  assert.equal(await evaluate(`document.querySelector('.service-mark').naturalWidth`),32);
  assert.ok(await evaluate(`document.querySelector('#guide-nav a[href="#roles"]').offsetHeight>=44`));
  await tap('#guide-nav a[href="#roles"]');
- await until(`${open} && document.querySelector('.service[data-traced] a[href="#roles"][aria-current]') && document.querySelector('.service .rail-dot').getAnimations().length===1`);
+ await until(`${open} && document.querySelector('.service[data-traced] a[href="#roles"][aria-current]') && document.querySelector('.service .rail-dot').getAnimations().length===1 && ${routeVisible}`);
+ assert.equal(await evaluate('location.hash'),'#install');
  assert.equal(await logoFilter(),'none');
  assert.equal(await evaluate(aligned),true);
  await until(`!${open} && document.activeElement.id==='roles-title' && location.hash==='#roles'`);
  assert.equal(await evaluate(`document.getElementById('contents-location').textContent`),'Add the four roles');
 
- await tap('#guide-contents > summary');
+ await tap(toggle);
+ await until(`${open} && ${aligned}`);
+ assert.equal(await evaluate(routeVisible),true);
+ await evaluate(`(() => {document.querySelector('#guide-nav a[href="#account"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));document.getElementById('mobile-contents-close').click();})()`);
+ await until(`!${open} && document.activeElement.id==='mobile-contents-toggle' && document.querySelector('#guide-nav a[aria-current]').hash==='#roles'`);
+ assert.equal(await evaluate('location.hash'),'#roles');
+ await tap(toggle);
  await until(`${open} && ${aligned}`);
  await evaluate(`(() => {for(const id of ['account','microsoft']) document.querySelector('#guide-nav a[href="#'+id+'"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0,detail:1}));})()`);
  await until(`!${open} && document.activeElement.id==='microsoft-title' && location.hash==='#microsoft'`);
@@ -198,7 +220,14 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await until(`document.querySelector('#guide-nav a[aria-current]').hash==='#roles'`);
  assert.equal(await logoFilter(),'none');
  assert.equal(await evaluate(`document.getElementById('contents-location').textContent`),'Add the four roles');
- await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:320,height:640,deviceScaleFactor:1,mobile:true});
+ await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+ await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:320,height:360,deviceScaleFactor:1,mobile:true});
  assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
+ await tap(toggle);
+ await until(`${open} && ${aligned}`);
+ assert.equal(await evaluate(`(()=>{const panel=document.getElementById('mobile-contents');return panel.scrollHeight>panel.clientHeight && panel.getBoundingClientRect().top>=0;})()`),true);
+ assert.equal(await evaluate(`document.querySelector('[data-traced]').getAnimations({subtree:true}).length`),0);
+ await tap('#guide-nav a[href="#roles"]');
+ await until(`!${open} && document.activeElement.id==='roles-title'`);
  assert.equal(blocked,0);assert.ok(requests.size>=2);
 });
