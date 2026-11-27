@@ -126,7 +126,7 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  assert.equal(await evaluate(`document.querySelector('[data-traced] .rail-track').getAnimations({subtree:true}).length`),0);
 
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:1040,height:460,deviceScaleFactor:1,mobile:false});
- await until(`getComputedStyle(document.querySelector('.sidebar')).position==='sticky'`);
+ await until(`getComputedStyle(document.getElementById('guide-rail')).position==='sticky'`);
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:768,height:900,deviceScaleFactor:1,mobile:false});
  await until(`getComputedStyle(document.getElementById('guide-rail')).position==='sticky'`);
  assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
@@ -171,7 +171,8 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?phone=1#install'});
  await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#install' && ${aligned}`);
  const railVisible=`(()=>{const links=[...document.querySelectorAll('#guide-nav a')];return links.length===9 && links.every(a=>{const r=a.getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight && a.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));});})()`;
- const headingBelow=id=>`document.getElementById('${id}').getBoundingClientRect().top>=document.querySelector('.sidebar').getBoundingClientRect().bottom`;
+ const headingBeside=id=>`(()=>{const h=document.getElementById('${id}').getBoundingClientRect();return h.left>document.getElementById('guide-rail').getBoundingClientRect().right && h.top>=0 && h.bottom<=innerHeight;})()`;
+ const oneLeftColumn=`(()=>{const rail=document.getElementById('guide-rail').getBoundingClientRect(),content=document.getElementById('steps').getBoundingClientRect(),links=[...document.querySelectorAll('#guide-nav a')];return rail.right<content.left && links.length===9 && links.every((a,i)=>{const box=a.getBoundingClientRect(),label=a.querySelector('.rail-step-short'),range=document.createRange();range.selectNodeContents(label);const text=range.getBoundingClientRect();return box.left===rail.left && (!i||box.top>=links[i-1].getBoundingClientRect().bottom) && range.getClientRects().length===1 && text.width>0 && text.right<=box.right+1;});})()`;
  const tap=async selector=>{
   const point=await evaluate(`(()=>{const target=document.querySelector(${JSON.stringify(selector)}),r=target.getBoundingClientRect(),x=Math.round(r.left+r.width/2),y=Math.round(r.top+r.height/2);return target.contains(document.elementFromPoint(x,y))?[x,y]:null;})()`);
   assert.ok(point,`${selector} must be visible and tappable without scrolling`);
@@ -180,7 +181,8 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
   await browser.cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
  };
  assert.ok(await evaluate('scrollY>700'));
- assert.equal(await evaluate(headingBelow('install-title')),true);
+ assert.equal(await evaluate(headingBeside('install-title')),true);
+ assert.equal(await evaluate(oneLeftColumn),true);
  assert.equal(await evaluate(railVisible),true);
  assert.equal(await logoFilter(),'grayscale(1)');
  assert.ok(await evaluate(`document.querySelector('#guide-nav a[href="#roles"]').offsetHeight>=44`));
@@ -192,16 +194,17 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  assert.equal(await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`),railTop);
  assert.equal(await logoFilter(),'none');
  await tap('#guide-nav a[href="#password"]');
- await until(`location.hash==='#password' && document.activeElement.id==='password-title' && ${headingBelow('password-title')} && ${railVisible} && ${aligned}`);
+ await until(`location.hash==='#password' && document.activeElement.id==='password-title' && ${headingBeside('password-title')} && ${railVisible} && ${aligned}`);
 
  // A short screen keeps enough height for reading without hiding or nesting the menu.
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:320,height:360,deviceScaleFactor:1,mobile:true});
  await until(`innerWidth===320 && ${railVisible} && ${aligned}`);
  assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
- assert.ok(await evaluate(`innerHeight-document.querySelector('.sidebar').getBoundingClientRect().bottom>120`));
+ assert.equal(await evaluate(oneLeftColumn),true);
+ assert.ok(await evaluate(`document.getElementById('steps').getBoundingClientRect().width>=185`));
  await tap('#guide-nav a[href="#roles"]');
- await until(`document.activeElement.id==='roles-title' && ${headingBelow('roles-title')} && ${aligned}`);
+ await until(`document.activeElement.id==='roles-title' && ${headingBeside('roles-title')} && ${aligned}`);
  assert.equal(await evaluate(`document.querySelector('[data-traced]').getAnimations({subtree:true}).length`),0);
 
  // iPad Safari can report a Mac without a coarse primary pointer.
