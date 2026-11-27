@@ -66,7 +66,8 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  for(const theme of ['light','dark']){
   await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?scoutTheme='+theme});
   const deadline=Date.now()+10000;while(!await evaluate("document.documentElement.dataset.guideReady==='true'")){if(Date.now()>deadline)throw new Error('Prerequisite guide did not initialize.');await new Promise(resolve=>setTimeout(resolve,25));}
-  const initial=await evaluate("({theme:document.documentElement.dataset.theme,checks:document.querySelectorAll('input[data-check]').length,overflow:document.documentElement.scrollWidth>innerWidth,progress:document.getElementById('guide-progress').value,field:document.getElementById('guide-pdi-url').value,link:document.getElementById('open-users-table').getAttribute('href'),fontSize:getComputedStyle(document.body).fontSize,accent:getComputedStyle(document.documentElement).getPropertyValue('--cp-accent').trim(),brand:getComputedStyle(document.documentElement).getPropertyValue('--cp-brand').trim()})");assert.equal(initial.theme,'light');assert.equal(initial.checks,8);assert.equal(initial.overflow,false);assert.equal(initial.progress,0);assert.equal(initial.field,'');assert.equal(initial.link,null);assert.equal(initial.fontSize,'15px');assert.equal(initial.accent,'#1a1a1a');assert.equal(initial.brand,'#24566a');
+   assert.equal(await evaluate(`document.getElementById('before-title').getBoundingClientRect().top<600 && document.getElementById('guide-meta').getClientRects().length===0`),true);
+   const initial=await evaluate("({theme:document.documentElement.dataset.theme,checks:document.querySelectorAll('input[data-check]').length,overflow:document.documentElement.scrollWidth>innerWidth,progress:document.getElementById('guide-progress').value,field:document.getElementById('guide-pdi-url').value,link:document.getElementById('open-users-table').getAttribute('href'),fontSize:getComputedStyle(document.body).fontSize,accent:getComputedStyle(document.documentElement).getPropertyValue('--cp-accent').trim(),brand:getComputedStyle(document.documentElement).getPropertyValue('--cp-brand').trim()})");assert.equal(initial.theme,'light');assert.equal(initial.checks,8);assert.equal(initial.overflow,false);assert.equal(initial.progress,0);assert.equal(initial.field,'');assert.equal(initial.link,null);assert.equal(initial.fontSize,'16px');assert.equal(initial.accent,'#1a1a1a');assert.equal(initial.brand,'#24566a');
   const imageDimensions=await evaluate("Promise.all(Array.from(document.querySelectorAll('.reference-picture img')).map(async image=>{await image.decode();return [image.naturalWidth,image.naturalHeight]}))");assert.deepEqual(imageDimensions,[[396,128],[590,588],[739,160],[950,520],[455,161]]);
   const sourceRequests=()=>[...requests.values()].filter(request=>new URL(request.url).pathname!=='/favicon.ico').length;
   const requestCount=sourceRequests();
@@ -164,15 +165,18 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await until(`document.documentElement.dataset.guideMode==='guided'`);
  assert.deepEqual(await visible(),['install']);
 
- // On a phone the whole rail stays in view during page scrolling and link navigation.
+ // On phones the article uses the whole reading column; the same rail opens from the left.
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:700,deviceScaleFactor:1,mobile:true});
  await browser.cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
  await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?phone=1#install'});
- await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#install' && ${aligned}`);
+ await until(`location.search.includes('phone=1') && document.querySelector('#guide-nav a[aria-current]')?.hash==='#install'`);
  const railVisible=`(()=>{const links=[...document.querySelectorAll('#guide-nav a')];return links.length===9 && links.every(a=>{const r=a.getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight && a.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));});})()`;
- const headingBeside=id=>`(()=>{const h=document.getElementById('${id}').getBoundingClientRect();return h.left>document.getElementById('guide-rail').getBoundingClientRect().right && h.top>=0 && h.bottom<=innerHeight;})()`;
- const oneLeftColumn=`(()=>{const rail=document.getElementById('guide-rail').getBoundingClientRect(),content=document.getElementById('steps').getBoundingClientRect(),links=[...document.querySelectorAll('#guide-nav a')];return rail.right<content.left && links.length===9 && links.every((a,i)=>{const box=a.getBoundingClientRect(),label=a.querySelector('.rail-step-short'),range=document.createRange();range.selectNodeContents(label);const text=range.getBoundingClientRect();return box.left===rail.left && (!i||box.top>=links[i-1].getBoundingClientRect().bottom) && range.getClientRects().length===1 && text.width>0 && text.right<=box.right+1;});})()`;
+ const headingBelow=id=>`(()=>{const h=document.getElementById('${id}').getBoundingClientRect();return h.top>=document.querySelector('.masthead').getBoundingClientRect().bottom-1 && h.bottom<=innerHeight;})()`;
+ const fullReadingWidth=`(()=>{const r=document.getElementById('steps').getBoundingClientRect();return r.left>=0 && r.left<=32 && innerWidth-r.right<=32 && document.documentElement.scrollWidth<=innerWidth;})()`;
+ const tablesFit=`Array.from(document.querySelectorAll('.table-scroll')).every(t=>t.scrollWidth<=t.clientWidth)`;
+ const drawerOpen=`document.getElementById('phone-drawer').open`;
+ const settledDrawer=`${drawerOpen} && Math.abs(document.getElementById('phone-drawer').getBoundingClientRect().left)<1`;
  const tap=async selector=>{
   const point=await evaluate(`(()=>{const target=document.querySelector(${JSON.stringify(selector)}),r=target.getBoundingClientRect(),x=Math.round(r.left+r.width/2),y=Math.round(r.top+r.height/2);return target.contains(document.elementFromPoint(x,y))?[x,y]:null;})()`);
   assert.ok(point,`${selector} must be visible and tappable without scrolling`);
@@ -181,31 +185,54 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
   await browser.cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
  };
  assert.ok(await evaluate('scrollY>700'));
- assert.equal(await evaluate(headingBeside('install-title')),true);
- assert.equal(await evaluate(oneLeftColumn),true);
- assert.equal(await evaluate(railVisible),true);
- assert.equal(await logoFilter(),'grayscale(1)');
- assert.ok(await evaluate(`document.querySelector('#guide-nav a[href="#roles"]').offsetHeight>=44`));
+ assert.equal(await evaluate(headingBelow('install-title')),true);
+ assert.equal(await evaluate(fullReadingWidth),true);
+ assert.equal(await evaluate(tablesFit),true);
+ assert.equal(await evaluate(`!${drawerOpen} && document.getElementById('guide-rail').getClientRects().length===0`),true);
  const scrollBefore=await evaluate('scrollY');
- const railTop=await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`);
  await evaluate(`scrollBy(0,document.getElementById('roles-title').getBoundingClientRect().top-parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop))`);
- await until(`document.querySelector('[data-traced] a[aria-current]')?.hash==='#roles' && ${aligned} && ${railVisible} && document.querySelector('.service .rail-trace').getAnimations().length===1`);
+ await until(`document.querySelector('#guide-nav a[aria-current]')?.hash==='#roles'`);
  assert.notEqual(await evaluate('scrollY'),scrollBefore);
- assert.equal(await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`),railTop);
+ const drawerScrollBefore=await evaluate('scrollY');
+ await tap('#phone-contents');
+ await until(`${settledDrawer} && ${aligned} && ${railVisible}`);
+ assert.equal(await evaluate('scrollY'),drawerScrollBefore);
+ assert.equal(await evaluate(`document.getElementById('phone-contents').getAttribute('aria-expanded')`),'true');
+ assert.equal(await evaluate(`document.querySelector('#phone-drawer #guide-meta #guide-progress').max`),8);
+ assert.ok(await evaluate(`document.querySelector('#guide-nav a[href="#roles"]').offsetHeight>=44`));
  assert.equal(await logoFilter(),'none');
+ assert.equal(await evaluate(`document.activeElement.id`),'phone-drawer-close');
+ await browser.cdp.send('Input.dispatchKeyEvent',{type:'rawKeyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+ await browser.cdp.send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+ await until(`!${drawerOpen} && document.activeElement.id==='phone-contents'`);
+ assert.equal(await evaluate('scrollY'),drawerScrollBefore);
+ await tap('#phone-contents');
+ await until(settledDrawer);
  await tap('#guide-nav a[href="#password"]');
- await until(`location.hash==='#password' && document.activeElement.id==='password-title' && ${headingBeside('password-title')} && ${railVisible} && ${aligned}`);
+ await until(`${drawerOpen} && document.querySelector('[data-traced] a[aria-current]')?.hash==='#password' && document.querySelector('.service .rail-trace').getAnimations().length===1 && ${aligned}`);
+ assert.equal(await evaluate('location.hash'),'#install');
+ await until(`!${drawerOpen} && location.hash==='#password' && document.activeElement.id==='password-title' && ${headingBelow('password-title')}`);
 
- // A short screen keeps enough height for reading without hiding or nesting the menu.
+ // A short phone can read the article and scroll the drawer independently when open.
  await browser.cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
  await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:320,height:360,deviceScaleFactor:1,mobile:true});
- await until(`innerWidth===320 && ${railVisible} && ${aligned}`);
- assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'),false);
- assert.equal(await evaluate(oneLeftColumn),true);
- assert.ok(await evaluate(`document.getElementById('steps').getBoundingClientRect().width>=185`));
- await tap('#guide-nav a[href="#roles"]');
- await until(`document.activeElement.id==='roles-title' && ${headingBeside('roles-title')} && ${aligned}`);
+ await until(`innerWidth===320 && ${fullReadingWidth} && ${tablesFit}`);
+ assert.ok(await evaluate(`document.getElementById('steps').getBoundingClientRect().width>=288`));
+ assert.equal(await evaluate(`getComputedStyle(document.getElementById('guide-pdi-url')).fontSize`),'16px');
+ assert.equal(await evaluate(`(()=>{const input=document.getElementById('guide-pdi-url').getBoundingClientRect(),button=document.getElementById('open-users-table').getBoundingClientRect();return Math.abs(input.width-button.width)<1 && document.getElementById('copy-machine-id').offsetHeight>=44;})()`),true);
+ await tap('#phone-contents');
+ await until(`${settledDrawer} && ${aligned}`);
+ assert.equal(await evaluate(`(()=>{const d=document.getElementById('phone-drawer');return d.scrollHeight>d.clientHeight && d.clientHeight<=innerHeight;})()`),true);
  assert.equal(await evaluate(`document.querySelector('[data-traced]').getAnimations({subtree:true}).length`),0);
+ await tap('#guide-nav a[href="#roles"]');
+ await until(`!${drawerOpen} && document.activeElement.id==='roles-title' && ${headingBelow('roles-title')}`);
+
+ await browser.cdp.send('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:1,mobile:true});
+ await until(`innerWidth===844 && !document.getElementById('phone-contents').hidden && ${fullReadingWidth}`);
+ await tap('#phone-contents');
+ await until(`${settledDrawer} && ${aligned}`);
+ await tap('#phone-drawer-close');
+ await until(`!${drawerOpen} && document.activeElement.id==='phone-contents'`);
 
  // iPad Safari can report a Mac without a coarse primary pointer.
  await browser.cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});
@@ -215,6 +242,8 @@ test('real Edge renders pictures, the safe PDI shortcut, and the curved referenc
  await browser.cdp.send('Page.navigate',{url:'https://dev123.service-now.com/login.do?tablet=1#roles'});
  await until(`location.search.includes('tablet=1') && document.documentElement.dataset.guideReady==='true' && document.querySelector('#guide-nav a[aria-current]')?.hash==='#roles'`);
  assert.equal(await evaluate(`getComputedStyle(document.getElementById('guide-rail')).position`),'sticky');
+ assert.equal(await evaluate(`document.getElementById('phone-contents').hidden && !document.getElementById('guide-sidebar').hidden`),true);
+ assert.equal(await evaluate(`document.querySelector('.hero #guide-meta #guide-progress').max`),8);
  const tabletTop=await evaluate(`document.getElementById('guide-rail').getBoundingClientRect().top`);
  await evaluate(`scrollBy(0, 500)`);
  assert.equal(await evaluate(railVisible),true);
